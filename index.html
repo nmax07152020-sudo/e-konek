@@ -370,6 +370,117 @@ body.public-mode .content{max-width:1450px;padding-top:20px}
 .report-coverage-box .big{font-size:25px;font-weight:950}.report-coverage-box .lbl{font-size:9px;color:#64748b;text-transform:uppercase;font-weight:900;letter-spacing:.6px;margin-top:2px}
 @media(max-width:760px){.report-hrow{grid-template-columns:115px 1fr 36px}.report-filter-field{min-width:135px}}
 @media(max-width:520px){.report-coverage{grid-template-columns:1fr}.report-compare{grid-template-columns:1fr}.report-compare-card{height:160px}.report-compare-bar{height:90px}}
+
+/* ADMIN DASHBOARD — FLUID SUMMARY SECTIONS
+   Keeps Barangay Case Ranking and Condition Summary readable
+   from desktop down to narrow phones without affecting Public/BHW. */
+.admin-dashboard-summary-grid{
+  align-items:stretch;
+}
+.admin-dashboard-summary-grid > .panel{
+  min-width:0;
+}
+.admin-case-ranking-wrap{
+  width:100%;
+  overflow-x:auto;
+  overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+}
+.admin-case-ranking-table{
+  min-width:520px;
+  table-layout:auto;
+}
+.admin-case-ranking-table th:first-child,
+.admin-case-ranking-table td:first-child{width:42px}
+.admin-case-ranking-table th:nth-child(3),
+.admin-case-ranking-table td:nth-child(3){width:72px}
+.admin-case-ranking-table th:nth-child(4),
+.admin-case-ranking-table td:nth-child(4){width:135px}
+.admin-case-ranking-table .mini{max-width:120px;width:100%}
+.admin-condition-profile{
+  min-width:0;
+}
+.admin-condition-profile .profile-row{
+  grid-template-columns:minmax(88px,125px) minmax(0,1fr) 34px;
+  min-width:0;
+}
+.admin-condition-profile .profile-row > *{min-width:0}
+.admin-condition-profile .profile-row > :first-child{
+  overflow-wrap:anywhere;
+}
+@media(max-width:760px){
+  .admin-dashboard-summary-grid{grid-template-columns:1fr}
+  .admin-case-ranking-wrap{overflow-x:hidden}
+  .admin-case-ranking-table{
+    min-width:0;
+    width:100%;
+    table-layout:fixed;
+  }
+  .admin-case-ranking-table th,
+  .admin-case-ranking-table td{
+    padding:8px 6px;
+    font-size:10px;
+  }
+  .admin-case-ranking-table th{font-size:8px;letter-spacing:.4px}
+  .admin-case-ranking-table th:first-child,
+  .admin-case-ranking-table td:first-child{width:30px}
+  .admin-case-ranking-table th:nth-child(2),
+  .admin-case-ranking-table td:nth-child(2){width:39%}
+  .admin-case-ranking-table th:nth-child(3),
+  .admin-case-ranking-table td:nth-child(3){width:54px}
+  .admin-case-ranking-table th:nth-child(4),
+  .admin-case-ranking-table td:nth-child(4){width:auto}
+  .admin-case-ranking-table td:nth-child(2) strong{
+    display:block;
+    white-space:normal;
+    overflow-wrap:anywhere;
+    line-height:1.2;
+  }
+  .admin-case-ranking-table .pill{
+    padding:4px 6px;
+    font-size:9px;
+  }
+  .admin-case-ranking-table .mini{
+    width:100%;
+    max-width:none;
+    height:6px;
+  }
+  .admin-condition-profile{gap:9px}
+  .admin-condition-profile .profile-row{
+    grid-template-columns:minmax(78px,105px) minmax(0,1fr) 32px;
+    gap:7px;
+    font-size:10px;
+  }
+  .admin-condition-profile .progress{height:8px}
+}
+@media(max-width:420px){
+  .admin-dashboard-summary-grid{gap:10px}
+  .admin-dashboard-summary-grid > .panel{padding:13px}
+  .admin-case-ranking-table th,
+  .admin-case-ranking-table td{padding:7px 5px}
+  .admin-case-ranking-table th:first-child,
+  .admin-case-ranking-table td:first-child{width:27px}
+  .admin-case-ranking-table th:nth-child(2),
+  .admin-case-ranking-table td:nth-child(2){width:40%}
+  .admin-case-ranking-table th:nth-child(3),
+  .admin-case-ranking-table td:nth-child(3){width:50px}
+  .admin-case-ranking-table .mini{height:5px}
+  .admin-condition-profile .profile-row{
+    grid-template-columns:minmax(72px,88px) minmax(0,1fr) 30px;
+    gap:6px;
+  }
+}
+@media(max-width:340px){
+  .admin-case-ranking-table th:nth-child(2),
+  .admin-case-ranking-table td:nth-child(2){width:43%}
+  .admin-case-ranking-table th:nth-child(4),
+  .admin-case-ranking-table td:nth-child(4){width:28%}
+  .admin-condition-profile .profile-row{
+    grid-template-columns:72px minmax(0,1fr) 28px;
+    font-size:9px;
+  }
+}
+
 </style>
 </style>
 </head>
@@ -610,9 +721,9 @@ body.public-mode .content{max-width:1450px;padding-top:20px}
           </div>
         </div>
 
-        <div class="grid-2">
-          <div class="panel"><div class="panel-title">Barangay Case Ranking</div><div class="panel-sub">All barangays, highest first.</div><div class="table-wrap"><table><thead><tr><th>#</th><th>Barangay</th><th>Cases</th><th>Visual</th></tr></thead><tbody id="admBrgyBody"></tbody></table></div></div>
-          <div class="panel"><div class="panel-title">Condition Summary</div><div class="panel-sub">Case mix across the whole area.</div><div class="profile" id="admConditions"></div></div>
+        <div class="grid-2 admin-dashboard-summary-grid">
+          <div class="panel admin-case-ranking-panel"><div class="panel-title">Barangay Case Ranking</div><div class="panel-sub">All barangays, highest first.</div><div class="table-wrap admin-case-ranking-wrap"><table class="admin-case-ranking-table"><thead><tr><th>#</th><th>Barangay</th><th>Cases</th><th>Visual</th></tr></thead><tbody id="admBrgyBody"></tbody></table></div></div>
+          <div class="panel admin-condition-panel"><div class="panel-title">Condition Summary</div><div class="panel-sub">Case mix across the whole area.</div><div class="profile admin-condition-profile" id="admConditions"></div></div>
         </div>
 
         <div class="panel" style="margin-top:13px">

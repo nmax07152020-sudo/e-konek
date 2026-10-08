@@ -483,6 +483,84 @@ body.public-mode .content{max-width:1450px;padding-top:20px}
 
 </style>
 </style>
+
+/* V39.1 MOBILE RESPONSIVE POLISH — public status + admin/BHW full-width layouts */
+@media(max-width:760px){
+  html,body{width:100%;max-width:100%;overflow-x:hidden}
+  body:not(.public-mode) .app{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important}
+  body:not(.public-mode) .main{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important}
+  body:not(.public-mode) .topbar{width:100%!important;max-width:100%!important;min-width:0!important}
+  body:not(.public-mode) .content{width:100%!important;max-width:none!important;min-width:0!important;margin:0!important;padding:13px 12px 24px!important}
+  body:not(.public-mode) .content section{width:100%;max-width:100%;min-width:0}
+  body:not(.public-mode) .panel,
+  body:not(.public-mode) .card,
+  body:not(.public-mode) .section-head,
+  body:not(.public-mode) .cards,
+  body:not(.public-mode) .grid-2,
+  body:not(.public-mode) .grid-3,
+  body:not(.public-mode) .admin-kpi-grid{min-width:0;max-width:100%}
+
+  /* Public network status: compact and tucked directly below Admin/BHW Login */
+  .public-login-stack{gap:3px;width:auto!important;max-width:100%;align-items:flex-end}
+  .public-only-login{padding:7px 9px!important;border-radius:10px!important;font-size:10px!important;line-height:1.1}
+  .public-login-stack .network-banner{
+    width:min(280px,100%);max-width:280px!important;margin:0!important;
+    padding:4px 6px!important;border-radius:8px!important;gap:5px!important;
+    font-size:7px!important;line-height:1.15!important;box-shadow:0 2px 7px rgba(0,0,0,.05)!important;
+  }
+  .public-login-stack .network-banner > span:first-child{font-size:7px!important}
+  .public-login-stack .sync-pill{padding:3px 5px!important;font-size:7px!important;white-space:nowrap}
+}
+
+/* Admin Patient Records: compact 4-column ranking table and readable record list */
+@media(max-width:760px){
+  #view-admin-patients .grid-2{grid-template-columns:1fr;gap:10px}
+  #view-admin-patients .table-wrap{width:100%;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  #view-admin-patients .table-wrap table{min-width:0;width:100%;table-layout:fixed}
+  #view-admin-patients .grid-2 .table-wrap table th,
+  #view-admin-patients .grid-2 .table-wrap table td{padding:7px 5px;font-size:10px}
+  #view-admin-patients .grid-2 .table-wrap table th{font-size:8px;letter-spacing:.35px}
+  #view-admin-patients .grid-2 .table-wrap table th:first-child,
+  #view-admin-patients .grid-2 .table-wrap table td:first-child{width:28px}
+  #view-admin-patients .grid-2 .table-wrap table th:nth-child(2),
+  #view-admin-patients .grid-2 .table-wrap table td:nth-child(2){width:48%}
+  #view-admin-patients .grid-2 .table-wrap table th:nth-child(3),
+  #view-admin-patients .grid-2 .table-wrap table td:nth-child(3){width:50px}
+  #view-admin-patients .grid-2 .table-wrap table th:nth-child(4),
+  #view-admin-patients .grid-2 .table-wrap table td:nth-child(4){width:auto}
+
+  /* 11-column patient record table: keep inside viewport with controlled horizontal scroll */
+  #view-admin-patients > .panel:last-child .table-wrap{overflow-x:auto;max-width:100%}
+  #view-admin-patients > .panel:last-child .table-wrap table{min-width:760px;width:760px}
+  #view-admin-patients > .panel:last-child .table-wrap th,
+  #view-admin-patients > .panel:last-child .table-wrap td{padding:7px 6px;font-size:9px}
+  #view-admin-patients > .panel:last-child .table-wrap th{font-size:7.5px;letter-spacing:.25px}
+  #view-admin-patients > .panel:last-child .table-wrap th:nth-child(1){width:70px}
+  #view-admin-patients > .panel:last-child .table-wrap th:nth-child(2){width:95px}
+  #view-admin-patients > .panel:last-child .table-wrap th:nth-child(3){width:38px}
+  #view-admin-patients > .panel:last-child .table-wrap th:nth-child(4){width:45px}
+  #view-admin-patients > .panel:last-child .table-wrap th:nth-child(5){width:65px}
+  #view-admin-patients > .panel:last-child .table-wrap th:nth-child(6){width:85px}
+  #view-admin-patients > .panel:last-child .table-wrap th:nth-child(7){width:90px}
+  #view-admin-patients > .panel:last-child .table-wrap th:nth-child(8){width:80px}
+  #view-admin-patients > .panel:last-child .table-wrap th:nth-child(9){width:55px}
+  #view-admin-patients > .panel:last-child .table-wrap th:nth-child(10){width:45px}
+  #view-admin-patients > .panel:last-child .table-wrap th:nth-child(11){width:105px}
+
+  #view-admin-patients .filter-bar{width:100%;max-width:100%;display:flex;flex-wrap:wrap;gap:6px}
+  #view-admin-patients .filter-bar select,
+  #view-admin-patients .filter-bar input{min-width:0;flex:1 1 120px}
+}
+
+@media(max-width:420px){
+  .public-login-stack .network-banner{width:min(250px,100%);max-width:250px!important;font-size:6.5px!important}
+  .public-login-stack .network-banner > span:first-child{font-size:6.5px!important}
+  .public-login-stack .sync-pill{font-size:6.5px!important;padding:2px 4px!important}
+  .public-only-login{font-size:9px!important;padding:7px 8px!important}
+  #view-admin-patients .panel{padding:12px}
+  #view-admin-patients > .panel:last-child .table-wrap table{min-width:720px;width:720px}
+}
+
 </head>
 <body class="public-mode">
 

@@ -16,10 +16,10 @@
 <title>E-Konek</title>
 <style>
 :root{
-  --bg:#f3f6fa;--card:#fff;--text:#17202a;--muted:#6b7280;--line:#e5e7eb;
-  --orange:#dc2626;--orange2:#1d4ed8;--red:#b91c1c;--amber:#1d4ed8;
-  --blue:#1d4ed8;--green:#15803d;--dark:#111827;--danger:#991b1b;
-  --shadow:0 8px 24px rgba(15,23,42,.07);--radius:18px;
+  --bg:#f4f7fb;--card:#fff;--text:#17202a;--muted:#64748b;--line:#dbe3ef;
+  --orange:#0307fb;--orange2:#1d4ed8;--red:#ff050b;--amber:#1d4ed8;
+  --blue:#0307fb;--green:#15803d;--dark:#0b1f5e;--danger:#b91c1c;
+  --shadow:0 8px 24px rgba(3,7,251,.07);--radius:18px;
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif}
@@ -88,6 +88,7 @@ textarea{width:100%;min-height:72px;resize:vertical}
 .bar-v{font-size:10px;font-weight:950;color:#991b1b}.bar{width:min(46px,75%);background:linear-gradient(180deg,#2563eb,#dc2626);border-radius:8px 8px 4px 4px;min-height:5px}.bar-l{font-size:9px;color:var(--muted);white-space:nowrap}
 
 .profile{display:grid;gap:10px}.profile-row{display:grid;grid-template-columns:125px 1fr 34px;gap:8px;align-items:center;font-size:11px}.progress{height:9px;background:#edf0f3;border-radius:99px;overflow:hidden}.progress span{display:block;height:100%;border-radius:99px}.c1{background:#dc2626}.c2{background:#1d4ed8}.c3{background:#3b82f6}.c4{background:#0284c7}.c5{background:#16a34a}
+.c6{background:#2563eb}.c7{background:#dc2626}.c8{background:#991b1b}.c9{background:#7c2d12}
 
 .table-wrap{width:100%;overflow:auto}table{width:100%;border-collapse:collapse;min-width:650px}th,td{padding:10px 9px;border-bottom:1px solid var(--line);text-align:left;font-size:11px}th{background:#fafafa;color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.7px}
 .pill{display:inline-flex;padding:5px 8px;border-radius:999px;font-weight:900;background:#eff6ff;color:#dc2626}.status{font-size:9px;font-weight:900;padding:5px 8px;border-radius:999px}.s-open{background:#ecfdf5;color:#166534}.s-review{background:#eff6ff;color:#1d4ed8}.s-critical{background:#fef2f2;color:#991b1b}
@@ -653,10 +654,10 @@ body{background:var(--bg);}
 .nav .public{color:#ffffff;}
 .user-brgy{color:#bfdbfe;}
 .topbar{background:rgba(243,246,250,.94);}
-.hero{background:linear-gradient(135deg,#7f1d1d 0%,var(--brand-red) 38%,var(--brand-blue) 100%);box-shadow:0 15px 38px rgba(3,7,251,.14);}
+.hero{background:linear-gradient(135deg,var(--brand-blue) 0%,#1d4ed8 58%,var(--brand-red) 100%);box-shadow:0 15px 38px rgba(3,7,251,.14);}
 .hero-tags .hero-tag{background:rgba(3,7,251,.16);border-color:rgba(255,255,255,.28);}
 .btn-dark{background:var(--brand-blue);color:#fff;}
-.btn-orange{background:var(--brand-red);color:#fff;}
+.btn-orange{background:var(--brand-blue);color:#fff;}
 .btn-light{background:#fff;border-color:#cbd5e1;color:#1f2937;}
 .icon{background:var(--brand-blue-soft);color:var(--brand-blue);}
 .pill{background:var(--brand-blue-soft);color:var(--brand-blue);}
@@ -684,6 +685,50 @@ body{background:var(--bg);}
 .personnel-initial-avatar,.personnel-avatar{background:var(--brand-blue-soft);color:var(--brand-blue);}
 .directory-note{background:var(--brand-blue-soft);border-color:#bfdbfe;color:#1e3a8a;}
 
+
+/* V41 ILLNESS PROFILE — expanded heat-related conditions + compact overall totals */
+.illness-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:0 0 11px}
+.illness-summary-box{border:1px solid var(--line);background:#f8fafc;border-radius:10px;padding:8px 9px;min-width:0}
+.illness-summary-box .k{font-size:8px;font-weight:900;letter-spacing:.55px;text-transform:uppercase;color:#64748b}
+.illness-summary-box .v{margin-top:2px;font-size:18px;line-height:1.05;font-weight:950;color:#0f172a}
+.illness-summary-box.blue{background:#eff6ff;border-color:#bfdbfe}
+.illness-summary-box.red{background:#eff6ff;border-color:#bfdbfe;color:#1e3a8a}
+.illness-profile-total{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:8px;margin-top:2px;font-size:10px;color:#64748b}
+.illness-profile-total strong{font-size:12px;color:#0f172a}
+@media(max-width:760px){
+  .illness-summary{gap:6px}
+  .illness-summary-box{padding:7px 8px}
+  .illness-summary-box .v{font-size:17px}
+}
+/* V42 BLUE-DOMINANT RED • WHITE • BLUE SYSTEM THEME */
+:root{
+  --brand-blue:#0307fb;
+  --brand-blue-mid:#1d4ed8;
+  --brand-blue-soft:#eef4ff;
+  --brand-red:#ff050b;
+  --brand-red-soft:#fff1f2;
+}
+body{background:var(--bg)}
+.panel,.card{border-color:#dbe3ef}
+.panel-title,.section-title{color:#102a72}
+.nav button.active,.nav button:hover{background:rgba(255,255,255,.18);border-left:3px solid #fff}
+.btn-orange,.btn-dark{background:linear-gradient(135deg,var(--brand-blue),var(--brand-blue-mid))!important;color:#fff}
+.hero{background:linear-gradient(135deg,var(--brand-blue) 0%,var(--brand-blue-mid) 62%,var(--brand-red) 100%)!important}
+.hero-tags .hero-tag{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.30)}
+.illness-summary-box.blue,.illness-summary-box.red{background:var(--brand-blue-soft)!important;border-color:#bfdbfe!important;color:#1e3a8a}
+.public-dashboard-card{box-shadow:0 8px 24px rgba(3,7,251,.055)}
+.public-announcements-card{border-top:3px solid var(--brand-red)}
+.danger,.btn-danger,.critical{--accent-red:var(--brand-red)}
+/* V40 PUBLIC DASHBOARD — separate Illness Profile and Emergency Alerts cards */
+.public-dashboard-card{min-width:0;overflow:hidden}
+.public-announcements-card{margin-top:13px}
+.public-announcements-card .panel-sub{max-width:760px}
+@media(max-width:760px){
+  .public-dashboard-cards{grid-template-columns:1fr;gap:10px}
+  .public-dashboard-card{width:100%;max-width:100%;padding:14px}
+  .public-announcements-card{margin-top:10px}
+  .public-announcements-card .section-head{align-items:flex-start}
+}
 </style>
 </head>
 <body class="public-mode">
@@ -783,21 +828,34 @@ body{background:var(--bg);}
           <div class="card stat-card"><div class="stat-top"><span>Top Condition</span><span class="icon">🔥</span></div><div class="num" style="font-size:20px" id="pubTop">—</div><div class="small-note" id="pubTopNote">Highest recorded condition</div></div>
         </div>
 
-        <div class="grid-2">
-          <div class="panel"><div class="panel-title">Cases by Reporting Day</div><div class="panel-sub">Sample trend rendered from the current local dataset.</div><div class="bar-chart" id="pubDaily"></div></div>
-          <div class="panel">
+        <div class="grid-2 public-dashboard-cards">
+          <div class="panel public-dashboard-card">
+            <div class="panel-title">Cases by Reporting Day</div>
+            <div class="panel-sub">Sample trend rendered from the current local dataset.</div>
+            <div class="bar-chart" id="pubDaily"></div>
+          </div>
+          <div class="panel public-dashboard-card">
             <div class="section-head" style="margin:0 0 9px">
-              <div><div class="panel-title">Illness Profile</div><div class="panel-sub" style="margin-bottom:0">Aggregate cases by condition.</div></div>
-              <span class="latest-label">📢 Latest</span>
+              <div><div class="panel-title">Illness Profile — Overall</div><div class="panel-sub" style="margin-bottom:0">Overall illness profile for the selected reporting period.</div></div>
+            </div>
+            <div class="illness-summary">
+              <div class="illness-summary-box blue"><div class="k">Overall Reports</div><div class="v" id="pubIllnessReports">0</div></div>
+              <div class="illness-summary-box red"><div class="k">Total Cases</div><div class="v" id="pubIllnessCases">0</div></div>
             </div>
             <div class="profile" id="pubConditions"></div>
-            <div style="height:10px"></div>
-            <div class="panel-title" style="font-size:13px">Latest Announcements</div>
-            <div class="panel-sub">Water, power, disaster, outbreak, and other advisories.</div>
-            <div id="publicAnnouncementArea" class="public-announcement-panel"></div>
+            <div class="illness-profile-total"><span>Conditions tracked</span><strong id="pubIllnessConditionCount">0</strong></div>
           </div>
         </div>
 
+        <div class="panel public-dashboard-card public-announcements-card">
+          <div class="section-head" style="margin:0 0 9px">
+            <div>
+              <div class="panel-title">🚨 Emergency Alerts &amp; Announcements</div>
+              <div class="panel-sub">Latest official emergency alerts, service advisories, health notices, and community announcements.</div>
+            </div>
+          </div>
+          <div id="publicAnnouncementArea" class="public-announcement-panel"></div>
+        </div>
 
         <div class="panel heat-panel">
           <div class="section-head" style="margin:0 0 9px">
@@ -925,7 +983,17 @@ body{background:var(--bg);}
 
         <div class="grid-2 admin-dashboard-summary-grid">
           <div class="panel admin-case-ranking-panel"><div class="panel-title">Barangay Case Ranking</div><div class="panel-sub">All barangays, highest first.</div><div class="table-wrap admin-case-ranking-wrap"><table class="admin-case-ranking-table"><thead><tr><th>#</th><th>Barangay</th><th>Cases</th><th>Visual</th></tr></thead><tbody id="admBrgyBody"></tbody></table></div></div>
-          <div class="panel admin-condition-panel"><div class="panel-title">Condition Summary</div><div class="panel-sub">Case mix across the whole area.</div><div class="profile admin-condition-profile" id="admConditions"></div></div>
+          <div class="panel admin-condition-panel">
+            <div class="section-head" style="margin:0 0 9px">
+              <div><div class="panel-title">Illness Profile — Overall</div><div class="panel-sub">Overall illness profile across all 16 barangays.</div></div>
+            </div>
+            <div class="illness-summary">
+              <div class="illness-summary-box blue"><div class="k">Overall Reports</div><div class="v" id="admIllnessReports">0</div></div>
+              <div class="illness-summary-box red"><div class="k">Total Cases</div><div class="v" id="admIllnessCases">0</div></div>
+            </div>
+            <div class="profile admin-condition-profile" id="admConditions"></div>
+            <div class="illness-profile-total"><span>Conditions tracked</span><strong id="admIllnessConditionCount">0</strong></div>
+          </div>
         </div>
 
         <div class="panel" style="margin-top:13px">
@@ -1020,7 +1088,7 @@ body{background:var(--bg);}
           <div class="card stat-card"><div class="stat-top"><span>For Review</span><span class="icon">🔎</span></div><div class="num" id="patReview">0</div><div class="small-note">Awaiting review</div></div>
         </div>
         <div class="grid-2">
-          <div class="panel"><div class="panel-title">Illness Breakdown — Overall</div><div class="panel-sub">Total recorded cases per heat-related illness.</div><div class="profile" id="overallConditionProfile"></div></div>
+          <div class="panel"><div class="panel-title">Illness Breakdown — Overall</div><div class="panel-sub">Total recorded cases per condition.</div><div class="profile" id="overallConditionProfile"></div></div>
           <div class="panel"><div class="panel-title">Total Illness per Barangay</div><div class="panel-sub">Every barangay ranked by total patient reports.</div><div class="table-wrap"><table><thead><tr><th>#</th><th>Barangay</th><th>Cases</th><th>Share</th></tr></thead><tbody id="patientBrgyBody"></tbody></table></div></div>
         </div>
         <div class="admin-crud-note" style="margin-top:13px">🛡️ <strong>Admin permissions:</strong> Admin can view, edit, save, and delete patient records from any barangay. Deletions are permanent in the production database and should be auditable.</div>
@@ -1218,7 +1286,16 @@ body{background:var(--bg);}
         </div>
 
         <div class="grid-2">
-          <div class="panel"><div class="panel-title" id="bhwBrgyTitle">My Barangay</div><div class="panel-sub">Condition profile and total illness breakdown for this locked unit.</div><div class="profile" id="bhwConditions"></div></div>
+          <div class="panel">
+            <div class="panel-title" id="bhwBrgyTitle">My Barangay — Illness Profile</div>
+            <div class="panel-sub">Illness profile and totals for this locked barangay.</div>
+            <div class="illness-summary">
+              <div class="illness-summary-box blue"><div class="k">My Reports</div><div class="v" id="bhwIllnessReports">0</div></div>
+              <div class="illness-summary-box red"><div class="k">Total Cases</div><div class="v" id="bhwIllnessCases">0</div></div>
+            </div>
+            <div class="profile" id="bhwConditions"></div>
+            <div class="illness-profile-total"><span>Conditions tracked</span><strong id="bhwIllnessConditionCount">0</strong></div>
+          </div>
           <div class="panel"><div class="panel-title">Quick Report</div><div class="panel-sub">Start a patient report with the barangay already locked.</div><button class="btn btn-orange" style="width:100%;padding:12px" onclick="showView('report')">📝 Submit Heat-Related Illness Report</button><div class="notice" style="margin-top:10px">Use one report per patient encounter. Avoid putting unnecessary sensitive information in notes.</div></div>
         </div>
 
@@ -1267,7 +1344,7 @@ body{background:var(--bg);}
                 <div class="field"><div class="label">Contact Number</div><input id="rContact" placeholder="Optional"></div>
 
                 <div class="field full">
-                  <div class="label">Heat-Related Condition *</div>
+                  <div class="label">Condition *</div>
                   <div class="check-grid" id="conditionChoices"></div>
                 </div>
 
@@ -1299,7 +1376,7 @@ body{background:var(--bg);}
           <div class="panel" style="margin-top:11px">
             <div class="panel-title">Submission Guide</div>
             <div class="panel-sub">Workflow for BHW users</div>
-            <div class="notice">① Enter the patient encounter details.<br><br>② Select the heat-related condition.<br><br>③ Submit. The system assigns the reporting barangay automatically when logged in as BHW.<br><br>④ Admin can review the report and monitor the area-wide dashboard.</div>
+            <div class="notice">① Enter the patient encounter details.<br><br>② Select the condition.<br><br>③ Submit. The system assigns the reporting barangay automatically when logged in as BHW.<br><br>④ Admin can review the report and monitor the area-wide dashboard.</div>
             <div class="lock-box" style="margin-top:11px"><strong>🔒 Access rules</strong><p>BHW: own barangay only.<br>Admin: all barangays.<br>Public: aggregate statistics only.<br>Offline: save locally, then auto-sync when online.<br>Announcements: Admin and BHW can publish; both appear on Public Dashboard. Admin announcements also pop up for relevant BHW accounts.<br>Inventory: Admin manages stocks; BHW can view assigned barangay stock.</p></div>
           </div>
         </div>
@@ -1572,7 +1649,19 @@ let liveRefreshing=false;
 let backendLastSync=null;
 
 const BARANGAYS = ["Bagong Nayon","Beverly Hills","Calawis","Cupang","Dalig","Dela Paz","Inarawan","Mambugan","Mayamot","Muntindilaw","San Isidro","San Jose","San Juan","San Luis","San Roque","Santa Cruz"];
-const CONDITIONS = ["Heat Exhaustion","Heat Cramps","Heat Syncope","Heat Stroke","Dehydration"];
+const CONDITIONS = [
+  "Heat Rash",
+  "Heat Edema",
+  "Heat Cramps",
+  "Heat Syncope",
+  "Heat Fatigue",
+  "Dehydration",
+  "Heat Exhaustion",
+  "Heat Stroke",
+  "Rhabdomyolysis",
+  "Dengue",
+  "Diarrhea"
+];
 
 
 
@@ -2753,11 +2842,28 @@ function renderDaily(target,list){
  }).join("");
 }
 function renderConditions(target,list){
- const el=document.getElementById(target),cc=condCounts(list),total=Math.max(list.length,1);
+ const el=document.getElementById(target);
+ if(!el)return;
+ const cc=condCounts(list),total=list.length;
+ const overallTotal=Object.values(cc).reduce((sum,v)=>sum+Number(v||0),0);
+ const summaryMap={
+   pubConditions:{reports:"pubIllnessReports",cases:"pubIllnessCases",tracked:"pubIllnessConditionCount"},
+   admConditions:{reports:"admIllnessReports",cases:"admIllnessCases",tracked:"admIllnessConditionCount"},
+   bhwConditions:{reports:"bhwIllnessReports",cases:"bhwIllnessCases",tracked:"bhwIllnessConditionCount"}
+ };
+ const ids=summaryMap[target];
+ if(ids){
+   const r=document.getElementById(ids.reports),c=document.getElementById(ids.cases),t=document.getElementById(ids.tracked);
+   if(r)r.textContent=overallTotal.toLocaleString();
+   if(c)c.textContent=total.toLocaleString();
+   if(t)t.textContent=Object.keys(cc).length.toLocaleString();
+ }
+ const base=Math.max(total,1);
  el.innerHTML=Object.entries(cc).map(([name,val],i)=>{
-   let pct=((val/total)*100).toFixed(1);
-   return `<div class="profile-row"><div><strong>${name}</strong></div><div class="progress"><span class="c${i+1}" style="width:${pct}%"></span></div><div style="text-align:right;font-weight:950">${val}</div></div>`
- }).join("")
+   let pct=((val/base)*100).toFixed(1);
+   const colorIndex=(i%9)+1;
+   return `<div class="profile-row"><div><strong>${esc(name)}</strong></div><div class="progress"><span class="c${colorIndex}" style="width:${pct}%"></span></div><div style="text-align:right;font-weight:950">${val}</div></div>`
+ }).join("") || `<div class="empty">No illness reports recorded for this view.</div>`;
 }
 function renderPublicBarangays(list=filteredByPeriod(reports,document.getElementById("publicPeriod").value)){
  const q=(document.getElementById("pubBrgySearch").value||"").toLowerCase().trim();
@@ -2974,7 +3080,7 @@ function renderBhw(){
  const list=reports.filter(r=>r.barangay===brgy && [r.name,r.condition,r.disposition].join(" ").toLowerCase().includes(q));
  const allUnitReports=reports.filter(r=>r.barangay===brgy),cc=condCounts(allUnitReports);
  document.getElementById("bhwLockedBrgy").textContent=brgy;
- document.getElementById("bhwBrgyTitle").textContent=brgy+" — Condition Profile";
+ document.getElementById("bhwBrgyTitle").textContent=brgy+" — Illness Profile";
  document.getElementById("bhwReports").textContent=allUnitReports.length;
  document.getElementById("bhwCases").textContent=allUnitReports.length;
  document.getElementById("bhwReview").textContent=allUnitReports.filter(x=>x.status==="Review").length;

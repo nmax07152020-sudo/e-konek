@@ -687,7 +687,7 @@ body{background:var(--bg);}
 .directory-note{background:var(--brand-blue-soft);border-color:#bfdbfe;color:#1e3a8a;}
 
 
-/* V41 ILLNESS PROFILE — expanded heat-related conditions + compact overall totals */
+/* V41/V42/V43.4 ILLNESS PROFILE — active surveillance conditions + compact overall totals */
 .illness-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:0 0 11px}
 .illness-summary-box{border:1px solid var(--line);background:#f8fafc;border-radius:10px;padding:8px 9px;min-width:0}
 .illness-summary-box .k{font-size:8px;font-weight:900;letter-spacing:.55px;text-transform:uppercase;color:#64748b}
@@ -877,7 +877,7 @@ body{background:var(--bg)}
           </div>
           <div class="panel public-dashboard-card">
             <div class="section-head" style="margin:0 0 9px">
-              <div><div class="panel-title">Illness Profile — Overall</div><div class="panel-sub" style="margin-bottom:0">Overall illness profile for the selected reporting period.</div></div>
+              <div><div class="panel-title">Illness Profile — Overall</div><div class="panel-sub" style="margin-bottom:0">Overall illness profile for the selected reporting period. Active surveillance conditions only.</div></div>
             </div>
             <div class="illness-summary">
               <div class="illness-summary-box blue"><div class="k">Overall Reports</div><div class="v" id="pubIllnessReports">0</div></div>
@@ -1026,7 +1026,7 @@ body{background:var(--bg)}
           <div class="panel admin-case-ranking-panel"><div class="panel-title">Barangay Case Ranking</div><div class="panel-sub">All barangays, highest first.</div><div class="table-wrap admin-case-ranking-wrap"><table class="admin-case-ranking-table"><thead><tr><th>#</th><th>Barangay</th><th>Cases</th><th>Visual</th></tr></thead><tbody id="admBrgyBody"></tbody></table></div></div>
           <div class="panel admin-condition-panel">
             <div class="section-head" style="margin:0 0 9px">
-              <div><div class="panel-title">Illness Profile — Overall</div><div class="panel-sub">Overall illness profile across all 16 barangays.</div></div>
+              <div><div class="panel-title">Illness Profile — Overall</div><div class="panel-sub">Overall illness profile across all 16 barangays. Active surveillance conditions only.</div></div>
             </div>
             <div class="illness-summary">
               <div class="illness-summary-box blue"><div class="k">Overall Reports</div><div class="v" id="admIllnessReports">0</div></div>
@@ -1129,7 +1129,7 @@ body{background:var(--bg)}
           <div class="card stat-card"><div class="stat-top"><span>For Review</span><span class="icon">🔎</span></div><div class="num" id="patReview">0</div><div class="small-note">Awaiting review</div></div>
         </div>
         <div class="grid-2">
-          <div class="panel"><div class="panel-title">Illness Breakdown — Overall</div><div class="panel-sub">Total recorded cases per condition.</div><div class="profile" id="overallConditionProfile"></div></div>
+          <div class="panel"><div class="panel-title">Illness Breakdown — Overall</div><div class="panel-sub">Total recorded cases per active condition.</div><div class="profile" id="overallConditionProfile"></div></div>
           <div class="panel"><div class="panel-title">Total Illness per Barangay</div><div class="panel-sub">Every barangay ranked by total patient reports.</div><div class="table-wrap"><table><thead><tr><th>#</th><th>Barangay</th><th>Cases</th><th>Share</th></tr></thead><tbody id="patientBrgyBody"></tbody></table></div></div>
         </div>
         <div class="admin-crud-note" style="margin-top:13px">🛡️ <strong>Admin permissions:</strong> Admin can view, edit, save, and delete patient records from any barangay. Deletions are permanent in the production database and should be auditable.</div>
@@ -1727,18 +1727,22 @@ let backendLastSync=null;
 
 const BARANGAYS = ["Bagong Nayon","Beverly Hills","Calawis","Cupang","Dalig","Dela Paz","Inarawan","Mambugan","Mayamot","Muntindilaw","San Isidro","San Jose","San Juan","San Luis","San Roque","Santa Cruz"];
 const CONDITIONS = [
-  "Heat Rash",
-  "Heat Edema",
   "Heat Cramps",
-  "Heat Syncope",
   "Heat Fatigue",
   "Dehydration",
   "Heat Exhaustion",
   "Heat Stroke",
-  "Rhabdomyolysis",
   "Dengue",
   "Diarrhea"
 ];
+
+// Conditions intentionally removed from the active surveillance profile.
+// Historical backend/local-cache records with these values are excluded from
+// totals, profiles, patient tables, filters, reports, and analytics.
+const REMOVED_CONDITIONS = new Set(["Heat Rash","Heat Edema","Heat Syncope","Rhabdomyolysis"]);
+function isActiveCondition(value){
+  return !REMOVED_CONDITIONS.has(String(value ?? "").trim());
+}
 
 
 
@@ -1747,7 +1751,7 @@ const REPORT_OUTBOX_KEY="elnino_live_outbox_v19";
 const DEVICE_ID_KEY="elnino_device_id_v19";
 function getDeviceId(){let id=localStorage.getItem(DEVICE_ID_KEY);if(!id){id=(crypto&&crypto.randomUUID)?crypto.randomUUID():("dev-"+Date.now()+"-"+Math.random().toString(36).slice(2,10));localStorage.setItem(DEVICE_ID_KEY,id)}return id}
 const DEVICE_ID=getDeviceId();
-function loadReports(){try{const x=JSON.parse(localStorage.getItem(REPORT_STORAGE_KEY)||"[]");return Array.isArray(x)?x:[]}catch(e){return[]}}
+function loadReports(){try{const x=JSON.parse(localStorage.getItem(REPORT_STORAGE_KEY)||"[]");return Array.isArray(x)?x.filter(r=>isActiveCondition(r?.condition)):[]}catch(e){return[]}}
 function loadOutbox(){try{const x=JSON.parse(localStorage.getItem(REPORT_OUTBOX_KEY)||"[]");return Array.isArray(x)?x:[]}catch(e){return[]}}
 function persistReports(){localStorage.setItem(REPORT_STORAGE_KEY,JSON.stringify(reports))}
 function persistOutbox(){localStorage.setItem(REPORT_OUTBOX_KEY,JSON.stringify(outbox))}
@@ -2828,7 +2832,10 @@ async function apiPost(action,payload){
   if(!res.ok||data.ok===false) throw new Error(data.error||("HTTP "+res.status));
   return data;
 }
-function normPatient(x){return {reportId:x.Report_ID||x.reportId,date:x.Date_Time||x.date,name:x.Patient_Name||x.name,age:Number(x.Age||0),barangay:x.Barangay,condition:x.Condition,contact:x.Contact_Number||"",sex:x.Sex||"",temp:x.Temperature_C??"",disposition:x.Disposition||"",notes:x.Notes||"",critical:Boolean(x.Critical),status:x.Status||"Review",syncStatus:"synced",deviceId:x.Device_ID||"",createdAt:x.Created_At||""}}
+function normPatient(x){
+ const r={reportId:x.Report_ID||x.reportId,date:x.Date_Time||x.date,name:x.Patient_Name||x.name,age:Number(x.Age||0),barangay:x.Barangay,condition:x.Condition,contact:x.Contact_Number||"",sex:x.Sex||"",temp:x.Temperature_C??"",disposition:x.Disposition||"",notes:x.Notes||"",critical:Boolean(x.Critical),status:x.Status||"Review",syncStatus:"synced",deviceId:x.Device_ID||"",createdAt:x.Created_At||""};
+ return isActiveCondition(r.condition)?r:null;
+}
 function normAnnouncement(x){return {id:x.Announcement_ID||x.id,type:x.Type||x.type,priority:x.Priority||x.priority,title:x.Title||x.title,barangay:x.Barangay||x.barangay,body:x.Body||x.body,validUntil:x.Valid_Until||"",publishedAt:x.Published_At||x.publishedAt,active:x.Active!==false,createdBy:x.Created_By||"",createdByRole:(x.Created_By_Role||"admin").toLowerCase()}}
 function normInventory(x){return {id:x.Inventory_ID||x.id,barangay:x.Barangay||x.barangay,category:x.Category||x.category,name:x.Item_Name||x.name,unit:x.Unit||x.unit,stock:Number(x.Current_Stock||0),reorder:Number(x.Reorder_Level||0),released:Number(x.Released||0)}}
 function normUser(x){return {id:x.User_ID,name:x.Full_Name||x.name,role:(x.Role||x.role||"bhw").toLowerCase(),username:x.Username||x.username,barangay:x.Barangay,contact:x.Contact_Number||"",status:x.Status||"Active",lastSeen:x.Last_Seen||"",deviceId:x.Device_ID||""}}
@@ -2839,7 +2846,7 @@ async function refreshLiveState(){
   try{
     const payload=session&&session.user?{user:session.user,deviceId:DEVICE_ID}:{};
     const data=await apiPost("dashboard",payload);
-    if(Array.isArray(data.patients)) reports=data.patients.map(normPatient);
+    if(Array.isArray(data.patients)) reports=data.patients.map(normPatient).filter(Boolean);
     if(Array.isArray(data.announcements)) announcements=data.announcements.map(normAnnouncement);
     if(Array.isArray(data.inventory)) inventory=data.inventory.map(normInventory);
     if(Array.isArray(data.personnel)) users=data.personnel.map(normUser);
@@ -3040,7 +3047,7 @@ function renderReportingAnalytics(){
 }
 async function refreshReportingAnalytics(){
   if(session?.role!=="admin")return;
-  try{const data=await apiPost("patients",{user:session.user});if(Array.isArray(data.patients))reports=data.patients.map(normPatient);renderReportingAnalytics();}catch(err){console.warn("Reporting refresh failed",err.message);renderReportingAnalytics();}
+  try{const data=await apiPost("patients",{user:session.user});if(Array.isArray(data.patients))reports=data.patients.map(normPatient).filter(Boolean);renderReportingAnalytics();}catch(err){console.warn("Reporting refresh failed",err.message);renderReportingAnalytics();}
 }
 function exportReportingCSV(){
   const mode=document.getElementById("rptPeriod")?.value||"this-week";const [start,end]=rptBounds(mode),[ps,pe]=rptPrevBounds(start,end);const brgy=document.getElementById("rptBarangay")?.value||"all",condition=document.getElementById("rptCondition")?.value||"all";const base=rptFilterList(reports,brgy,condition),cur=base.filter(r=>rptInBounds(r,start,end)),prev=base.filter(r=>rptInBounds(r,ps,pe));
@@ -3167,7 +3174,7 @@ function renderBhw(){
  document.getElementById("bhwReportBody").innerHTML=rows.map(r=>`<tr><td>${fmtDate(r.date)}</td><td><strong>${esc(r.name)}</strong></td><td>${r.age}</td><td>${r.condition}</td><td>${r.disposition}</td><td><span class="status ${statusClass(r.status)}">${r.status}</span></td></tr>`).join("") || `<tr><td colspan="6" class="empty">No reports for this barangay.</td></tr>`;
 }
 
-function renderAll(){renderPublic();renderAdmin();renderBhw();renderAdminUsers();populatePatientFilters();renderAdminPatients();renderBhwPatientRecords();populateBarangays();updateFormLock();renderUnits();renderAdminDashboardConnectivity();renderPublicAnnouncements();renderAdminAnnouncements();renderAdminDashboardMiniAnnouncements();renderBhwAnnouncements();populateInventoryFilters();renderAdminInventory();renderBhwInventory();populatePersonnelFilters();renderPersonnelDirectory("admin");renderPersonnelDirectory("bhw");renderPublicHeat();renderAdminHeat();renderBhwHeat();if(document.getElementById("adminHeatMap2")){renderHeatMap("adminHeatMap2",heatIndexData);renderHeatTable("adminHeatBody2",heatIndexData,true)};if(document.getElementById("bhwHeatBody"))renderBhwHeatDetailed()}
+function renderAll(){reports=(reports||[]).filter(r=>isActiveCondition(r?.condition));renderPublic();renderAdmin();renderBhw();renderAdminUsers();populatePatientFilters();renderAdminPatients();renderBhwPatientRecords();populateBarangays();updateFormLock();renderUnits();renderAdminDashboardConnectivity();renderPublicAnnouncements();renderAdminAnnouncements();renderAdminDashboardMiniAnnouncements();renderBhwAnnouncements();populateInventoryFilters();renderAdminInventory();renderBhwInventory();populatePersonnelFilters();renderPersonnelDirectory("admin");renderPersonnelDirectory("bhw");renderPublicHeat();renderAdminHeat();renderBhwHeat();if(document.getElementById("adminHeatMap2")){renderHeatMap("adminHeatMap2",heatIndexData);renderHeatTable("adminHeatBody2",heatIndexData,true)};if(document.getElementById("bhwHeatBody"))renderBhwHeatDetailed()}
 function populateBarangays(){
  const sel=document.getElementById("rBarangay"),loggedBhw=session?.role==="bhw";
  sel.innerHTML=(loggedBhw?[session.barangay]:BARANGAYS).map(b=>`<option value="${b}">${b}</option>`).join("");
@@ -3320,7 +3327,7 @@ async function refreshModuleLive(view=currentView){
         apiPost('dashboard',{}),
         apiPost('publicAnnouncements',{})
       ]);
-      if(Array.isArray(dash.patients)) reports=dash.patients.map(normPatient);
+      if(Array.isArray(dash.patients)) reports=dash.patients.map(normPatient).filter(Boolean);
       if(Array.isArray(dash.heatIndex)) heatIndexData=dash.heatIndex.map(normHeat).filter(x=>BARANGAYS.includes(x.barangay)&&Number.isFinite(x.value));
       heatReference=dash.referenceStation||heatReference;
       if(Array.isArray(ann.announcements)) announcements=ann.announcements.map(normAnnouncement);
@@ -3332,7 +3339,7 @@ async function refreshModuleLive(view=currentView){
     }
     if(view==='admin-reporting'){
       const data=await apiPost('patients',{user:session.user});
-      if(Array.isArray(data.patients)) reports=data.patients.map(normPatient);
+      if(Array.isArray(data.patients)) reports=data.patients.map(normPatient).filter(Boolean);
       renderReportingAnalytics();return;
     }
     if(view==='admin-users'){
@@ -3348,7 +3355,7 @@ async function refreshModuleLive(view=currentView){
     }
     if(view==='admin-patients'){
       const data=await apiPost('patients',{user:session.user});
-      if(Array.isArray(data.patients)) reports=data.patients.map(normPatient);
+      if(Array.isArray(data.patients)) reports=data.patients.map(normPatient).filter(Boolean);
       populatePatientFilters();renderAdminPatients();return;
     }
     if(view==='admin-announcements'){
@@ -3368,7 +3375,7 @@ async function refreshModuleLive(view=currentView){
     }
     if(view==='bhw'){
       const data=await apiPost('dashboard',{user:session.user,deviceId:DEVICE_ID});
-      if(Array.isArray(data.patients)) reports=data.patients.map(normPatient);
+      if(Array.isArray(data.patients)) reports=data.patients.map(normPatient).filter(Boolean);
       if(Array.isArray(data.inventory)) inventory=data.inventory.map(normInventory);
       if(Array.isArray(data.announcements)) announcements=data.announcements.map(normAnnouncement);
       if(Array.isArray(data.heatIndex)) heatIndexData=data.heatIndex.map(normHeat).filter(x=>BARANGAYS.includes(x.barangay)&&Number.isFinite(x.value));
@@ -3376,7 +3383,7 @@ async function refreshModuleLive(view=currentView){
     }
     if(view==='bhw-patients'){
       const data=await apiPost('patients',{user:session.user});
-      if(Array.isArray(data.patients)) reports=data.patients.map(normPatient);
+      if(Array.isArray(data.patients)) reports=data.patients.map(normPatient).filter(Boolean);
       renderBhwPatientRecords();return;
     }
     if(view==='bhw-heat'){

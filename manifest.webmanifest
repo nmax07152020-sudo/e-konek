@@ -1,12 +1,12 @@
 {
-  "name": "SUPER EL NIÑO – Heat-Related Illness Surveillance",
-  "short_name": "SUPER EL NIÑO",
-  "description": "Antipolo City heat-related illness surveillance dashboard.",
+  "name": "e-Konek",
+  "short_name": "e-Konek",
+  "description": "Antipolo City health surveillance system.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f1f5f9",
-  "theme_color": "#c2410c",
+  "theme_color": "#0307fb",
   "icons": [
     {
       "src": "./icon-192.png",

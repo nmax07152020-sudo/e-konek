@@ -216,7 +216,7 @@ textarea{width:100%;min-height:72px;resize:vertical}
 .demographic-total strong{font-size:13px;color:var(--text)}
 @media(max-width:760px){.demographic-grid{grid-template-columns:1fr}}
 
-/* V39.5 — smaller circular CHO logo */
+/* V39.6 — smaller circular CHO logo */
 .public-topbar{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:18px}
 .public-brand-mini{display:flex;align-items:center;gap:11px;min-width:0}
 .public-brand-mini > img[data-logo="cho"]{width:54px;height:54px;flex:0 0 54px;border-radius:50%;object-fit:contain;background:transparent;box-shadow:0 8px 20px rgba(0,0,0,.16)}
@@ -560,6 +560,62 @@ body.public-mode .content{max-width:1450px;padding-top:20px}
   .public-only-login{font-size:9px!important;padding:7px 8px!important}
   #view-admin-patients .panel{padding:12px}
   #view-admin-patients > .panel:last-child .table-wrap table{min-width:720px;width:720px}
+}
+
+
+/* V39.6 LOGIN FORM — responsive sizing for phones/tablets + iOS no-auto-zoom */
+.login-overlay{padding:12px;overflow:auto;-webkit-overflow-scrolling:touch}
+.login-card{box-sizing:border-box;width:min(450px,calc(100vw - 24px));max-width:100%;max-height:92vh;overflow:auto;padding:22px 20px;border-radius:20px;-webkit-text-size-adjust:100%}
+.login-card *{box-sizing:border-box}
+.login-logos{gap:9px;margin-bottom:10px}
+.login-card .login-logo{width:72px;height:72px;flex:0 0 72px;margin:0;border-radius:50%;object-fit:contain;background:transparent;box-shadow:0 5px 14px rgba(0,0,0,.12)}
+.login-card .login-logo[data-logo="super"]{border-radius:20%}
+.login-title{font-size:20px;line-height:1.2}
+.login-sub{font-size:11px;line-height:1.4}
+.login-form{gap:9px;margin-top:14px}
+.login-form .field{gap:4px}
+.login-form select,.login-form input{width:100%;min-width:0;font-size:14px;padding:10px 11px}
+.login-form .label{font-size:9px;letter-spacing:.45px}
+.login-card .form-actions{gap:7px;margin-top:10px}
+.login-card .form-actions .btn{flex:1 1 0;min-width:0;padding:9px 10px;font-size:11px}
+.login-card .error{font-size:10px;padding:8px 10px}
+
+@media(max-width:760px){
+  .login-overlay{padding:10px;align-items:center;justify-content:center}
+  .login-card{width:min(380px,calc(100vw - 20px));max-height:90vh;padding:17px 15px;border-radius:17px}
+  .login-card .login-logo{width:58px;height:58px;flex-basis:58px}
+  .login-logos{gap:7px;margin-bottom:8px}
+  .login-title{font-size:17px}
+  .login-sub{font-size:10px;margin-top:3px}
+  .login-form{gap:8px;margin-top:11px}
+  .login-form select,.login-form input{font-size:16px!important;line-height:1.2;padding:9px 10px}
+  .login-form .label{font-size:8.5px}
+  .login-card .form-actions{margin-top:8px}
+  .login-card .form-actions .btn{font-size:11px;padding:8px 9px}
+}
+
+@media(max-width:420px){
+  .login-overlay{padding:8px}
+  .login-card{width:calc(100vw - 16px);max-height:88vh;padding:14px 12px;border-radius:15px}
+  .login-card .login-logo{width:50px;height:50px;flex-basis:50px}
+  .login-logos{gap:6px;margin-bottom:7px}
+  .login-title{font-size:15px}
+  .login-sub{font-size:9px;line-height:1.35}
+  .login-form{gap:7px;margin-top:9px}
+  .login-form .label{font-size:8px}
+  .login-form select,.login-form input{font-size:16px!important;padding:8px 9px}
+  .login-card .form-actions .btn{font-size:10px;padding:8px 8px}
+  .login-card .error{font-size:9px;padding:7px 8px}
+}
+
+@media(max-width:340px){
+  .login-card{padding:12px 10px}
+  .login-card .login-logo{width:44px;height:44px;flex-basis:44px}
+  .login-title{font-size:14px}
+  .login-sub{font-size:8.5px}
+  .login-form{gap:6px}
+  .login-form .label{font-size:7.5px}
+  .login-card .form-actions .btn{font-size:9.5px;padding:7px 7px}
 }
 
 </style>

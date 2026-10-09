@@ -768,6 +768,14 @@ body{background:var(--bg)}
   .access-card{padding:14px;border-radius:17px}
   .access-title{font-size:16px}
 }
+
+/* V45 announcement publish/loading state */
+.announcement-publish-btn[disabled]{opacity:.72;cursor:wait;filter:saturate(.78)}
+.announcement-button-content{display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.announcement-spinner{display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:announcementSpin .7s linear infinite;vertical-align:-2px;flex:0 0 auto}
+@keyframes announcementSpin{to{transform:rotate(360deg)}}
+.public-announcement-loading{display:flex;align-items:center;gap:9px;padding:13px 14px;border:1px solid var(--line);border-radius:10px;color:#64748b;background:#f8fafc;font-size:12px;font-weight:750}
+.public-announcement-empty{padding:13px 14px;border:1px dashed var(--line);border-radius:10px;color:#64748b;font-size:12px;background:#fafafa}
 </style>
 <style>body.modal-open{overflow:hidden}</style>
 </head>
@@ -1541,6 +1549,7 @@ body{background:var(--bg)}
       <div class="field"><div class="label">Username</div><input id="loginUser" placeholder="Username"></div>
       <div class="field"><div class="label">Password</div><input id="loginPass" type="password" placeholder="Password"></div>
       <div class="field" id="loginBrgyWrap"><div class="label">Assigned Barangay</div><select id="loginBrgy"></select></div>
+      <div class="login-offline-note" style="font-size:10px;line-height:1.45;color:#64748b;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:8px 10px">Offline login is available after this device has successfully authenticated online once. No plain-text password is stored.</div>
       <div class="form-actions"><button class="btn btn-light" onclick="closeLogin()">Cancel</button><button class="btn btn-orange" id="loginSubmitBtn" onclick="login()">Login</button></div>
     </div>
   </div>
@@ -1618,7 +1627,7 @@ body{background:var(--bg)}
       <div class="field"><div class="label">Valid Until</div><input id="aUntil" type="datetime-local"></div>
       <div class="field full"><div class="label">Announcement / Advisory *</div><textarea id="aBody" placeholder="Write the advisory, expected duration, actions, contact details, etc."></textarea></div>
     </div>
-    <div class="form-actions"><button class="btn btn-light" onclick="closeAnnouncementModal()">Cancel</button><button class="btn btn-orange" onclick="saveAnnouncement()">&#x1F4E2; Publish Announcement</button></div>
+    <div class="form-actions"><button class="btn btn-light" onclick="closeAnnouncementModal()">Cancel</button><button id="publishAnnouncementBtn" class="btn btn-orange announcement-publish-btn" onclick="saveAnnouncement()"><span class="announcement-button-content">&#x1F4E2; Publish Announcement</span></button></div>
   </div>
 </div>
 
@@ -1638,7 +1647,7 @@ body{background:var(--bg)}
       <div class="field"><div class="label">Valid Until</div><input id="baUntil" type="datetime-local"></div>
       <div class="field full"><div class="label">Announcement / Advisory *</div><textarea id="baBody" placeholder="Write the advisory, action, expected duration, contact person, etc."></textarea></div>
     </div>
-    <div class="form-actions"><button class="btn btn-light" onclick="closeBhwAnnouncementModal()">Cancel</button><button class="btn btn-orange" onclick="saveBhwAnnouncement()">&#x1F4E2; Publish Announcement</button></div>
+    <div class="form-actions"><button class="btn btn-light" onclick="closeBhwAnnouncementModal()">Cancel</button><button id="publishBhwAnnouncementBtn" class="btn btn-orange announcement-publish-btn" onclick="saveBhwAnnouncement()"><span class="announcement-button-content">&#x1F4E2; Publish Announcement</span></button></div>
   </div>
 </div>
 
@@ -1717,6 +1726,7 @@ function applyLogoAssets(){
   document.querySelectorAll('img[data-logo="super"]').forEach(function(img){img.src=SUPER_ELNINO_LOGO_DATA_URL;});
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',applyLogoAssets); else applyLogoAssets();
+const FRONTEND_VERSION = "V48-SHARED-ANNOUNCEMENT-FLOW";
 const LIVE_REFRESH_MS = 30000; // Auto-refresh every 30 seconds for live surveillance.
 const V19_CLEAN_FLAG = "super_elnino_v19_clean_initialized";
 let liveRefreshTimer=null;
@@ -1753,8 +1763,41 @@ function isActiveCondition(value){
 const REPORT_STORAGE_KEY="elnino_live_cache_v19";
 const REPORT_OUTBOX_KEY="elnino_live_outbox_v19";
 const DEVICE_ID_KEY="elnino_device_id_v19";
+const OFFLINE_AUTH_KEY="elnino_offline_auth_v1";
+const OFFLINE_AUTH_MAX_AGE_MS=30*24*60*60*1000; // 30 days since the last successful online authentication.
 function getDeviceId(){let id=localStorage.getItem(DEVICE_ID_KEY);if(!id){id=(crypto&&crypto.randomUUID)?crypto.randomUUID():("dev-"+Date.now()+"-"+Math.random().toString(36).slice(2,10));localStorage.setItem(DEVICE_ID_KEY,id)}return id}
 const DEVICE_ID=getDeviceId();
+
+// Offline authentication never stores the plain-text password. A device-bound PBKDF2 verifier
+// is saved only after a successful online login, allowing a previously verified user to sign in
+// during an outage/airplane mode while still requiring the real backend for first-time login.
+function offlineAuthKey(username){return String(username||"").trim().toLowerCase()}
+async function deriveOfflineVerifier(username,password,salt){
+  if(!window.crypto?.subtle) throw new Error("Secure offline authentication is not supported on this device.");
+  const material=new TextEncoder().encode(offlineAuthKey(username)+"\u0000"+String(password)+"\u0000"+DEVICE_ID);
+  const base=await crypto.subtle.importKey("raw",material,{name:"PBKDF2"},false,["deriveBits"]);
+  const bits=await crypto.subtle.deriveBits({name:"PBKDF2",salt:new TextEncoder().encode(String(salt)),iterations:120000,hash:"SHA-256"},base,256);
+  return Array.from(new Uint8Array(bits)).map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+async function cacheOfflineAuth(password,u){
+  try{
+    const salt=(crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random());
+    const verifier=await deriveOfflineVerifier(u.Username,password,salt);
+    const safeUser={};
+    ["User_ID","Username","Full_Name","Role","Barangay","Contact_Number","Status","Device_ID"].forEach(k=>{if(u[k]!==undefined)safeUser[k]=u[k]});
+    localStorage.setItem(OFFLINE_AUTH_KEY,JSON.stringify({username:u.Username,role:String(u.Role||"").toLowerCase(),barangay:u.Barangay||null,user:safeUser,salt,verifier,verifiedAt:Date.now()}));
+  }catch(e){console.warn("Offline auth cache unavailable",e.message)}
+}
+function readOfflineAuth(){try{const x=JSON.parse(localStorage.getItem(OFFLINE_AUTH_KEY)||"null");return x&&x.username&&x.salt&&x.verifier?x:null}catch(e){return null}}
+async function tryOfflineLogin(username,password,requestedRole){
+  const cached=readOfflineAuth();
+  if(!cached || offlineAuthKey(cached.username)!==offlineAuthKey(username)) return null;
+  if(Date.now()-Number(cached.verifiedAt||0)>OFFLINE_AUTH_MAX_AGE_MS) throw new Error("Offline access expired. Connect to the internet and sign in online to renew this device.");
+  if(String(cached.role||"").toLowerCase()!==String(requestedRole||"").toLowerCase()) throw new Error("This device was last verified for a different account role.");
+  const verifier=await deriveOfflineVerifier(username,password,cached.salt);
+  if(verifier!==cached.verifier) throw new Error("Invalid username or password.");
+  return cached;
+}
 function loadReports(){try{const x=JSON.parse(localStorage.getItem(REPORT_STORAGE_KEY)||"[]");return Array.isArray(x)?x.filter(r=>isActiveCondition(r?.condition)):[]}catch(e){return[]}}
 function loadOutbox(){try{const x=JSON.parse(localStorage.getItem(REPORT_OUTBOX_KEY)||"[]");return Array.isArray(x)?x:[]}catch(e){return[]}}
 function persistReports(){localStorage.setItem(REPORT_STORAGE_KEY,JSON.stringify(reports))}
@@ -1815,10 +1858,21 @@ function renderHeatSummary(prefix,list=heatIndexData){
 
 
 const ANNOUNCEMENT_KEY="elnino_live_announcements_v19";
+const ANNOUNCEMENT_OUTBOX_KEY="elnino_announcement_outbox_v20";
 const INVENTORY_KEY="elnino_live_inventory_v19";
+function loadAnnouncementOutbox(){try{const x=JSON.parse(localStorage.getItem(ANNOUNCEMENT_OUTBOX_KEY)||"[]");return Array.isArray(x)?x:[]}catch(e){return[]}}
+function persistAnnouncementOutbox(){try{localStorage.setItem(ANNOUNCEMENT_OUTBOX_KEY,JSON.stringify(announcementOutbox))}catch(e){console.warn("Announcement queue storage failed",e.message)}}
+let announcementOutbox=loadAnnouncementOutbox();
+let announcementSyncing=false;
+let announcementPublishing={admin:false,bhw:false};
+let publicAnnouncementsLoading=true;
+let publicAnnouncementsLoaded=false;
+let publicAnnouncementsLoadError=false;
 let announcements=[];
 let inventory=[];
-function saveAnnouncements(){localStorage.setItem(ANNOUNCEMENT_KEY,JSON.stringify(announcements))}
+let lastAnnouncementFeedDiagnostics=null;
+let lastAnnouncementBackendVersion="";
+function saveAnnouncements(){try{localStorage.setItem(ANNOUNCEMENT_KEY,JSON.stringify(announcements))}catch(e){console.warn("Announcement cache save failed",e.message)}}
 let editingAnnouncementId=null;
 let editingInventoryId=null;
 
@@ -1843,14 +1897,19 @@ function updateNetworkUI(){
 }
 function updateSyncSummary(){
   const q=document.getElementById("syncQueuedCount"),s=document.getElementById("syncSyncedCount"),l=document.getElementById("syncLast");
-  if(q)q.textContent=String(outbox.length);
+  if(q)q.textContent=String(outbox.length+(Array.isArray(announcementOutbox)?announcementOutbox.length:0));
   if(s)s.textContent=String(reports.filter(r=>r.syncStatus==="synced").length);
   if(l)l.textContent=networkState.lastSync?new Date(networkState.lastSync).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):"\u2014";
 }
 function setNetworkOnline(state){
   networkState.online=!!state;
   updateNetworkUI();
-  if(state) syncOutbox();
+  if(state){
+    syncOutbox();
+    syncAnnouncementOutbox();
+    refreshPublicAnnouncementsLive();
+    refreshCurrentViewData();
+  }
 }
 
 // Connectivity starts clean. Live status is populated only from the Google Sheets backend.
@@ -2290,7 +2349,7 @@ async function syncOutbox(){
  }catch(err){networkState.lastError=err.message||"Sync failed"}finally{networkState.syncing=false;updateNetworkUI()}
 }
 
-function manualSync(){if(networkState.online)syncOutbox();else alert("Still offline. Reports will stay safely queued until the connection returns.");}
+function manualSync(){if(networkState.online){syncOutbox();syncAnnouncementOutbox()}else alert("Still offline. Reports and announcements will stay safely queued until the connection returns.");}
 window.addEventListener("online",()=>setNetworkOnline(true));
 window.addEventListener("offline",()=>setNetworkOnline(false));
 
@@ -2347,15 +2406,153 @@ function announcementClass(type){
 function announcementIcon(type){
   return type==="critical"?"\uD83D\uDEA8":type==="warning"?"\u26A0\uFE0F":type==="success"?"\u2705":"\uD83D\uDCE2";
 }
-function activeAnnouncements(){
-  const now=Date.now();
-  return announcements.filter(a=>a.active!==false && (!a.validUntil||new Date(a.validUntil).getTime()>=now));
+function announcementBool(value){
+  if(value===undefined||value===null||String(value).trim()==="")return true;
+  if(value===true||value===1)return true;
+  if(value===false||value===0)return false;
+  const s=String(value).trim().toLowerCase();
+  return ["true","1","yes","active","published","on"].includes(s);
 }
+function setAnnouncementPublishLoading(kind,busy){
+  const config=kind==="bhw"
+    ? {id:"publishBhwAnnouncementBtn",label:"&#x1F4E2; Publish Announcement"}
+    : {id:"publishAnnouncementBtn",label:"&#x1F4E2; Publish Announcement"};
+  const btn=document.getElementById(config.id);if(!btn)return;
+  btn.disabled=!!busy;
+  btn.setAttribute("aria-busy",busy?"true":"false");
+  btn.innerHTML=busy
+    ? '<span class="announcement-button-content"><span class="announcement-spinner" aria-hidden="true"></span> Publishing...</span>'
+    : '<span class="announcement-button-content">'+config.label+'</span>';
+}
+function announcementForBarangay(a,barangay){
+  const target=String(a?.barangay||"").trim().toLowerCase().replace(/\s+/g," ");
+  const assigned=String(barangay||"").trim().toLowerCase().replace(/\s+/g," ");
+  return target==="all barangays"||target==="all"||(!!assigned&&target===assigned);
+}
+function announcementHasContent(a){return !!(a&&(String(a.id||"").trim()||String(a.title||"").trim()||String(a.body||"").trim()))}
+function announcementExpiryMs(value){
+  if(!value)return null;
+  const s=String(value).trim();
+  // The form is date-only. Treat the selected date as valid through 11:59:59 PM local time.
+  const m=s.match(/^(\d{4})-(\d{2})-(\d{2})(?:T00:00(?::00(?:\.000)?)?(?:Z|[+-]\d{2}:?\d{2})?)?$/);
+  if(m){const d=new Date(Number(m[1]),Number(m[2])-1,Number(m[3]),23,59,59,999);const t=d.getTime();return Number.isFinite(t)?t:null;}
+  const t=new Date(value).getTime();return Number.isFinite(t)?t:null;
+}
+function isAnnouncementExpired(value){
+  if(!value)return false;
+  const expiry=announcementExpiryMs(value);
+  // A malformed/legacy expiry value should not silently hide a valid published alert.
+  return expiry!==null&&expiry<Date.now();
+}
+function allAnnouncements(){
+  const map=new Map();
+  (announcements||[]).forEach(a=>{if(a&&a.id)map.set(String(a.id),{...a,active:announcementBool(a.active)});});
+  (announcementOutbox||[]).forEach(entry=>{
+    const a=entry&&entry.announcement;if(a&&a.id)map.set(String(a.id),{...a,pending:true,syncStatus:"queued",active:announcementBool(a.active)});
+  });
+  return [...map.values()];
+}
+function activeAnnouncements(){
+  return allAnnouncements().filter(a=>announcementBool(a.active)&&!isAnnouncementExpired(a.validUntil));
+}
+function makeAnnouncementId(){return (crypto&&crypto.randomUUID)?crypto.randomUUID():("ann-"+Date.now()+"-"+Math.random().toString(36).slice(2,12));}
+function announcementActorSnapshot(user){
+  const out={};["User_ID","Username","Role","Barangay"].forEach(k=>{if(user&&user[k]!==undefined)out[k]=user[k]});return out;
+}
+function queueAnnouncementForSync(announcement,user){
+  const obj={...announcement,id:String(announcement.id||makeAnnouncementId()),active:announcementBool(announcement.active),pending:true,syncStatus:"queued"};
+  const entry={id:obj.id,user:announcementActorSnapshot(user),announcement:obj,queuedAt:new Date().toISOString(),attempts:0};
+  const idx=announcementOutbox.findIndex(x=>String(x.id)===String(obj.id));
+  if(idx>=0)announcementOutbox[idx]=entry;else announcementOutbox.push(entry);
+  announcements=[...(announcements||[]).filter(x=>String(x.id)!==String(obj.id)),obj];
+  persistAnnouncementOutbox();saveAnnouncements();updateNetworkUI();
+  renderPublicAnnouncements();renderAdminAnnouncements();renderAdminDashboardMiniAnnouncements();renderBhwAnnouncements();renderBhwDashboardMiniAnnouncements();
+  return obj;
+}
+function isAnnouncementNetworkFailure(err){return !navigator.onLine||isNetworkLoginError(err);}
+async function syncAnnouncementOutbox(){
+  if(!LIVE_API_URL||!navigator.onLine||announcementSyncing||!announcementOutbox.length)return;
+  announcementSyncing=true;updateNetworkUI();
+  try{
+    for(const item of [...announcementOutbox]){
+      try{
+        const result=await apiPost("saveAnnouncement",{user:item.user,announcement:item.announcement});
+        if(!result||result.ok!==true)throw new Error(result?.error||"Announcement sync failed.");
+        const saved=normAnnouncement(result.announcement||item.announcement);
+        saved.pending=false;saved.syncStatus="synced";
+        announcementOutbox=announcementOutbox.filter(x=>String(x.id)!==String(item.id));
+        announcements=[...(announcements||[]).filter(x=>String(x.id)!==String(item.id)),saved];
+        persistAnnouncementOutbox();saveAnnouncements();
+      }catch(err){
+        item.attempts=Number(item.attempts||0)+1;item.lastError=String(err?.message||err).slice(0,300);
+        persistAnnouncementOutbox();
+        console.warn("Announcement remains queued",item.id,item.lastError);
+        // If offline/network trouble persists, stop this batch and retry on the next online event/refresh.
+        break;
+      }
+    }
+  }finally{
+    announcementSyncing=false;persistAnnouncementOutbox();updateNetworkUI();
+    renderPublicAnnouncements();renderAdminAnnouncements();renderAdminDashboardMiniAnnouncements();renderBhwAnnouncements();renderBhwDashboardMiniAnnouncements();
+    if(announcementOutbox.length===0)refreshPublicAnnouncementsLive();
+  }
+}
+function updateAnnouncementFeedMeta(response){
+  if(!response||typeof response!="object")return;
+  if(response.backendVersion)lastAnnouncementBackendVersion=String(response.backendVersion);
+  if(response.diagnostics)lastAnnouncementFeedDiagnostics=response.diagnostics;
+}
+function announcementDiagnosticsSummary(){
+  const d=lastAnnouncementFeedDiagnostics;
+  if(!d)return "No feed diagnostics received.";
+  return "Backend: "+(lastAnnouncementBackendVersion||d.backendVersion||"unreported")+
+    "; sheet: "+(d.sheetName||"Announcements")+
+    "; saved rows: "+Number(d.totalRows||0)+
+    "; rows with title/body: "+Number(d.rowsWithTitleAndBody||0)+
+    "; active: "+Number(d.activeRows||0)+
+    "; expired: "+Number(d.expiredRows||0)+
+    "; inactive: "+Number(d.inactiveRows||0)+
+    "; returned to feed: "+Number(d.returnedRows||0)+
+    "; returned to this user: "+Number(d.returnedToUser??d.returnedRows??0);
+}
+async function showAnnouncementFeedDiagnostics(){
+  if(!session||!session.user){alert("Login as Admin or BHW to inspect the announcement feed.");return}
+  try{
+    const data=await apiPost("announcementDiagnostics",{user:session.user});
+    updateAnnouncementFeedMeta(data);
+    const entries=(data.entries||[]).map(x=>"• Row "+(x.row||"?")+" / "+(x.id||"no ID")+" — "+(x.title||"(no title)")+" — "+x.reason+"; barangay: "+(x.barangay||"(blank)")+"; Active: "+String(x.active)+"; Valid Until: "+(x.validUntil||"blank")).join("\n");
+    alert("ANNOUNCEMENT FEED DIAGNOSTICS\n"+announcementDiagnosticsSummary()+"\n\nRecent rows:\n"+(entries||"No visible/scoped rows returned by diagnostics."));
+  }catch(err){alert("Could not read announcement diagnostics. This may mean the deployed Code.gs is older than V46.\n\n"+(err.message||err));}
+}
+function announcementDiagnosticNotice(){
+  if(!session||(session.role!=="admin"&&session.role!=="bhw"))return "";
+  if(!lastAnnouncementBackendVersion || lastAnnouncementBackendVersion!==FRONTEND_VERSION){
+    return '<div class="notice" style="margin-top:8px;font-size:11px">Feed check: frontend '+esc(FRONTEND_VERSION)+', backend '+esc(lastAnnouncementBackendVersion||"version not reported")+'. Confirm Apps Script was deployed as a new version. <button class="btn btn-light" onclick="showAnnouncementFeedDiagnostics()">Diagnose</button></div>';
+  }
+  const d=lastAnnouncementFeedDiagnostics;
+  if(d && Number(d.totalRows||0)>0 && Number(d.returnedRows||0)===0){
+    return '<div class="notice" style="margin-top:8px;font-size:11px">Saved rows exist, but the public feed returned none. <button class="btn btn-light" onclick="showAnnouncementFeedDiagnostics()">Diagnose feed</button></div>';
+  }
+  return "";
+}
+
 function renderPublicAnnouncements(){
   const el=document.getElementById("publicAnnouncementArea");if(!el)return;
-  const list=activeAnnouncements().slice().sort((a,b)=>new Date(b.publishedAt)-new Date(a.publishedAt)).slice(0,3);
+  const list=activeAnnouncements().slice().sort((a,b)=>new Date(b.publishedAt||0)-new Date(a.publishedAt||0)).slice(0,3);
+  if(!list.length){
+    if(publicAnnouncementsLoading&&!publicAnnouncementsLoaded){
+      el.innerHTML='<div class="public-announcement-loading"><span class="announcement-spinner" aria-hidden="true"></span> Loading Emergency Alerts &amp; Announcements...</div>';
+    }else if(publicAnnouncementsLoadError&&!navigator.onLine){
+      el.innerHTML='<div class="public-announcement-empty">Offline. No cached announcements are available on this device.</div>';
+    }else if(publicAnnouncementsLoadError){
+      el.innerHTML='<div class="public-announcement-empty">Could not refresh announcements. <button class="btn btn-light" style="margin-left:8px" onclick="refreshPublicAnnouncementsLive()">Retry</button></div>';
+    }else{
+      el.innerHTML='<div class="public-announcement-empty">No current public announcements.</div>'+announcementDiagnosticNotice();
+    }
+    return;
+  }
   el.innerHTML=list.map(a=>`<div class="announcement-banner ${announcementClass(a.type)}" style="margin-bottom:8px">
-    <div class="a-left"><div class="a-icon">${announcementIcon(a.type)}</div><div><div class="a-title">${esc(a.title)}</div><div class="a-meta">${esc(a.barangay)} \u2022 ${a.priority} \u2022 ${a.createdByRole==="bhw"?"BHW":"Admin"} \u2022 ${fmtDate(a.publishedAt)}</div><div class="a-body">${esc(a.body)}</div></div></div>
+    <div class="a-left"><div class="a-icon">${announcementIcon(a.type)}</div><div><div class="a-title">${esc(a.title)}</div><div class="a-meta">${esc(a.barangay)} &bull; ${esc(a.priority||"Normal")} &bull; ${a.createdByRole==="bhw"?"BHW":"Admin"} &bull; ${fmtDate(a.publishedAt)}${a.pending?" &bull; PENDING SYNC":""}</div><div class="a-body">${esc(a.body)}</div></div></div>
   </div>`).join("");
 }
 
@@ -2367,8 +2564,8 @@ function renderAdminDashboardMiniAnnouncements(){
 
 function renderAdminAnnouncements(){
   const el=document.getElementById("adminAnnouncementList");if(!el)return;
-  el.innerHTML=announcements.slice().sort((a,b)=>new Date(b.publishedAt)-new Date(a.publishedAt)).map(a=>`<div class="announcement-item">
-    <div class="a-head"><div><div class="a-title">${announcementIcon(a.type)} ${esc(a.title)}</div><div class="a-meta">${esc(a.barangay)} \u2022 ${a.priority} \u2022 ${a.createdByRole==="bhw"?"BHW":"Admin"} \u2022 ${fmtDate(a.publishedAt)}</div></div><span class="announcement-status">${a.active===false?"Inactive":"Published"}</span></div>
+  el.innerHTML=allAnnouncements().slice().sort((a,b)=>new Date(b.publishedAt)-new Date(a.publishedAt)).map(a=>`<div class="announcement-item">
+    <div class="a-head"><div><div class="a-title">${announcementIcon(a.type)} ${esc(a.title)}</div><div class="a-meta">${esc(a.barangay)} \u2022 ${a.priority} \u2022 ${a.createdByRole==="bhw"?"BHW":"Admin"} \u2022 ${fmtDate(a.publishedAt)}</div></div><span class="announcement-status">${a.pending?"Pending Sync":(announcementBool(a.active)?"Published":"Inactive")}</span></div>
     <div class="a-body">${esc(a.body)}</div>
     <div class="action-row" style="margin-top:7px">
       <button class="action-btn action-edit" onclick='editAnnouncement(${JSON.stringify(String(a.id||""))})'>Edit</button>
@@ -2381,7 +2578,7 @@ function renderAdminAnnouncements(){
 function renderBhwDashboardMiniAnnouncements(){
   if(!session||session.role!=="bhw")return;
   const el=document.getElementById("bhwDashboardAnnouncementsMini");if(!el)return;
-  const list=activeAnnouncements().filter(a=>a.barangay==="All Barangays"||a.barangay===session.barangay).slice(0,2);
+  const list=activeAnnouncements().filter(a=>announcementForBarangay(a,session.barangay)).slice(0,2);
   el.innerHTML=list.map(a=>`<div class="announcement-banner ${announcementClass(a.type)}" style="margin-bottom:7px"><div class="a-left"><div class="a-icon">${announcementIcon(a.type)}</div><div><div class="a-title">${esc(a.title)}</div><div class="a-meta">${esc(a.barangay)} \u2022 ${a.priority} \u2022 ${a.createdByRole==="bhw"?"BHW":"Admin"}</div><div class="a-body">${esc(a.body)}</div></div></div></div>`).join("")||`<div class="empty">No active announcements.</div>`;
 }
 
@@ -2398,46 +2595,77 @@ function openBhwAnnouncementModal(){
 }
 function closeBhwAnnouncementModal(){document.getElementById("bhwAnnouncementModal").style.display="none"}
 async function saveBhwAnnouncement(){
-  if(!session||session.role!=="bhw")return;
+  if(!session||session.role!=="bhw"||announcementPublishing.bhw)return;
   const title=document.getElementById("baTitle").value.trim();
   const body=document.getElementById("baBody").value.trim();
   if(!title||!body){alert("Title and announcement are required.");return}
   const obj={
-    id:"",
-    type:document.getElementById("baType").value,
-    priority:document.getElementById("baPriority").value,
-    title,body,
-    barangay:session.barangay,
-    validUntil:document.getElementById("baUntil").value,
-    publishedAt:new Date().toISOString(),
-    active:true,
-    createdBy:session.username,
-    createdByRole:"bhw"
+    id:makeAnnouncementId(),type:document.getElementById("baType").value,
+    priority:document.getElementById("baPriority").value,title,body,
+    barangay:session.barangay,validUntil:document.getElementById("baUntil").value,
+    publishedAt:new Date().toISOString(),active:true,createdBy:session.username,createdByRole:"bhw"
   };
+  announcementPublishing.bhw=true;setAnnouncementPublishLoading("bhw",true);
   try{
+    if(!navigator.onLine||!networkState.online){
+      queueAnnouncementForSync(obj,session.user);closeBhwAnnouncementModal();
+      alert("Saved on this device. Status: PENDING SYNC. It will be published after the connection returns.");return;
+    }
     const result=await apiPost("saveAnnouncement",{user:session.user,announcement:obj});
-    if(!result||result.ok!==true)throw new Error(result?.error||"Announcement was not saved.");
-    announcements=[...announcements.filter(x=>String(x.id)!==String(result.announcement?.Announcement_ID||result.announcement?.id||obj.id||"")),normAnnouncement(result.announcement||obj)];
-    closeBhwAnnouncementModal();
-    await refreshPublicAnnouncementsLive();
-    await refreshLiveState();
-    renderPublicAnnouncements();renderBhwAnnouncements();renderBhwDashboardMiniAnnouncements();
-    alert("Announcement published to Google Sheets and the Public Dashboard.");
-  }catch(err){alert("Announcement was not published.\n\n"+(err.message||err))}
+    if(!result||result.ok!==true||result.persisted===false)throw new Error(result?.error||"The backend did not confirm saving this announcement.");
+    const saved=normAnnouncement(result.announcement||obj);
+    announcements=mergeAnnouncementLists(announcements,[saved]);saveAnnouncements();closeBhwAnnouncementModal();
+    let publicConfirmed=false,publicFeedChecked=false,publicFeedError="";
+    try{
+      const feed=await apiPost("publicAnnouncements",{});
+      updateAnnouncementFeedMeta(feed);
+      if(Array.isArray(feed.announcements)){
+        const remote=feed.announcements.map(normAnnouncement);
+        publicFeedChecked=true;
+        publicConfirmed=remote.some(a=>String(a.id)===String(saved.id));
+        const pending=allAnnouncements().filter(a=>a.pending||a.syncStatus==='queued');
+        announcements=mergeAnnouncementLists(remote,pending);
+        if(!publicConfirmed)announcements=mergeAnnouncementLists(announcements,[saved]);
+        publicAnnouncementsLoaded=true;publicAnnouncementsLoadError=false;
+      }else publicFeedError="The public feed returned an invalid response.";
+    }catch(feedError){publicFeedError=String(feedError?.message||feedError);console.warn("Public feed verification failed",publicFeedError)}
+    try{
+      const scoped=await apiPost("announcements",{user:session.user});
+      updateAnnouncementFeedMeta(scoped);
+      if(Array.isArray(scoped.announcements))announcements=mergeAnnouncementLists(announcements,scoped.announcements.map(normAnnouncement));
+    }catch(scopedError){console.warn("BHW announcement refresh failed",scopedError.message)}
+    saveAnnouncements();renderPublicAnnouncements();renderBhwAnnouncements();renderBhwDashboardMiniAnnouncements();maybeShowBhwAnnouncementPopup();
+    if(publicConfirmed)alert("Announcement saved to Google Sheets and confirmed in the Public Dashboard feed.");
+    else if(publicFeedChecked){
+      let diagText="";
+      try{const diag=await apiPost("announcementDiagnostics",{user:session.user});updateAnnouncementFeedMeta(diag);diagText="\n\n"+announcementDiagnosticsSummary()+"\n\n"+(diag.entries||[]).filter(x=>String(x.id)===String(saved.id)).map(x=>"This announcement: "+x.reason+"; target: "+x.barangay+"; Active: "+String(x.active)+"; Valid Until: "+(x.validUntil||"blank")).join("\n");}catch(diagErr){diagText="\n\nThe deployed backend may not include V46 diagnostics. Check Deploy > Manage deployments > New version.";}
+      const serverVersion=lastAnnouncementBackendVersion||"version not reported";
+      alert("Google Sheets confirmed the save, but the public feed did not return this announcement. Do not publish it again.\n\nExpected backend: "+FRONTEND_VERSION+"\nReported backend: "+serverVersion+diagText);
+    }
+    else alert("Announcement was saved to Google Sheets, but feed verification could not finish. Do not publish again. Refresh the page after checking the Apps Script deployment.\n\n"+publicFeedError);
+  }catch(err){
+    if(isAnnouncementNetworkFailure(err)){
+      queueAnnouncementForSync(obj,session.user);closeBhwAnnouncementModal();
+      alert("Connection was interrupted. The announcement is saved locally as PENDING SYNC and will retry when online.");return;
+    }
+    alert("Announcement was saved or published with an error while refreshing the feeds. Do not submit again until you check the Announcements sheet.\\n\\n"+(err.message||err));
+  }finally{
+    announcementPublishing.bhw=false;setAnnouncementPublishLoading("bhw",false);
+  }
 }
 
 function renderBhwAnnouncements(){
   if(!session||session.role!=="bhw")return;
   const el=document.getElementById("bhwAnnouncementList");if(!el)return;
-  const list=activeAnnouncements().filter(a=>a.barangay==="All Barangays"||a.barangay===session.barangay);
+  const list=activeAnnouncements().filter(a=>announcementForBarangay(a,session.barangay));
   el.innerHTML=list.map(a=>`<div class="announcement-banner ${announcementClass(a.type)}">
-    <div class="a-left"><div class="a-icon">${announcementIcon(a.type)}</div><div><div class="a-title">${esc(a.title)}</div><div class="a-meta">${esc(a.barangay)} \u2022 ${a.priority} \u2022 ${a.createdByRole==="bhw"?"BHW":"Admin"} \u2022 ${fmtDate(a.publishedAt)}</div><div class="a-body">${esc(a.body)}</div></div></div>
+    <div class="a-left"><div class="a-icon">${announcementIcon(a.type)}</div><div><div class="a-title">${esc(a.title)}</div><div class="a-meta">${esc(a.barangay)} \u2022 ${a.priority} \u2022 ${a.createdByRole==="bhw"?"BHW":"Admin"} \u2022 ${fmtDate(a.publishedAt)}${a.pending?" \u2022 PENDING SYNC":""}</div><div class="a-body">${esc(a.body)}</div></div></div>
     ${(a.createdByRole==="bhw"&&String(a.createdBy||"").toLowerCase()===String(session.username||"").toLowerCase())?`<div class="action-row" style="margin-top:8px"><button class="action-btn action-delete" onclick='deleteBhwAnnouncement(${JSON.stringify(String(a.id||""))})'>Delete</button></div>`:""}
-  </div>`).join("") || `<div class="empty">No current announcements.</div>`;
+  </div>`).join("") || `<div class="empty">No current announcements.</div>`+announcementDiagnosticNotice();
 }
 function maybeShowBhwAnnouncementPopup(){
   if(!session||session.role!=="bhw")return;
-  const list=activeAnnouncements().filter(a=>(a.createdByRole||"admin")==="admin" && (a.barangay==="All Barangays"||a.barangay===session.barangay));
+  const list=activeAnnouncements().filter(a=>(a.createdByRole||"admin")==="admin" && announcementForBarangay(a,session.barangay));
   if(!list.length)return;
   const latest=list[0], ackKey="elnino_ack_"+session.username+"_"+latest.id;
   if(localStorage.getItem(ackKey)==="1")return;
@@ -2464,25 +2692,60 @@ function openAnnouncementModal(){
 }
 function closeAnnouncementModal(){document.getElementById("announcementModal").style.display="none";editingAnnouncementId=null}
 async function saveAnnouncement(){
-  if(session?.role!=="admin")return;
+  if(session?.role!=="admin"||announcementPublishing.admin)return;
   const title=document.getElementById("aTitle").value.trim(),body=document.getElementById("aBody").value.trim();
   if(!title||!body){alert("Title and announcement are required.");return}
   const obj={
-    id:editingAnnouncementId||"",
-    type:document.getElementById("aType").value,
-    priority:document.getElementById("aPriority").value,
-    title,barangay:document.getElementById("aBarangay").value,body,
+    id:editingAnnouncementId||makeAnnouncementId(),type:document.getElementById("aType").value,
+    priority:document.getElementById("aPriority").value,title,barangay:document.getElementById("aBarangay").value,body,
     validUntil:document.getElementById("aUntil").value,publishedAt:new Date().toISOString(),active:true,
     createdBy:session.username,createdByRole:"admin"
   };
+  announcementPublishing.admin=true;setAnnouncementPublishLoading("admin",true);
   try{
+    if(!navigator.onLine||!networkState.online){
+      queueAnnouncementForSync(obj,session.user);closeAnnouncementModal();
+      alert("Saved on this device. Status: PENDING SYNC. It will be published after the connection returns.");return;
+    }
     const result=await apiPost("saveAnnouncement",{user:session.user,announcement:obj});
-    if(!result||result.ok!==true)throw new Error(result?.error||"Announcement was not saved.");
-    await refreshLiveState();
-    await refreshPublicAnnouncementsLive();
-    closeAnnouncementModal();renderAdminAnnouncements();renderAdminDashboardMiniAnnouncements();renderPublicAnnouncements();
-    alert("Announcement published to Google Sheets and the Public Dashboard.");
-  }catch(err){alert("Announcement was not saved.\n\n"+(err.message||err))}
+    if(!result||result.ok!==true||result.persisted===false)throw new Error(result?.error||"The backend did not confirm saving this announcement.");
+    const saved=normAnnouncement(result.announcement||obj);
+    announcements=mergeAnnouncementLists(announcements,[saved]);saveAnnouncements();closeAnnouncementModal();
+    let publicConfirmed=false,publicFeedChecked=false,publicFeedError="";
+    try{
+      const feed=await apiPost("publicAnnouncements",{});
+      if(Array.isArray(feed.announcements)){
+        const remote=feed.announcements.map(normAnnouncement);
+        publicFeedChecked=true;
+        publicConfirmed=remote.some(a=>String(a.id)===String(saved.id));
+        const pending=allAnnouncements().filter(a=>a.pending||a.syncStatus==='queued');
+        announcements=mergeAnnouncementLists(remote,pending);
+        if(!publicConfirmed)announcements=mergeAnnouncementLists(announcements,[saved]);
+        publicAnnouncementsLoaded=true;publicAnnouncementsLoadError=false;
+      }else publicFeedError="The public feed returned an invalid response.";
+    }catch(feedError){publicFeedError=String(feedError?.message||feedError);console.warn("Public feed verification failed",publicFeedError)}
+    try{
+      const scoped=await apiPost("announcements",{user:session.user});
+      if(Array.isArray(scoped.announcements))announcements=mergeAnnouncementLists(announcements,scoped.announcements.map(normAnnouncement));
+    }catch(scopedError){console.warn("Admin announcement refresh failed",scopedError.message)}
+    saveAnnouncements();renderAdminAnnouncements();renderAdminDashboardMiniAnnouncements();renderPublicAnnouncements();
+    if(publicConfirmed)alert("Announcement saved to Google Sheets and confirmed in the Public Dashboard feed.");
+    else if(publicFeedChecked){
+      let diagText="";
+      try{const diag=await apiPost("announcementDiagnostics",{user:session.user});updateAnnouncementFeedMeta(diag);diagText="\n\n"+announcementDiagnosticsSummary()+"\n\n"+(diag.entries||[]).filter(x=>String(x.id)===String(saved.id)).map(x=>"This announcement: "+x.reason+"; target: "+x.barangay+"; Active: "+String(x.active)+"; Valid Until: "+(x.validUntil||"blank")).join("\n");}catch(diagErr){diagText="\n\nThe deployed backend may not include V46 diagnostics. Check Deploy > Manage deployments > New version.";}
+      const serverVersion=lastAnnouncementBackendVersion||"version not reported";
+      alert("Google Sheets confirmed the save, but the public feed did not return this announcement. Do not publish it again.\n\nExpected backend: "+FRONTEND_VERSION+"\nReported backend: "+serverVersion+diagText);
+    }
+    else alert("Announcement was saved to Google Sheets, but feed verification could not finish. Do not publish again. Refresh the page after checking the Apps Script deployment.\n\n"+publicFeedError);
+  }catch(err){
+    if(isAnnouncementNetworkFailure(err)){
+      queueAnnouncementForSync(obj,session.user);closeAnnouncementModal();
+      alert("Connection was interrupted. The announcement is saved locally as PENDING SYNC and will retry when online.");return;
+    }
+    alert("Announcement was saved or published with an error while refreshing the feeds. Do not submit again until you check the Announcements sheet.\\n\\n"+(err.message||err));
+  }finally{
+    announcementPublishing.admin=false;setAnnouncementPublishLoading("admin",false);
+  }
 }
 
 function editAnnouncement(id){
@@ -2840,7 +3103,12 @@ function normPatient(x){
  const r={reportId:x.Report_ID||x.reportId,date:x.Date_Time||x.date,name:x.Patient_Name||x.name,age:Number(x.Age||0),barangay:x.Barangay,condition:x.Condition,contact:x.Contact_Number||"",sex:x.Sex||"",temp:x.Temperature_C??"",disposition:x.Disposition||"",notes:x.Notes||"",critical:Boolean(x.Critical),status:x.Status||"Review",syncStatus:"synced",deviceId:x.Device_ID||"",createdAt:x.Created_At||""};
  return isActiveCondition(r.condition)?r:null;
 }
-function normAnnouncement(x){return {id:x.Announcement_ID||x.id,type:x.Type||x.type,priority:x.Priority||x.priority,title:x.Title||x.title,barangay:x.Barangay||x.barangay,body:x.Body||x.body,validUntil:x.Valid_Until||"",publishedAt:x.Published_At||x.publishedAt,active:x.Active!==false,createdBy:x.Created_By||"",createdByRole:(x.Created_By_Role||"admin").toLowerCase()}}
+function normAnnouncement(x){
+ const pick=(...keys)=>{for(const k of keys){const v=x&&x[k];if(v!==undefined&&v!==null&&String(v).trim()!=="")return v;}return ""};
+ const validUntil=pick("Valid_Until","ValidUntil","Valid Until","validUntil","Expiry_Date","Expires_At");
+ const creatorRole=String(pick("Created_By_Role","CreatedByRole","Author_Role","createdByRole","Role")||"admin").toLowerCase();
+ return {id:String(pick("Announcement_ID","AnnouncementID","ID","Id","Client_ID","id")||""),type:pick("Type","Announcement_Type","type")||"info",priority:pick("Priority","Urgency","priority")||"Normal",title:String(pick("Title","Announcement_Title","Subject","Heading","title")||""),barangay:String(pick("Barangay","Target_Barangay","Target Barangay","Target","Scope","barangay")||"All Barangays"),body:String(pick("Body","Message","Description","Announcement","Details","Content","Text","body")||""),validUntil,publishedAt:pick("Published_At","PublishedAt","Published At","Created_At","CreatedAt","Timestamp","Date","publishedAt"),active:announcementBool(pick("Active","Is_Active","IsActive","Published_Active","active")),createdBy:String(pick("Created_By","CreatedBy","Author","Username","createdBy")||""),createdByRole:creatorRole,pending:x&&x.pending===true||x&&x.syncStatus==="queued",syncStatus:pick("syncStatus")||""};
+}
 function normInventory(x){return {id:x.Inventory_ID||x.id,barangay:x.Barangay||x.barangay,category:x.Category||x.category,name:x.Item_Name||x.name,unit:x.Unit||x.unit,stock:Number(x.Current_Stock||0),reorder:Number(x.Reorder_Level||0),released:Number(x.Released||0)}}
 function normUser(x){return {id:x.User_ID,name:x.Full_Name||x.name,role:(x.Role||x.role||"bhw").toLowerCase(),username:x.Username||x.username,barangay:x.Barangay,contact:x.Contact_Number||"",status:x.Status||"Active",lastSeen:x.Last_Seen||"",deviceId:x.Device_ID||""}}
 function normHeat(x){const v=x.Heat_Index_C;return {barangay:x.Barangay,value:v===""||v===null||v===undefined?NaN:Number(v),risk:x.Risk_Level||"",source:x.Source||"",observedAt:x.Observed_At||""}}
@@ -2849,9 +3117,20 @@ async function refreshLiveState(){
   liveRefreshing=true;
   try{
     const payload=session&&session.user?{user:session.user,deviceId:DEVICE_ID}:{};
-    const data=await apiPost("dashboard",payload);
+    const requestList=[apiPost("dashboard",payload)];
+    if(session&&session.user&&(session.role==="admin"||session.role==="bhw")) requestList.push(apiPost("announcements",{user:session.user,activeOnly:false}));
+    else requestList.push(apiPost("publicAnnouncements",{}));
+    const [data,announcementFeed]=await Promise.all(requestList);
+    updateAnnouncementFeedMeta(announcementFeed);
     if(Array.isArray(data.patients)) reports=data.patients.map(normPatient).filter(Boolean);
-    if(Array.isArray(data.announcements)) announcements=data.announcements.map(normAnnouncement);
+    const authoritativeAnnouncements=Array.isArray(announcementFeed.announcements)
+      ? announcementFeed.announcements.map(normAnnouncement)
+      : (Array.isArray(data.announcements) ? data.announcements.map(normAnnouncement) : null);
+    if(authoritativeAnnouncements){
+      const pendingAnnouncements=allAnnouncements().filter(a=>a.pending||a.syncStatus==="queued");
+      announcements=mergeAnnouncementLists(authoritativeAnnouncements,pendingAnnouncements);
+      saveAnnouncements();
+    }
     if(Array.isArray(data.inventory)) inventory=data.inventory.map(normInventory);
     if(Array.isArray(data.personnel)) users=data.personnel.map(normUser);
     // User Management needs all admin/BHW accounts, including inactive accounts.
@@ -3224,26 +3503,103 @@ function syncLoginBrgy(){
  document.getElementById("loginBrgy").innerHTML=BARANGAYS.map(b=>`<option>${b}</option>`).join("");
 }
 
-// BHW login uses the real account credentials stored in Google Sheets; barangay assignment comes from the account.
+// BHW/Admin login: online verification is preferred. If the device has previously
+// authenticated successfully, a network failure/airplane mode can use the local verifier.
+function applyAuthenticatedUser(u,offline=false){
+ const role=String(u.Role||"").toLowerCase();
+ session={role:role,username:u.Username,barangay:role==="bhw"?u.Barangay:null,user:u};
+ closeLogin();
+ document.getElementById("sideUser").textContent=(role==="admin"?"ADMIN":`BHW \u2022 ${session.barangay}`).toUpperCase();
+ document.getElementById("sideBrgy").textContent=role==="admin"?"All barangays":session.barangay;
+ document.getElementById("sessionChip").textContent=offline?(role==="admin"?"Admin Access \u2022 Offline":"BHW \u2022 Offline"):(role==="admin"?"Admin Access":`BHW \u2022 ${session.barangay}`);
+ document.getElementById("logoutBtn").classList.remove("hidden");
+ applyRoleNavigation();
+ showView(role==="admin"?"admin":"bhw");
+ if(role==="bhw" && !offline) startBhwHeartbeat();
+ // Use cached/local data immediately. Any online refresh runs in the background.
+ if(!offline) setTimeout(()=>refreshModuleLive(role==="admin"?"admin":"bhw"),0);
+ if(role==="bhw") setTimeout(maybeShowBhwAnnouncementPopup,250);
+}
+
+function isNetworkLoginError(err){
+ const m=String(err?.message||err||"").toLowerCase();
+ return m.includes("failed to fetch") || m.includes("networkerror") || m.includes("network error") || m.includes("timed out") || m.includes("timeout") || m.includes("load failed");
+}
+
 async function login(){
  const role=document.getElementById("loginRole").value;
  const username=document.getElementById("loginUser").value.trim();
  const password=document.getElementById("loginPass").value;
  const btn=document.getElementById("loginSubmitBtn");
  if(!username||!password){document.getElementById("loginError").textContent="Enter username and password.";document.getElementById("loginError").style.display="block";return}
- if(!LIVE_API_URL){document.getElementById("loginError").textContent="Live backend is not connected. Add the Code.gs Web App URL first.";document.getElementById("loginError").style.display="block";return}
  if(btn){btn.disabled=true;btn.textContent="Signing in\u2026"}
  try{
-   const result=await apiPost("login",{username:username,password:password,deviceId:DEVICE_ID});
-   const u=result.user;
-   session={role:String(u.Role).toLowerCase(),username:u.Username,barangay:String(u.Role).toLowerCase()==="bhw"?u.Barangay:null,user:u};
-   closeLogin();document.getElementById("sideUser").textContent=(session.role==="admin"?"ADMIN":`BHW \u2022 ${session.barangay}`).toUpperCase();document.getElementById("sideBrgy").textContent=session.role==="admin"?"All barangays":session.barangay;document.getElementById("sessionChip").textContent=session.role==="admin"?"Admin Access":`BHW \u2022 ${session.barangay}`;document.getElementById("logoutBtn").classList.remove("hidden");applyRoleNavigation();showView(session.role==="admin"?"admin":"bhw");
-   // Refresh in the background so login opens immediately instead of waiting on the full dashboard payload.
-   if(session.role==="bhw") startBhwHeartbeat();
-   setTimeout(()=>refreshModuleLive(session.role==="admin"?"admin":"bhw"),0);
-   if(session.role==="bhw")setTimeout(maybeShowBhwAnnouncementPopup,250);
- }catch(err){document.getElementById("loginError").textContent=err.message||"Login failed.";document.getElementById("loginError").style.display="block"}
- finally{if(btn){btn.disabled=false;btn.textContent="Login"}}
+   // Airplane mode/offline: authenticate against the verifier created by a previous online login.
+   if(!navigator.onLine){
+     if(!readOfflineAuth()) throw new Error("No offline login is stored on this device yet. Connect to the internet and sign in once first.");
+     const cached=await tryOfflineLogin(username,password,role);
+     if(!cached) throw new Error("No offline login is stored for this account on this device.");
+     applyAuthenticatedUser(cached.user,true);
+     return;
+   }
+
+   if(!LIVE_API_URL){
+     const cached=readOfflineAuth();
+     if(cached){const offline=await tryOfflineLogin(username,password,role);if(offline){applyAuthenticatedUser(offline,true);return;}}
+     throw new Error("Live backend is not connected. Add the Code.gs Web App URL first.");
+   }
+
+   try{
+     const cachedForFastPath=readOfflineAuth();
+     const loginRequest=apiPost("login",{username:username,password:password,deviceId:DEVICE_ID});
+     let result;
+
+     // Returning users get a fast fallback after 6 seconds. The real online request
+     // continues in the background, so a slow Apps Script response does not block the UI.
+     if(cachedForFastPath && offlineAuthKey(cachedForFastPath.username)===offlineAuthKey(username) && String(cachedForFastPath.role||"").toLowerCase()===String(role||"").toLowerCase()){
+       const FAST_LOGIN_MS=6000;
+       const timedOut=Symbol("login-timeout");
+       result=await Promise.race([
+         loginRequest,
+         new Promise(resolve=>setTimeout(()=>resolve(timedOut),FAST_LOGIN_MS))
+       ]);
+       if(result===timedOut){
+         const offline=await tryOfflineLogin(username,password,role);
+         if(offline){
+           applyAuthenticatedUser(offline.user,true);
+           const e=document.getElementById("loginError");
+           if(e){e.textContent="Offline access: last online verification is still valid. Online sync will continue in the background.";e.style.display="block";e.style.background="#eff6ff";e.style.color="#1e40af";}
+           loginRequest.then(async live=>{try{await cacheOfflineAuth(password,live.user)}catch(_){}}).catch(_=>{});
+           return;
+         }
+         result=await loginRequest;
+       }
+     }else{
+       result=await loginRequest;
+     }
+
+     const u=result.user;
+     await cacheOfflineAuth(password,u);
+     applyAuthenticatedUser(u,false);
+   }catch(err){
+     // If Apps Script is temporarily slow/unreachable, a previously verified device can still open
+     // the app offline instead of being blocked by a transient network error. Server-side auth errors
+     // (wrong password, inactive account, etc.) are never bypassed.
+     if(isNetworkLoginError(err)){
+       const offline=await tryOfflineLogin(username,password,role);
+       if(offline){
+         applyAuthenticatedUser(offline.user,true);
+         const e=document.getElementById("loginError");
+         if(e){e.textContent="Offline access: last online verification is still valid.";e.style.display="block";e.style.background="#eff6ff";e.style.color="#1e40af";}
+         return;
+       }
+     }
+     throw err;
+   }
+ }catch(err){
+   const e=document.getElementById("loginError");
+   e.textContent=err.message||"Login failed.";e.style.display="block";e.style.background="";e.style.color="";
+ }finally{if(btn){btn.disabled=false;btn.textContent="Login"}}
 }
 function logout(){
  stopBhwHeartbeat();
@@ -3291,14 +3647,34 @@ function applyRoleNavigation(){
 }
 
 async function refreshPublicAnnouncementsLive(){
-  if(!LIVE_API_URL || !navigator.onLine) return;
+  if(!LIVE_API_URL||!navigator.onLine){
+    publicAnnouncementsLoading=false;
+    if(!publicAnnouncementsLoaded)publicAnnouncementsLoadError=true;
+    renderPublicAnnouncements();
+    return;
+  }
+  publicAnnouncementsLoading=true;
+  publicAnnouncementsLoadError=false;
+  renderPublicAnnouncements();
   try{
     const data=await apiPost('publicAnnouncements',{});
-    if(Array.isArray(data.announcements)){
-      announcements=data.announcements.map(normAnnouncement);
-      renderPublicAnnouncements();
-    }
-  }catch(err){console.warn('Public announcements refresh failed',err.message)}
+    updateAnnouncementFeedMeta(data);
+    if(!Array.isArray(data.announcements))throw new Error('The public announcement feed did not return an announcement list.');
+    const remote=data.announcements.map(normAnnouncement);
+    const pending=allAnnouncements().filter(a=>a.pending||a.syncStatus==='queued');
+    announcements=mergeAnnouncementLists(remote,pending);
+    publicAnnouncementsLoaded=true;
+    publicAnnouncementsLoadError=false;
+    saveAnnouncements();
+  }catch(err){
+    publicAnnouncementsLoadError=true;
+    console.warn('Public announcements refresh failed',err.message);
+  }finally{
+    publicAnnouncementsLoading=false;
+    renderPublicAnnouncements();
+    renderBhwAnnouncements();
+    renderBhwDashboardMiniAnnouncements();
+  }
 }
 
 async function refreshBhwInventoryLive(){
@@ -3336,14 +3712,22 @@ async function refreshModuleLive(view=currentView){
   if(!LIVE_API_URL || !navigator.onLine) return;
   try{
     if(view==='public'){
+      if(!publicAnnouncementsLoaded){publicAnnouncementsLoading=true;renderPublicAnnouncements();}
       const [dash,ann]=await Promise.all([
         apiPost('dashboard',{}),
         apiPost('publicAnnouncements',{})
       ]);
+      updateAnnouncementFeedMeta(ann);
+      updateAnnouncementFeedMeta(dash);
       if(Array.isArray(dash.patients)) reports=dash.patients.map(normPatient).filter(Boolean);
       if(Array.isArray(dash.heatIndex)) heatIndexData=dash.heatIndex.map(normHeat).filter(x=>BARANGAYS.includes(x.barangay)&&Number.isFinite(x.value));
       heatReference=dash.referenceStation||heatReference;
-      if(Array.isArray(ann.announcements)) announcements=ann.announcements.map(normAnnouncement);
+      if(Array.isArray(ann.announcements)){
+        const remote=ann.announcements.map(normAnnouncement);
+        const pending=allAnnouncements().filter(a=>a.pending||a.syncStatus==='queued');
+        announcements=mergeAnnouncementLists(remote,pending);saveAnnouncements();
+      }
+      publicAnnouncementsLoaded=true;publicAnnouncementsLoading=false;publicAnnouncementsLoadError=false;
       renderPublic();renderPublicAnnouncements();renderPublicHeat();return;
     }
     if(view==='admin'){
@@ -3372,9 +3756,14 @@ async function refreshModuleLive(view=currentView){
       populatePatientFilters();renderAdminPatients();return;
     }
     if(view==='admin-announcements'){
-      const data=await apiPost('announcements',{user:session.user});
-      if(Array.isArray(data.announcements)) announcements=data.announcements.map(normAnnouncement);
-      renderAdminAnnouncements();return;
+      const data=await apiPost('announcements',{user:session.user,activeOnly:false});
+      updateAnnouncementFeedMeta(data);
+      if(Array.isArray(data.announcements)){
+        const pendingAnnouncements=allAnnouncements().filter(a=>a.pending||a.syncStatus==="queued");
+        announcements=mergeAnnouncementLists(data.announcements.map(normAnnouncement),pendingAnnouncements);
+        saveAnnouncements();
+      }
+      renderAdminAnnouncements();renderAdminDashboardMiniAnnouncements();renderPublicAnnouncements();return;
     }
     if(view==='admin-inventory'){
       const data=await apiPost('inventory',{user:session.user,barangay:'ALL'});
@@ -3387,12 +3776,23 @@ async function refreshModuleLive(view=currentView){
       heatReference=data.referenceStation||heatReference;renderHeatMap('adminHeatMap2',heatIndexData);renderHeatTable('adminHeatBody2',heatIndexData,true);return;
     }
     if(view==='bhw'){
-      const data=await apiPost('dashboard',{user:session.user,deviceId:DEVICE_ID});
+      const [data,feed]=await Promise.all([
+        apiPost('dashboard',{user:session.user,deviceId:DEVICE_ID}),
+        apiPost('announcements',{user:session.user,activeOnly:false})
+      ]);
+      updateAnnouncementFeedMeta(feed);
       if(Array.isArray(data.patients)) reports=data.patients.map(normPatient).filter(Boolean);
       if(Array.isArray(data.inventory)) inventory=data.inventory.map(normInventory);
-      if(Array.isArray(data.announcements)) announcements=data.announcements.map(normAnnouncement);
+      const authoritativeAnnouncements=Array.isArray(feed.announcements)
+        ? feed.announcements.map(normAnnouncement)
+        : (Array.isArray(data.announcements) ? data.announcements.map(normAnnouncement) : null);
+      if(authoritativeAnnouncements){
+        const pendingAnnouncements=allAnnouncements().filter(a=>a.pending||a.syncStatus==="queued");
+        announcements=mergeAnnouncementLists(authoritativeAnnouncements,pendingAnnouncements);
+        saveAnnouncements();
+      }
       if(Array.isArray(data.heatIndex)) heatIndexData=data.heatIndex.map(normHeat).filter(x=>BARANGAYS.includes(x.barangay)&&Number.isFinite(x.value));
-      renderBhw();renderBhwAnnouncements();renderBhwDashboardMiniAnnouncements();renderBhwInventory();renderBhwHeat();return;
+      renderBhw();renderBhwAnnouncements();renderBhwDashboardMiniAnnouncements();renderBhwInventory();renderBhwHeat();maybeShowBhwAnnouncementPopup();return;
     }
     if(view==='bhw-patients'){
       const data=await apiPost('patients',{user:session.user});
@@ -3411,17 +3811,31 @@ async function refreshModuleLive(view=currentView){
     }
     if(view==='bhw-announcements'){
       const [a,p]=await Promise.all([
-        apiPost('announcements',{user:session.user}),
+        apiPost('announcements',{user:session.user,activeOnly:false}),
         apiPost('publicAnnouncements',{})
       ]);
-      if(Array.isArray(a.announcements)) announcements=a.announcements.map(normAnnouncement);
-      if(Array.isArray(p.announcements)) announcements=mergeAnnouncementLists(announcements,p.announcements.map(normAnnouncement));
+      updateAnnouncementFeedMeta(a);
+      updateAnnouncementFeedMeta(p);
+      if(Array.isArray(a.announcements)){
+        const pendingAnnouncements=allAnnouncements().filter(x=>x.pending||x.syncStatus==="queued");
+        announcements=mergeAnnouncementLists(a.announcements.map(normAnnouncement),pendingAnnouncements);
+      }
+      if(Array.isArray(p.announcements)){
+        // The public feed is also a canonical confirmation source; keep it merged
+        // with the BHW-scoped feed and the local pending queue.
+        const pendingAnnouncements=allAnnouncements().filter(x=>x.pending||x.syncStatus==="queued");
+        announcements=mergeAnnouncementLists(mergeAnnouncementLists(announcements,p.announcements.map(normAnnouncement)),pendingAnnouncements);
+      }
+      saveAnnouncements();
       renderBhwAnnouncements();renderPublicAnnouncements();maybeShowBhwAnnouncementPopup();return;
     }
     if(view==='bhw-inventory'){
       await refreshBhwInventoryLive();return;
     }
-  }catch(err){console.warn('Module refresh failed',view,err.message)}
+  }catch(err){
+    console.warn('Module refresh failed',view,err.message);
+    if(view==='public'){publicAnnouncementsLoading=false;publicAnnouncementsLoadError=true;renderPublicAnnouncements();}
+  }
 }
 
 function placeNetworkBanner(){
@@ -3549,7 +3963,7 @@ function exportCSV(){
 function fmtDate(s){return new Date(s).toLocaleString([], {month:"short",day:"numeric",year:"numeric",hour:"2-digit",minute:"2-digit"})}
 function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
 
-conditionInputs();renderAll();setDefaultDate();applyRoleNavigation();updateNetworkUI();populateInventoryFilters();rptFillFilters();renderPublicAnnouncements();startAutoRefresh();refreshLiveState();showView("public");
+conditionInputs();renderAll();setDefaultDate();applyRoleNavigation();updateNetworkUI();populateInventoryFilters();rptFillFilters();renderPublicAnnouncements();startAutoRefresh();refreshLiveState();showView("public");if(navigator.onLine&&announcementOutbox.length)setTimeout(syncAnnouncementOutbox,800);
 </script>
 </body>
 </html>

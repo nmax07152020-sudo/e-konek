@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0307fb">
+<meta name="theme-color" content="#2D5FAE">
 <meta name="apple-mobile-web-app-title" content="e-Konek">
 <meta name="application-name" content="e-Konek">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -21,9 +21,9 @@
 <style>
 :root{
   --bg:#f4f7fb;--card:#fff;--text:#17202a;--muted:#64748b;--line:#dbe3ef;
-  --orange:#0307fb;--orange2:#1d4ed8;--red:#ff050b;--amber:#1d4ed8;
-  --blue:#0307fb;--green:#15803d;--dark:#0b1f5e;--danger:#b91c1c;
-  --shadow:0 8px 24px rgba(3,7,251,.07);--radius:18px;
+  --orange:#2D5FAE;--orange2:#4779B9;--red:#ff050b;--amber:#4779B9;
+  --blue:#2D5FAE;--green:#15803d;--dark:#0b1f5e;--danger:#b91c1c;
+  --shadow:0 8px 24px rgba(45,95,174,.07);--radius:18px;
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif}
@@ -34,7 +34,7 @@ button{cursor:pointer}
   position:sticky;top:0;height:100vh;background:#111827;color:#fff;padding:20px 14px;overflow:auto
 }
 .brand{display:flex;align-items:center;gap:10px;padding:8px 10px 20px;border-bottom:1px solid rgba(255,255,255,.08)}
-.brand-icon{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#1d4ed8,#b91c1c);font-size:21px}
+.brand-icon{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#4779B9,#b91c1c);font-size:21px}
 .brand-title{font-weight:950;font-size:15px;line-height:1.05}.brand-sub{font-size:10px;color:#aeb7c4;margin-top:4px}
 .nav{padding-top:16px}.nav button{
   width:100%;border:0;background:transparent;color:#cbd5e1;text-align:left;padding:11px 12px;border-radius:11px;margin-bottom:5px;font-weight:800;font-size:12px
@@ -58,7 +58,7 @@ button{cursor:pointer}
 .content{padding:20px 22px 28px;max-width:1550px;margin:0 auto}
 .hero{
   border-radius:24px;padding:24px 26px;color:#fff;position:relative;overflow:hidden;
-  background:linear-gradient(135deg,#7f1d1d 0%,#b91c1c 42%,#1d4ed8 100%);box-shadow:0 15px 38px rgba(127,29,29,.19)
+  background:linear-gradient(135deg,#7f1d1d 0%,#b91c1c 42%,#4779B9 100%);box-shadow:0 15px 38px rgba(127,29,29,.19)
 }
 .hero:after{content:"\2600 ";position:absolute;right:30px;top:-28px;font-size:150px;opacity:.12}
 .hero-kicker{font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;opacity:.86}
@@ -91,14 +91,14 @@ textarea{width:100%;min-height:72px;resize:vertical}
 .bar-chart{height:235px;display:flex;gap:10px;align-items:flex-end;padding:8px 2px 0}.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;height:100%}
 .bar-v{font-size:10px;font-weight:950;color:#991b1b}.bar{width:min(46px,75%);background:linear-gradient(180deg,#2563eb,#dc2626);border-radius:8px 8px 4px 4px;min-height:5px}.bar-l{font-size:9px;color:var(--muted);white-space:nowrap}
 
-.profile{display:grid;gap:10px}.profile-row{display:grid;grid-template-columns:125px 1fr 34px;gap:8px;align-items:center;font-size:11px}.progress{height:9px;background:#edf0f3;border-radius:99px;overflow:hidden}.progress span{display:block;height:100%;border-radius:99px}.c1{background:#dc2626}.c2{background:#1d4ed8}.c3{background:#3b82f6}.c4{background:#0284c7}.c5{background:#16a34a}
+.profile{display:grid;gap:10px}.profile-row{display:grid;grid-template-columns:125px 1fr 34px;gap:8px;align-items:center;font-size:11px}.progress{height:9px;background:#edf0f3;border-radius:99px;overflow:hidden}.progress span{display:block;height:100%;border-radius:99px}.c1{background:#dc2626}.c2{background:#4779B9}.c3{background:#3b82f6}.c4{background:#0284c7}.c5{background:#16a34a}
 .c6{background:#2563eb}.c7{background:#dc2626}.c8{background:#991b1b}.c9{background:#7c2d12}
 
 .table-wrap{width:100%;overflow:auto}table{width:100%;border-collapse:collapse;min-width:650px}th,td{padding:10px 9px;border-bottom:1px solid var(--line);text-align:left;font-size:11px}th{background:#fafafa;color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.7px}
-.pill{display:inline-flex;padding:5px 8px;border-radius:999px;font-weight:900;background:#eff6ff;color:#dc2626}.status{font-size:9px;font-weight:900;padding:5px 8px;border-radius:999px}.s-open{background:#ecfdf5;color:#166534}.s-review{background:#eff6ff;color:#1d4ed8}.s-critical{background:#fef2f2;color:#991b1b}
+.pill{display:inline-flex;padding:5px 8px;border-radius:999px;font-weight:900;background:#eff6ff;color:#dc2626}.status{font-size:9px;font-weight:900;padding:5px 8px;border-radius:999px}.s-open{background:#ecfdf5;color:#166534}.s-review{background:#eff6ff;color:#4779B9}.s-critical{background:#fef2f2;color:#991b1b}
 .mini{height:6px;width:120px;background:#edf0f3;border-radius:999px;overflow:hidden}.mini span{display:block;height:100%;background:linear-gradient(90deg,#2563eb,#dc2626);border-radius:999px}
 
-.notice{padding:12px 13px;border-radius:12px;background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;font-size:11px;line-height:1.5}
+.notice{padding:12px 13px;border-radius:12px;background:#eff6ff;border:1px solid #bfdbfe;color:#4779B9;font-size:11px;line-height:1.5}
 .lock-box{padding:16px;border-radius:14px;background:#f8fafc;border:1px dashed #cbd5e1}
 .lock-box strong{display:block;margin-bottom:5px}.lock-box p{margin:0;font-size:11px;color:#64748b;line-height:1.5}
 
@@ -122,7 +122,7 @@ textarea{width:100%;min-height:72px;resize:vertical}
 .heat-level-card .hv{font-size:23px;font-weight:950;margin-top:5px}
 .heat-level-card .hl{font-size:9px;color:#64748b;text-transform:uppercase;font-weight:900;letter-spacing:.5px}
 .heat-caution{background:#eff6ff!important;border-color:#bfdbfe!important;color:#1e40af}
-.heat-extreme{background:#eff6ff!important;border-color:#93c5fd!important;color:#1d4ed8}
+.heat-extreme{background:#eff6ff!important;border-color:#93c5fd!important;color:#4779B9}
 .heat-danger{background:#fef2f2!important;border-color:#fecaca!important;color:#991b1b}
 .heat-extreme-danger{background:#fee2e2!important;border-color:#fca5a5!important;color:#7f1d1d}
 .heat-map-wrap{display:grid;grid-template-columns:1.08fr .92fr;gap:12px}
@@ -146,7 +146,7 @@ textarea{width:100%;min-height:72px;resize:vertical}
 }
 .heat-pin-dot{width:17px;height:17px;border-radius:50%;border:2px solid #fff;box-shadow:0 2px 8px rgba(15,23,42,.22)}
 .heat-pin-label{margin-top:3px;font-size:7px;font-weight:950;color:#334155;background:rgba(255,255,255,.86);padding:2px 4px;border-radius:5px;white-space:nowrap}
-.pin-caution{background:#60a5fa}.pin-extreme{background:#1d4ed8}.pin-danger{background:#dc2626}.pin-extreme-danger{background:#7f1d1d}
+.pin-caution{background:#60a5fa}.pin-extreme{background:#4779B9}.pin-danger{background:#dc2626}.pin-extreme-danger{background:#7f1d1d}
 .heat-legend{position:absolute;right:10px;top:9px;background:rgba(255,255,255,.93);border:1px solid var(--line);border-radius:9px;padding:7px;font-size:8px;line-height:1.6}
 .legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle}
 .heat-table-wrap{max-height:390px;overflow:auto}
@@ -162,18 +162,18 @@ textarea{width:100%;min-height:72px;resize:vertical}
 @media(max-width:500px){.heat-summary{grid-template-columns:1fr}.heat-map{min-height:310px}.heat-pin-label{font-size:6px}.official-heat-frame,.official-heat-frame iframe{min-height:430px;height:430px}}
 
 /* V17 personnel account details */
-.personnel-initial-avatar{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:#eff6ff;color:#1d4ed8;font-weight:950;font-size:14px;border:1px solid #dbeafe}
+.personnel-initial-avatar{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:#eff6ff;color:#4779B9;font-weight:950;font-size:14px;border:1px solid #dbeafe}
 .personnel-avatar-wrap{flex:0 0 42px}
 
 /* V15 PERSONNEL DIRECTORY + CONTACTS */
 .personnel-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .personnel-card{border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px}
 .personnel-top{display:flex;align-items:center;gap:9px}
-.personnel-avatar{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:#eff6ff;color:#1d4ed8;font-weight:950}
+.personnel-avatar{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:#eff6ff;color:#4779B9;font-weight:950}
 .personnel-name{font-size:12px;font-weight:950}.personnel-role{font-size:9px;color:#64748b;margin-top:2px}
 .personnel-line{display:flex;gap:7px;align-items:center;margin-top:8px;font-size:10px;color:#475569}
 .personnel-line strong{color:#111827}
-.personnel-contact{display:inline-flex;align-items:center;gap:6px;padding:6px 8px;border-radius:9px;background:#f8fafc;color:#1d4ed8;font-weight:900}
+.personnel-contact{display:inline-flex;align-items:center;gap:6px;padding:6px 8px;border-radius:9px;background:#f8fafc;color:#4779B9;font-weight:900}
 .directory-filter{display:flex;gap:7px;flex-wrap:wrap}
 .directory-filter input,.directory-filter select{min-width:140px}
 .directory-note{padding:10px 12px;border-radius:11px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;font-size:10px;line-height:1.45}
@@ -184,7 +184,7 @@ textarea{width:100%;min-height:72px;resize:vertical}
 .public-announcement-panel{height:245px;overflow:auto;padding-right:3px}
 .public-announcement-panel::-webkit-scrollbar{width:7px}
 .public-announcement-panel::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:999px}
-.latest-label{display:inline-flex;align-items:center;gap:6px;padding:5px 8px;border-radius:999px;background:#eff6ff;color:#1d4ed8;font-size:9px;font-weight:950}
+.latest-label{display:inline-flex;align-items:center;gap:6px;padding:5px 8px;border-radius:999px;background:#eff6ff;color:#4779B9;font-size:9px;font-weight:950}
 .site-footer{margin-top:20px;padding:14px 4px 6px;text-align:center;color:#64748b;font-size:10px;border-top:1px solid var(--line)}
 .site-footer strong{color:#334155}
 
@@ -224,7 +224,7 @@ textarea{width:100%;min-height:72px;resize:vertical}
 .demographic-track{height:9px;background:#edf0f3;border-radius:999px;overflow:hidden}
 .demographic-track span{display:block;height:100%;border-radius:999px}
 .gender-male{background:#2563eb}.gender-female{background:#2563eb}.gender-other{background:#64748b}
-.age-pedia{background:#16a34a}.age-adult{background:#3b82f6}.age-senior{background:#1d4ed8}
+.age-pedia{background:#16a34a}.age-adult{background:#3b82f6}.age-senior{background:#4779B9}
 .demographic-total{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:9px;border-top:1px solid var(--line);font-size:10px;color:#64748b}
 .demographic-total strong{font-size:13px;color:var(--text)}
 @media(max-width:760px){.demographic-grid{grid-template-columns:1fr}}
@@ -265,8 +265,8 @@ textarea{width:100%;min-height:72px;resize:vertical}
 .network-banner .sync-pill{display:none!important}
 .public-login-stack{display:flex;flex-direction:column;align-items:flex-end;gap:4px;min-width:0}
 .public-login-stack .network-banner{margin:0;box-shadow:none}
-.sync-local{background:#eff6ff;color:#1d4ed8}.sync-synced{background:#ecfdf5;color:#166534}.sync-error{background:#fef2f2;color:#991b1b}
-.sync-queued{background:#eff6ff;color:#1d4ed8}
+.sync-local{background:#eff6ff;color:#4779B9}.sync-synced{background:#ecfdf5;color:#166534}.sync-error{background:#fef2f2;color:#991b1b}
+.sync-queued{background:#eff6ff;color:#4779B9}
 .offline-badge{display:none}
 .offline-mode .offline-badge{display:inline-flex}
 .report-sync-box{margin-top:10px;padding:11px 12px;border-radius:12px;background:#f8fafc;border:1px solid var(--line);font-size:10px;line-height:1.5}
@@ -305,9 +305,9 @@ textarea{width:100%;min-height:72px;resize:vertical}
 .online{background:#16a34a;box-shadow:0 0 0 4px #dcfce7}
 .offline{background:#9ca3af;box-shadow:0 0 0 4px #f3f4f6}
 .pending{background:#3b82f6;box-shadow:0 0 0 4px #dbeafe}
-.user-avatar{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:#eff6ff;color:#1d4ed8;font-weight:950}
+.user-avatar{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:#eff6ff;color:#4779B9;font-weight:950}
 .action-row{display:flex;gap:6px;flex-wrap:wrap}.action-btn{border:0;border-radius:8px;padding:6px 8px;font-size:10px;font-weight:900}
-.action-edit{background:#eff6ff;color:#1d4ed8}.action-delete{background:#fef2f2;color:#991b1b}
+.action-edit{background:#eff6ff;color:#4779B9}.action-delete{background:#fef2f2;color:#991b1b}
 .badge-online{background:#ecfdf5;color:#166534}.badge-offline{background:#f3f4f6;color:#4b5563}
 .filter-bar{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
 .field-inline{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:900;color:#64748b}
@@ -379,7 +379,7 @@ body.public-mode .content{max-width:1450px;padding-top:20px}
 .report-compare-bar{height:135px;border-radius:12px 12px 8px 8px;background:linear-gradient(180deg,#93c5fd,#dc2626);min-height:10px;margin-top:8px}
 .report-compare-card.prev .report-compare-bar{background:linear-gradient(180deg,#cbd5e1,#64748b)}
 .report-change{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:999px;font-size:9px;font-weight:950;background:#f8fafc;border:1px solid var(--line);color:#475569}
-.report-change.up{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8}.report-change.down{background:#ecfdf5;border-color:#bbf7d0;color:#166534}.report-change.flat{background:#f8fafc;color:#64748b}
+.report-change.up{background:#eff6ff;border-color:#bfdbfe;color:#4779B9}.report-change.down{background:#ecfdf5;border-color:#bbf7d0;color:#166534}.report-change.flat{background:#f8fafc;color:#64748b}
 .report-table td,.report-table th{font-size:10px}
 .report-up{color:#b91c1c;font-weight:950}.report-down{color:#166534;font-weight:950}.report-flat{color:#64748b;font-weight:950}
 .report-coverage{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
@@ -633,7 +633,7 @@ body.public-mode .content{max-width:1450px;padding-top:20px}
 
 
 /* V39.9 BRAND TYPOGRAPHY \2014  Antipolo red/blue palette inspired by supplied reference */
-:root{--brand-red:#ff050b;--brand-blue:#0307fb;}
+:root{--brand-red:#ff050b;--brand-blue:#2D5FAE;}
 .mini-title .brand-red,.brand-title .brand-red{color:var(--brand-red);}
 .mini-title .brand-blue,.brand-title .brand-blue{color:var(--brand-blue);}
 .mini-title .brand-red,.mini-title .brand-blue{font-weight:950;}
@@ -646,20 +646,20 @@ body.public-mode .content{max-width:1450px;padding-top:20px}
 /* V39.9 RED \2022  WHITE \2022  BLUE MASTER THEME */
 :root{
   --brand-red:#ff050b;
-  --brand-blue:#0307fb;
+  --brand-blue:#2D5FAE;
   --brand-blue-dark:#111bb8;
   --brand-blue-soft:#eef2ff;
   --brand-red-soft:#fff1f2;
 }
 body{background:var(--bg);}
-.sidebar{background:linear-gradient(180deg,#07118f 0%,#0307fb 58%,#111bb8 100%);}
+.sidebar{background:linear-gradient(180deg,#07118f 0%,#2D5FAE 58%,#111bb8 100%);}
 .brand-icon{background:linear-gradient(135deg,var(--brand-red) 0%,#ffffff 44%,var(--brand-blue) 100%);color:#111827;}
 .nav button.active,.nav button:hover{background:rgba(255,255,255,.14);}
 .nav .public{color:#ffffff;}
 .user-brgy{color:#bfdbfe;}
 .topbar{background:rgba(243,246,250,.94);}
-.hero{background:linear-gradient(135deg,var(--brand-blue) 0%,#1d4ed8 58%,var(--brand-red) 100%);box-shadow:0 15px 38px rgba(3,7,251,.14);}
-.hero-tags .hero-tag{background:rgba(3,7,251,.16);border-color:rgba(255,255,255,.28);}
+.hero{background:linear-gradient(135deg,var(--brand-blue) 0%,#4779B9 58%,var(--brand-red) 100%);box-shadow:0 15px 38px rgba(45,95,174,.14);}
+.hero-tags .hero-tag{background:rgba(45,95,174,.16);border-color:rgba(255,255,255,.28);}
 .btn-dark{background:var(--brand-blue);color:#fff;}
 .btn-orange{background:var(--brand-blue);color:#fff;}
 .btn-light{background:#fff;border-color:#cbd5e1;color:#1f2937;}
@@ -679,10 +679,10 @@ body{background:var(--bg);}
 .report-col-bar,.report-htrack span{background:linear-gradient(90deg,var(--brand-blue),#60a5fa);}
 .report-compare-bar{background:linear-gradient(180deg,var(--brand-red),#7f1d1d);}
 .gender-male{background:var(--brand-blue);}
-.gender-female{background:#1d4ed8;}
+.gender-female{background:#4779B9;}
 .gender-other{background:#64748b;}
 .age-pedia{background:#2563eb;}
-.age-adult{background:#1d4ed8;}
+.age-adult{background:#4779B9;}
 .age-senior{background:#111bb8;}
 .stock-low{background:#3b82f6;}
 .pending{background:#3b82f6;box-shadow:0 0 0 4px #dbeafe;}
@@ -706,8 +706,8 @@ body{background:var(--bg);}
 }
 /* V42 BLUE-DOMINANT RED \2022  WHITE \2022  BLUE SYSTEM THEME */
 :root{
-  --brand-blue:#0307fb;
-  --brand-blue-mid:#1d4ed8;
+  --brand-blue:#2D5FAE;
+  --brand-blue-mid:#4779B9;
   --brand-blue-soft:#eef4ff;
   --brand-red:#ff050b;
   --brand-red-soft:#fff1f2;
@@ -720,7 +720,7 @@ body{background:var(--bg)}
 .hero{background:linear-gradient(135deg,var(--brand-blue) 0%,var(--brand-blue-mid) 62%,var(--brand-red) 100%)!important}
 .hero-tags .hero-tag{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.30)}
 .illness-summary-box.blue,.illness-summary-box.red{background:var(--brand-blue-soft)!important;border-color:#bfdbfe!important;color:#1e3a8a}
-.public-dashboard-card{box-shadow:0 8px 24px rgba(3,7,251,.055)}
+.public-dashboard-card{box-shadow:0 8px 24px rgba(45,95,174,.055)}
 .public-announcements-card{border-top:3px solid var(--brand-red)}
 .danger,.btn-danger,.critical{--accent-red:var(--brand-red)}
 /* V40 PUBLIC DASHBOARD \2014  separate Illness Profile and Emergency Alerts cards */
@@ -739,7 +739,7 @@ body{background:var(--bg)}
 .public-access-actions{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap;margin-top:0}
 .public-access-btn{border:1px solid #dbe4f0;background:#fff;color:#123;box-shadow:0 3px 10px rgba(15,23,42,.08);border-radius:11px;padding:8px 10px;font-size:10px;font-weight:950;line-height:1;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:5px;text-decoration:none;min-height:34px}
 .public-access-btn.login-access{background:#0f172a;color:#fff;border-color:#0f172a}
-.public-access-btn.ios-access{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+.public-access-btn.ios-access{background:#eff6ff;color:#4779B9;border-color:#bfdbfe}
 .public-access-btn.android-access{background:#eff6ff;color:#1e40af;border-color:#93c5fd}
 .public-access-btn:hover{transform:translateY(-1px);box-shadow:0 5px 13px rgba(15,23,42,.11)}
 .access-modal{position:fixed;inset:0;background:rgba(15,23,42,.68);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;padding:14px;z-index:60}
@@ -751,12 +751,23 @@ body{background:var(--bg)}
 .access-hero{padding:12px 13px;border-radius:13px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;font-size:11px;line-height:1.5;margin-bottom:12px}
 .access-step{display:flex;gap:9px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #eef2f7}
 .access-step:last-child{border-bottom:0}
-.access-num{width:25px;height:25px;border-radius:50%;display:grid;place-items:center;flex:0 0 25px;background:#1d4ed8;color:#fff;font-size:11px;font-weight:950}
+.access-num{width:25px;height:25px;border-radius:50%;display:grid;place-items:center;flex:0 0 25px;background:#4779B9;color:#fff;font-size:11px;font-weight:950}
 .access-step strong{display:block;font-size:11px;color:#0f172a;margin-bottom:2px}
 .access-step span{display:block;font-size:10px;line-height:1.5;color:#64748b}
 .access-tip{margin-top:12px;padding:10px 12px;border-radius:11px;background:#f8fafc;border:1px solid #e2e8f0;color:#475569;font-size:10px;line-height:1.5}
 .access-download{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}
 .access-download a{flex:1 1 150px;text-align:center;text-decoration:none}
+.platform-choice-intro{margin:0 0 13px;color:#475569;font-size:12px;line-height:1.55}
+.platform-choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.platform-choice-card{border:1px solid #dbe4f0;border-radius:15px;padding:14px;background:#fff;min-width:0}
+.platform-choice-card.android-choice{border-top:4px solid #15803d}
+.platform-choice-card.ios-choice{border-top:4px solid #4779B9}
+.platform-choice-icon{font-size:25px;margin-bottom:7px}
+.platform-choice-card h3{font-size:14px;color:#0f172a;margin:0 0 5px}
+.platform-choice-card p{font-size:11px;line-height:1.5;color:#64748b;margin:0 0 11px}
+.platform-choice-card .public-access-btn{white-space:normal;line-height:1.25;width:100%;min-height:38px;margin-top:6px}
+.platform-choice-warning{margin-top:12px;padding:11px 12px;border:1px solid #fde68a;background:#fffbeb;color:#92400e;border-radius:12px;font-size:11px;line-height:1.5}
+@media(max-width:420px){.platform-choice-grid{grid-template-columns:1fr}.platform-choice-card{padding:12px}}
 @media(max-width:760px){
   .public-login-stack{width:100%;align-items:flex-end}
   .public-access-actions{justify-content:flex-end;gap:5px}
@@ -774,10 +785,177 @@ body{background:var(--bg)}
 .announcement-button-content{display:inline-flex;align-items:center;justify-content:center;gap:8px}
 .announcement-spinner{display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:announcementSpin .7s linear infinite;vertical-align:-2px;flex:0 0 auto}
 @keyframes announcementSpin{to{transform:rotate(360deg)}}
+/* V48 user-management save feedback: only affects the Admin User Management modal. */
+.user-save-progress{display:flex;align-items:center;gap:10px;margin-top:12px;padding:12px 13px;border:1px solid #bfdbfe;border-radius:12px;background:#eff6ff;color:#1e40af;font-size:12px;font-weight:750;line-height:1.45}
+.user-save-progress[hidden]{display:none!important}
+.user-save-spinner{display:inline-block;width:17px;height:17px;box-sizing:border-box;border:2px solid rgba(45,95,174,.25);border-top-color:#2D5FAE;border-radius:50%;animation:announcementSpin .7s linear infinite;flex:0 0 auto}
+.user-save-btn[disabled],#userModal .form-actions .btn[disabled],#userModal .section-head>button[disabled]{opacity:.72;cursor:wait}
+.user-save-button-content{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:94px}
 .public-announcement-loading{display:flex;align-items:center;gap:9px;padding:13px 14px;border:1px solid var(--line);border-radius:10px;color:#64748b;background:#f8fafc;font-size:12px;font-weight:750}
 .public-announcement-empty{padding:13px 14px;border:1px dashed var(--line);border-radius:10px;color:#64748b;font-size:12px;background:#fafafa}
 </style>
 <style>body.modal-open{overflow:hidden}</style>
+
+<style id="v48-color-navigation-polish">
+:root{
+  --orange:#2D5FAE;
+  --orange2:#4779B9;
+  --amber:#4779B9;
+  --blue:#2D5FAE;
+  --brand-blue:#2D5FAE;
+  --brand-blue-mid:#4779B9;
+  --brand-blue-soft:#EDF3FA;
+  --shadow:0 8px 24px rgba(45,95,174,.07);
+}
+/* Official navigation color requested for this V48 test copy */
+.sidebar{background:#064088 !important;}
+.nav button.active,.nav button:hover{background:rgba(255,255,255,.16) !important;border-left:3px solid #fff;}
+/* Both lines of the sidebar app title are white */
+.sidebar .brand-title,
+.sidebar .brand-title .brand-red,
+.sidebar .brand-title .brand-blue,
+.sidebar .brand-sub{color:#fff !important;}
+/* Softer blue gradients reduce the electric-blue intensity */
+.hero{background:linear-gradient(135deg,#2D5FAE 0%,#4779B9 64%,#b91c1c 100%) !important;box-shadow:0 15px 38px rgba(45,95,174,.14);}
+.btn-orange,.btn-dark{background:linear-gradient(135deg,#2D5FAE,#4779B9) !important;color:#fff;}
+</style>
+
+
+<style id="v48-login-refresh-test">
+/* Separate test-copy polish: public shortcut removed; keep staff access calm and mobile-friendly. */
+.login-overlay{
+  background:linear-gradient(135deg,rgba(6,64,136,.88),rgba(15,23,42,.82));
+  backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);
+  padding:16px;overscroll-behavior:contain;
+}
+.login-card{
+  position:relative;box-sizing:border-box;width:min(440px,100%);max-width:100%;
+  max-height:min(92dvh,820px);overflow:auto;padding:26px 24px 22px;
+  border:1px solid rgba(255,255,255,.78);border-radius:24px;
+  background:linear-gradient(180deg,#fff 0%,#fbfdff 100%);
+  box-shadow:0 28px 90px rgba(3,23,52,.34),0 4px 14px rgba(3,23,52,.12);
+}
+.login-card:before{content:"";position:absolute;inset:0 0 auto;height:5px;border-radius:24px 24px 0 0;background:linear-gradient(90deg,#064088,#4779B9,#94b8ea)}
+.login-card .login-logos{gap:10px;margin:1px auto 13px}
+.login-card .login-logo{width:64px;height:64px;flex:0 0 64px;border:1px solid #e6edf6;border-radius:18px;background:#fff;object-fit:contain;padding:5px;box-shadow:0 5px 14px rgba(15,42,82,.08)}
+.login-card .login-logo[data-logo="super"]{border-radius:18px}
+.login-eyebrow{display:inline-flex;align-items:center;justify-content:center;gap:6px;margin:0 auto 7px;padding:6px 10px;border-radius:999px;background:#edf4fd;color:#064088;font-size:9px;font-weight:900;letter-spacing:1.1px;line-height:1.2}
+.login-card .login-title{color:#102b4e;font-size:24px;font-weight:900;letter-spacing:-.55px;line-height:1.2;text-align:center}
+.login-card .login-sub{max-width:320px;margin:7px auto 0;color:#64748b;font-size:12px;line-height:1.55;text-align:center}
+.login-role-options{display:grid;gap:10px;margin-top:21px}
+.login-card .login-role-option{
+  display:flex;align-items:center;gap:12px;width:100%;min-width:0;min-height:82px;
+  padding:13px 14px;text-align:left;white-space:normal;color:#102b4e;
+  background:#fff;border:1px solid #dbe6f3;border-radius:16px;
+  box-shadow:0 3px 9px rgba(15,42,82,.035);cursor:pointer;
+  transition:border-color .16s ease,background .16s ease,box-shadow .16s ease,transform .16s ease;
+}
+.login-card .login-role-option:hover{transform:translateY(-1px);border-color:#8db2e2;background:#f8fbff;box-shadow:0 9px 22px rgba(15,42,82,.09)}
+.login-card .login-role-option:focus-visible,.login-card .login-cancel:focus-visible,.login-card .form-actions .btn:focus-visible{outline:3px solid #8bb8f1;outline-offset:3px}
+.login-role-icon{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;border-radius:13px;background:#edf4fd;font-size:21px}
+.login-role-option.bhw-role .login-role-icon{background:#eaf7f0}
+.login-role-copy{display:flex;flex:1 1 auto;flex-direction:column;gap:4px;min-width:0}
+.login-role-copy strong{font-size:13px;font-weight:900;line-height:1.25}
+.login-role-copy small{color:#64748b;font-size:10px;font-weight:600;line-height:1.45;white-space:normal}
+.login-role-arrow{flex:0 0 auto;color:#4779B9;font-size:21px;font-weight:600;padding-left:2px}
+.login-card .login-cancel{width:100%;margin-top:13px;padding:10px 12px;background:transparent;border:1px solid transparent;border-radius:10px;color:#64748b;font-size:11px;font-weight:800;cursor:pointer}
+.login-card .login-cancel:hover{color:#064088;background:#f1f6fc;border-color:#e1ebf7}
+.login-privacy-note{display:flex;justify-content:center;align-items:center;gap:6px;margin-top:12px;color:#7b8ba0;font-size:9px;font-weight:700;letter-spacing:.2px}
+.login-card-auth .login-title{font-size:23px}
+.login-card-auth .login-sub{margin-bottom:0}
+.login-card-auth .login-form{gap:12px;margin-top:21px}
+.login-card-auth .login-form .field{gap:6px}
+.login-card-auth .login-form .label{font-size:9px;color:#405875;letter-spacing:.7px}
+.login-card-auth .login-form input,.login-card-auth .login-form select{
+  min-height:45px;width:100%;min-width:0;padding:11px 12px;border:1px solid #d6e0ed;
+  border-radius:12px;background:#fff;color:#183452;font-size:14px;outline:none;
+  transition:border-color .15s ease,box-shadow .15s ease;
+}
+.login-card-auth .login-form input:focus,.login-card-auth .login-form select:focus{border-color:#4779B9;box-shadow:0 0 0 3px rgba(71,121,185,.13)}
+.login-card-auth .login-form input::placeholder{color:#9aa8b9}
+.login-card-auth .login-offline-note{display:flex;align-items:flex-start;gap:8px;padding:10px 11px;border:1px solid #e2ebf6;border-radius:12px;background:#f5f9fe;color:#5e718a;font-size:10px;line-height:1.5}
+.login-card-auth .login-offline-note span:first-child{flex:0 0 auto}
+.login-card-auth .error{border:1px solid #fecaca;border-radius:12px;line-height:1.45;overflow-wrap:anywhere}
+.login-card-auth .form-actions{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:9px;margin-top:2px}
+.login-card-auth .form-actions .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:43px;padding:10px 13px;border-radius:12px;font-size:12px;font-weight:850}
+.login-card-auth #loginSubmitBtn{box-shadow:0 7px 16px rgba(45,95,174,.19)}
+@media(max-width:760px){
+  .login-overlay{padding:12px;align-items:center}
+  .login-card{width:min(420px,100%);max-height:90dvh;padding:23px 19px 18px;border-radius:21px}
+  .login-card:before{border-radius:21px 21px 0 0}
+  .login-card .login-logo{width:57px;height:57px;flex-basis:57px}
+  .login-card .login-title{font-size:22px}
+  .login-role-options{gap:9px;margin-top:18px}
+  .login-card .login-role-option{min-height:76px;padding:11px 12px;gap:10px}
+  .login-role-icon{width:40px;height:40px;flex-basis:40px;border-radius:12px;font-size:19px}
+  .login-card-auth .login-form{gap:10px;margin-top:17px}
+  .login-card-auth .login-form input,.login-card-auth .login-form select{min-height:46px;font-size:16px}
+}
+@media(max-width:420px){
+  .login-overlay{padding:8px}
+  .login-card{width:100%;max-height:88dvh;padding:20px 15px 15px;border-radius:19px}
+  .login-card:before{border-radius:19px 19px 0 0}
+  .login-card .login-logos{gap:8px;margin-bottom:10px}
+  .login-card .login-logo{width:50px;height:50px;flex-basis:50px;padding:4px}
+  .login-eyebrow{font-size:8px;padding:5px 8px;letter-spacing:.8px}
+  .login-card .login-title{font-size:20px;letter-spacing:-.3px}
+  .login-card .login-sub{font-size:11px}
+  .login-role-options{gap:8px;margin-top:15px}
+  .login-card .login-role-option{min-height:70px;padding:10px;gap:9px;border-radius:13px}
+  .login-role-icon{width:36px;height:36px;flex-basis:36px;font-size:17px}
+  .login-role-copy strong{font-size:12px}
+  .login-role-copy small{font-size:9px}
+  .login-role-arrow{font-size:18px}
+  .login-card-auth .login-form input,.login-card-auth .login-form select{font-size:16px}
+}
+@media(max-height:620px){
+  .login-overlay{align-items:flex-start}
+  .login-card{margin:auto;max-height:calc(100dvh - 16px);padding-top:19px}
+  .login-card .login-logos{margin-bottom:7px}
+  .login-card .login-logo{width:44px;height:44px;flex-basis:44px}
+  .login-card .login-title{font-size:19px}
+  .login-role-options{gap:7px;margin-top:12px}
+  .login-card .login-role-option{min-height:62px;padding:8px 10px}
+  .login-card-auth .login-form{gap:8px;margin-top:12px}
+}
+@media(prefers-reduced-motion:reduce){.login-card .login-role-option{transition:none}.login-card .login-role-option:hover{transform:none}}
+</style>
+
+
+
+<style id="v48-public-login-button-scroll-fix">
+/* V48 test-copy fix: branded Public Dashboard login shortcut and reliable overlay scroll reset. */
+.public-access-btn.login-access{
+  background:linear-gradient(135deg,#064088 0%,#2D5FAE 58%,#4779B9 100%) !important;
+  color:#fff !important;
+  border:1px solid rgba(255,255,255,.48) !important;
+  border-radius:13px !important;
+  min-height:40px;
+  padding:10px 13px;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.08px;
+  box-shadow:0 7px 18px rgba(6,64,136,.23),inset 0 1px 0 rgba(255,255,255,.18);
+  transition:transform .16s ease,box-shadow .16s ease,filter .16s ease;
+}
+.public-access-btn.login-access:hover{
+  background:linear-gradient(135deg,#05356f 0%,#24539b 60%,#3d6fae 100%) !important;
+  color:#fff !important;
+  border-color:rgba(255,255,255,.68) !important;
+  box-shadow:0 10px 22px rgba(6,64,136,.3);
+  transform:translateY(-1px);
+}
+.public-access-btn.login-access:active{transform:translateY(0);filter:brightness(.97)}
+.public-access-btn.login-access:focus-visible{outline:3px solid #93c5fd;outline-offset:3px}
+@media(max-width:760px){
+  .public-access-btn.login-access{min-height:38px;padding:9px 11px;font-size:10px;border-radius:12px!important}
+}
+@media(max-width:420px){
+  .public-access-btn.login-access{min-height:36px;padding:8px 9px;font-size:9.5px}
+}
+@media(prefers-reduced-motion:reduce){.public-access-btn.login-access{transition:none}.public-access-btn.login-access:hover{transform:none}}
+</style>
+
 </head>
 <body class="public-mode">
 
@@ -850,9 +1028,7 @@ body{background:var(--bg)}
           </div>
           <div class="public-login-stack">
             <div class="public-access-actions">
-              <button class="public-access-btn login-access" onclick="openLoginChooser()">&#x1F510; Admin / BHW Login</button>
-              <button class="public-access-btn ios-access" onclick="openAccessGuide('ios')">&#x1F34E; iOS Guide</button>
-              <a class="public-access-btn android-access" href="e-konek.apk" download="e-konek.apk" title="Download e-Konek Android app">&#x1F916; Android App</a>
+              <button class="public-access-btn login-access" type="button" onclick="openLoginChooser()" aria-haspopup="dialog" aria-controls="loginChooser">&#x1F510; Admin / BHW Login</button>
             </div>
             <div id="publicNetworkSlot"></div>
           </div>
@@ -925,7 +1101,7 @@ body{background:var(--bg)}
             <div class="heat-map"><div class="heat-map-inner" id="publicHeatMap"></div>
               <div class="heat-legend">
                 <div><span class="legend-dot" style="background:#60a5fa"></span>27&#x2013;32 Caution</div>
-                <div><span class="legend-dot" style="background:#1d4ed8"></span>33&#x2013;41 Extreme Caution</div>
+                <div><span class="legend-dot" style="background:#4779B9"></span>33&#x2013;41 Extreme Caution</div>
                 <div><span class="legend-dot" style="background:#dc2626"></span>42&#x2013;51 Danger</div>
                 <div><span class="legend-dot" style="background:#7f1d1d"></span>52+ Extreme Danger</div>
               </div>
@@ -973,7 +1149,7 @@ body{background:var(--bg)}
             <div class="heat-map"><div class="heat-map-inner" id="adminHeatMap"></div>
               <div class="heat-legend">
                 <div><span class="legend-dot" style="background:#60a5fa"></span>27&#x2013;32 Caution</div>
-                <div><span class="legend-dot" style="background:#1d4ed8"></span>33&#x2013;41 Extreme Caution</div>
+                <div><span class="legend-dot" style="background:#4779B9"></span>33&#x2013;41 Extreme Caution</div>
                 <div><span class="legend-dot" style="background:#dc2626"></span>42&#x2013;51 Danger</div>
                 <div><span class="legend-dot" style="background:#7f1d1d"></span>52+ Extreme Danger</div>
               </div>
@@ -982,30 +1158,6 @@ body{background:var(--bg)}
           </div>
         </div>
 
-        <div class="panel" style="margin-top:13px">
-          <div class="section-head" style="margin:0 0 10px">
-            <div>
-              <div class="panel-title">&#x1F4E1; Barangay Connectivity Monitoring</div>
-              <div class="panel-sub">Live unit status &#x2014; which barangay/BHW is currently active, recently seen, or offline.</div>
-            </div>
-            <div class="filters">
-              <select id="adminDashConnectivityFilter" onchange="renderAdminDashboardConnectivity()">
-                <option value="all">All Units</option>
-                <option value="Online">Online</option>
-                <option value="Pending">Recently Seen</option>
-                <option value="Offline">Offline</option>
-              </select>
-              <button class="btn btn-light" onclick="refreshUnits()">&#x21BB; Refresh</button>
-            </div>
-          </div>
-          <div class="detail-strip">
-            <div class="detail-box"><div class="dlabel">Online</div><div class="dvalue" id="dashOnlineCount">0</div></div>
-            <div class="detail-box"><div class="dlabel">Recently Seen</div><div class="dvalue" id="dashPendingCount">0</div></div>
-            <div class="detail-box"><div class="dlabel">Offline</div><div class="dvalue" id="dashOfflineCount">0</div></div>
-            <div class="detail-box"><div class="dlabel">Total Units</div><div class="dvalue" id="dashUnitCount">16</div></div>
-          </div>
-          <div class="connectivity-grid" id="adminDashboardConnectivity" style="margin-top:10px"></div>
-        </div>
         <div class="panel" style="margin-top:13px" id="adminDashboardLatestAnnouncements"><div class="section-head" style="margin:0 0 9px"><div><div class="panel-title">&#x1F4E2; Latest Announcements</div><div class="panel-sub">Quick view of active advisories.</div></div><button class="btn btn-light" onclick="showView('admin-announcements')">Manage</button></div><div class="announcement-list" id="adminDashboardAnnouncementsMini"></div></div>
 
 
@@ -1213,7 +1365,7 @@ body{background:var(--bg)}
           <button class="btn btn-light" onclick="refreshHeatIndexLive()">&#x21BB; Refresh Live Data</button>
         </div>
         <div class="notice">PAGASA uses a 4-tier effect-based classification for heat index. The local table below never fabricates per-barangay readings. For exact location-based current conditions, use the official DOST-PAGASA iHeatMap. The Tanay AWS value shown by this system is a nearby reference station only.</div><div id="adminHeatReference" class="notice" style="margin-top:10px">PAGASA reference station: waiting for live data&#x2026;</div><div class="heat-refresh" style="margin-top:9px"><a class="btn btn-light" href="https://iheatmap.pagasa.dost.gov.ph/" target="_blank" rel="noopener">&#x1F6F0;&#xFE0F; Open Official PAGASA iHeatMap</a></div>
-        <div class="panel heat-panel"><div class="heat-map-wrap"><div class="heat-map"><div class="heat-map-inner" id="adminHeatMap2"></div><div class="heat-legend"><div><span class="legend-dot" style="background:#60a5fa"></span>27&#x2013;32 Caution</div><div><span class="legend-dot" style="background:#1d4ed8"></span>33&#x2013;41 Extreme Caution</div><div><span class="legend-dot" style="background:#dc2626"></span>42&#x2013;51 Danger</div><div><span class="legend-dot" style="background:#7f1d1d"></span>52+ Extreme Danger</div></div></div><div class="heat-table-wrap"><table><thead><tr><th>Barangay</th><th>HI</th><th>Level</th><th>Assigned BHW</th></tr></thead><tbody id="adminHeatBody2"></tbody></table></div></div></div>
+        <div class="panel heat-panel"><div class="heat-map-wrap"><div class="heat-map"><div class="heat-map-inner" id="adminHeatMap2"></div><div class="heat-legend"><div><span class="legend-dot" style="background:#60a5fa"></span>27&#x2013;32 Caution</div><div><span class="legend-dot" style="background:#4779B9"></span>33&#x2013;41 Extreme Caution</div><div><span class="legend-dot" style="background:#dc2626"></span>42&#x2013;51 Danger</div><div><span class="legend-dot" style="background:#7f1d1d"></span>52+ Extreme Danger</div></div></div><div class="heat-table-wrap"><table><thead><tr><th>Barangay</th><th>HI</th><th>Level</th><th>Assigned BHW</th></tr></thead><tbody id="adminHeatBody2"></tbody></table></div></div></div>
       </section>
 
       <!-- BHW HEAT -->
@@ -1458,21 +1610,58 @@ body{background:var(--bg)}
 
 
 <!-- PUBLIC LOGIN CHOOSER -->
-<div class="login-overlay" id="loginChooser">
-  <div class="login-card" style="text-align:center">
+<div class="login-overlay" id="loginChooser" role="dialog" aria-modal="true" aria-labelledby="loginChooserTitle" onclick="if(event.target===this)closeLoginChooser()">
+  <div class="login-card login-card-chooser">
     <div class="login-logos" aria-label="Antipolo City Health Office and Super El Ni&#xF1;o logos"><img class="app-logo login-logo" data-logo="cho" src="" alt="Antipolo City Health Office logo"><img class="app-logo login-logo" data-logo="super" src="" alt="Super El Ni&#xF1;o logo"></div>
-    <div class="login-title">Authorized Access</div>
-    <div class="login-sub">Choose the dashboard you are authorized to access.</div>
-    <div style="display:grid;gap:9px;margin-top:17px">
-      <button class="btn btn-orange" onclick="chooseLogin('admin')">&#x1F6E1;&#xFE0F; Admin Dashboard</button>
-      <button class="btn btn-green" onclick="chooseLogin('bhw')">&#x1FA7A; BHW Dashboard</button>
-      <button class="btn btn-light" onclick="closeLoginChooser()">Cancel</button>
+    <div class="login-eyebrow">ANTIPOLO CITY HEALTH OFFICE</div>
+    <div class="login-title" id="loginChooserTitle">Authorized Access</div>
+    <div class="login-sub">Select your assigned workspace to continue.</div>
+    <div class="login-role-options">
+      <button class="login-role-option admin-role" type="button" onclick="chooseLogin('admin')">
+        <span class="login-role-icon" aria-hidden="true">&#x1F6E1;&#xFE0F;</span>
+        <span class="login-role-copy"><strong>Admin Dashboard</strong><small>City-wide monitoring and system management</small></span>
+        <span class="login-role-arrow" aria-hidden="true">&#x2192;</span>
+      </button>
+      <button class="login-role-option bhw-role" type="button" onclick="chooseLogin('bhw')">
+        <span class="login-role-icon" aria-hidden="true">&#x1FA7A;</span>
+        <span class="login-role-copy"><strong>BHW Dashboard</strong><small>Barangay reports and assigned patient records</small></span>
+        <span class="login-role-arrow" aria-hidden="true">&#x2192;</span>
+      </button>
     </div>
+    <button class="login-cancel" type="button" onclick="closeLoginChooser()">Return to Public Dashboard</button>
+    <div class="login-privacy-note"><span aria-hidden="true">&#x1F512;</span> Authorized personnel only</div>
   </div>
 </div>
 
 
 
+
+<!-- DOWNLOAD PLATFORM CHOOSER: prevent iOS users from being sent to an Android APK -->
+<div class="access-modal" id="appDownloadChooser" role="dialog" aria-modal="true" aria-labelledby="appDownloadChooserTitle" onclick="if(event.target===this)closeAppDownloadChooser()">
+  <div class="access-card">
+    <div class="access-head">
+      <div><div class="access-title" id="appDownloadChooserTitle">&#x1F4F2; Download e-Konek App</div><div class="access-sub">Piliin ang tamang option para sa device na gamit mo.</div></div>
+      <button class="access-close" onclick="closeAppDownloadChooser()" aria-label="Close download options">&#x2715;</button>
+    </div>
+    <p class="platform-choice-intro">Hindi pareho ang installation ng Android at iPhone/iPad. Piliin muna ang operating system ng iyong cellphone.</p>
+    <div class="platform-choice-grid">
+      <div class="platform-choice-card android-choice">
+        <div class="platform-choice-icon" aria-hidden="true">&#x1F916;</div>
+        <h3>Android phone / tablet</h3>
+        <p>Para sa Android devices. I-download ang <strong>e-konek.apk</strong>, pagkatapos ay sundin ang installation guide.</p>
+        <a class="public-access-btn android-access" href="e-konek.apk" download="e-konek.apk" onclick="closeAppDownloadChooser()">&#x2B07;&#xFE0F; Download Android APK</a>
+        <button class="public-access-btn" type="button" onclick="closeAppDownloadChooser();openAccessGuide('android')">View Android Install Guide</button>
+      </div>
+      <div class="platform-choice-card ios-choice">
+        <div class="platform-choice-icon" aria-hidden="true">&#x1F34E;</div>
+        <h3>iPhone / iPad (iOS)</h3>
+        <p>Huwag mag-download ng APK sa iPhone/iPad. Gamitin ang Safari para idagdag ang e-Konek website sa Home Screen.</p>
+        <button class="public-access-btn ios-access" type="button" onclick="closeAppDownloadChooser();openAccessGuide('ios')">&#x1F34E; Open iOS Guide</button>
+      </div>
+    </div>
+    <div class="platform-choice-warning"><strong>Important:</strong> Ang Android APK ay para lang sa Android. Hindi ito mai-install sa iPhone o iPad.</div>
+  </div>
+</div>
 
 <!-- V43 ACCESS GUIDES -->
 <div class="access-modal" id="iosGuideModal" role="dialog" aria-modal="true" aria-labelledby="iosGuideTitle" onclick="if(event.target===this)closeAccessGuide('ios')">
@@ -1503,7 +1692,7 @@ body{background:var(--bg)}
     <div class="access-step"><div class="access-num">3</div><div><strong>Payagan ang installation kung hihingin</strong><span>Kung may security prompt, sundin ang Android permission para ma-install ang app.</span></div></div>
     <div class="access-step"><div class="access-num">4</div><div><strong>Install at Open</strong><span>Pagkatapos ma-install, buksan ang e-Konek app.</span></div></div>
     <div class="access-download"><a class="public-access-btn android-access" href="e-konek.apk" download="e-konek.apk">&#x2B07;&#xFE0F; Download e-Konek App</a></div>
-    <div class="access-tip">&#x1F4CC; I-upload ang file na <strong>e-konek.apk</strong> sa parehong root folder ng <strong>index.html</strong> sa Vercel/GitHub deployment para gumana ang download button.</div>
+    <div class="access-tip">&#x1F4CC; Android APK lang ito. Kung iPhone o iPad ang gamit mo, isara ang guide at piliin ang <strong>iOS Guide</strong> sa Download e-Konek App menu.</div>
   </div>
 </div>
 
@@ -1538,19 +1727,20 @@ body{background:var(--bg)}
 </div>
 
 <!-- LOGIN -->
-<div class="login-overlay" id="loginOverlay">
-  <div class="login-card">
+<div class="login-overlay" id="loginOverlay" role="dialog" aria-modal="true" aria-labelledby="loginFormTitle" onclick="if(event.target===this)closeLogin()">
+  <div class="login-card login-card-auth">
     <div class="login-logos" aria-label="Antipolo City Health Office and Super El Ni&#xF1;o logos"><img class="app-logo login-logo" data-logo="cho" src="" alt="Antipolo City Health Office logo"><img class="app-logo login-logo" data-logo="super" src="" alt="Super El Ni&#xF1;o logo"></div>
-    <div class="login-title">&#x1F510; Authorized Login</div>
-    <div class="login-sub">Authorized access for Admin and BHW dashboards.</div>
+    <div class="login-eyebrow">SECURE STAFF ACCESS</div>
+    <div class="login-title" id="loginFormTitle">Sign in to your account</div>
+    <div class="login-sub">Use the credentials assigned to your authorized account.</div>
     <div class="login-form">
-      <div class="error" id="loginError">Please enter your authorized account credentials.</div>
-      <div class="field"><div class="label">Role</div><select id="loginRole" onchange="syncLoginBrgy()"><option value="admin">Admin</option><option value="bhw">BHW</option></select></div>
-      <div class="field"><div class="label">Username</div><input id="loginUser" placeholder="Username"></div>
-      <div class="field"><div class="label">Password</div><input id="loginPass" type="password" placeholder="Password"></div>
-      <div class="field" id="loginBrgyWrap"><div class="label">Assigned Barangay</div><select id="loginBrgy"></select></div>
-      <div class="login-offline-note" style="font-size:10px;line-height:1.45;color:#64748b;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:8px 10px">Offline login is available after this device has successfully authenticated online once. No plain-text password is stored.</div>
-      <div class="form-actions"><button class="btn btn-light" onclick="closeLogin()">Cancel</button><button class="btn btn-orange" id="loginSubmitBtn" onclick="login()">Login</button></div>
+      <div class="error" id="loginError" role="alert">Please enter your authorized account credentials.</div>
+      <div class="field"><div class="label">Access Role</div><select id="loginRole" onchange="syncLoginBrgy()"><option value="admin">Admin</option><option value="bhw">BHW</option></select></div>
+      <div class="field"><div class="label">Username</div><input id="loginUser" autocomplete="username" autocapitalize="none" placeholder="Enter your username"></div>
+      <div class="field"><div class="label">Password</div><input id="loginPass" type="password" autocomplete="current-password" placeholder="Enter your password"></div>
+      <div class="field" id="loginBrgyWrap"><div class="label">Assigned Barangay</div><select id="loginBrgy" autocomplete="off"></select></div>
+      <div class="login-offline-note"><span aria-hidden="true">&#x2139;&#xFE0F;</span><span>Offline sign-in is available only after this device has successfully authenticated online once. Your password is not stored as plain text.</span></div>
+      <div class="form-actions"><button type="button" class="btn btn-light" onclick="closeLogin()">Cancel</button><button type="button" class="btn btn-orange" id="loginSubmitBtn" onclick="login()">Sign In</button></div>
     </div>
   </div>
 </div>
@@ -1705,7 +1895,14 @@ body{background:var(--bg)}
       <div class="field" id="uBarangayField"><div class="label">Assigned Barangay *</div><select id="uBarangay"></select></div>
       <div class="field"><div class="label">Status</div><select id="uStatus"><option>Active</option><option>Inactive</option></select></div>
     </div>
-    <div class="form-actions"><button class="btn btn-light" onclick="closeUserModal()">Cancel</button><button class="btn btn-orange" onclick="saveUser()">Save User</button></div>
+    <div id="userSaveProgress" class="user-save-progress" role="status" aria-live="polite" aria-atomic="true" hidden>
+      <span class="user-save-spinner" aria-hidden="true"></span>
+      <span id="userSaveProgressText">Saving user to Google Sheets&#x2026; Please wait.</span>
+    </div>
+    <div class="form-actions">
+      <button type="button" id="userModalCancelBtn" class="btn btn-light" onclick="closeUserModal()">Cancel</button>
+      <button type="button" id="userSaveBtn" class="btn btn-orange user-save-btn" onclick="saveUser()"><span class="user-save-button-content" id="userSaveButtonContent">&#x1F4BE; Save User</span></button>
+    </div>
   </div>
 </div>
 
@@ -1809,6 +2006,7 @@ let outbox=loadOutbox();
 let session = null;
 let users=[];
 let editingUserId=null;
+let userSaveInProgress=false;
 
 
 const HEAT_INDEX_KEY="elnino_live_heat_index_v19";
@@ -2004,7 +2202,43 @@ function openUserModal(role="bhw"){
   document.getElementById("userModal").style.display="flex";
 }
 
-function closeUserModal(){document.getElementById("userModal").style.display="none"}
+function closeUserModal(){if(userSaveInProgress)return;document.getElementById("userModal").style.display="none"}
+
+function setUserSaveLoading(isLoading,message){
+  const modal=document.getElementById("userModal");
+  const progress=document.getElementById("userSaveProgress");
+  const progressText=document.getElementById("userSaveProgressText");
+  const saveBtn=document.getElementById("userSaveBtn");
+  const saveContent=document.getElementById("userSaveButtonContent");
+  const cancelBtn=document.getElementById("userModalCancelBtn");
+  const closeBtn=modal?.querySelector(".section-head > button");
+  if(isLoading){
+    userSaveInProgress=true;
+    if(progressText)progressText.textContent=message||"Saving user to Google Sheets… Please wait.";
+    if(progress)progress.hidden=false;
+    if(saveBtn)saveBtn.disabled=true;
+    if(cancelBtn)cancelBtn.disabled=true;
+    if(closeBtn)closeBtn.disabled=true;
+    if(saveContent)saveContent.innerHTML='<span class="user-save-spinner" aria-hidden="true"></span><span>Saving…</span>';
+    modal?.querySelectorAll("input,select,textarea").forEach(el=>{
+      if(!Object.prototype.hasOwnProperty.call(el.dataset,"userSaveWasDisabled"))el.dataset.userSaveWasDisabled=String(el.disabled);
+      el.disabled=true;
+    });
+  }else{
+    userSaveInProgress=false;
+    if(progress)progress.hidden=true;
+    if(saveBtn)saveBtn.disabled=false;
+    if(cancelBtn)cancelBtn.disabled=false;
+    if(closeBtn)closeBtn.disabled=false;
+    if(saveContent)saveContent.innerHTML="&#x1F4BE; Save User";
+    modal?.querySelectorAll("input,select,textarea").forEach(el=>{
+      if(Object.prototype.hasOwnProperty.call(el.dataset,"userSaveWasDisabled")){
+        el.disabled=el.dataset.userSaveWasDisabled==="true";
+        delete el.dataset.userSaveWasDisabled;
+      }
+    });
+  }
+}
 
 function editUser(id){
   const key=String(id||"");
@@ -2030,6 +2264,7 @@ function editUser(id){
 
 async function saveUser(){
   if(session?.role!=="admin"){alert("Admin access required.");return}
+  if(userSaveInProgress)return;
   const role=document.getElementById("uRole").value;
   const name=document.getElementById("uName").value.trim();
   const contact=document.getElementById("uContact").value.trim();
@@ -2056,17 +2291,22 @@ async function saveUser(){
   if(password) userPayload.password=password;
 
   const isEdit=!!editingUserId;
+  setUserSaveLoading(true,isEdit?"Updating user in Google Sheets… Please wait.":"Saving new user to Google Sheets… Please wait.");
   try{
     const result=await apiPost("saveUser",{user:session.user,u:userPayload});
     const saved=normUser(result.user||userPayload);
     if(result.persisted!==true) throw new Error("Backend did not confirm the user write.");
     const idx=users.findIndex(x=>String(x.id||"")===String(saved.id||editingUserId||""));
     if(idx>=0) users[idx]=saved; else users.push(saved);
+    // Keep the loading state active while verifying the authoritative Users sheet.
+    setUserSaveLoading(true,"User write received. Verifying the Users sheet… Please wait.");
     // Immediately re-read the Users sheet through the backend so the table is authoritative.
     const verifiedUsers=await apiPost("users",{user:session.user});
     if(!Array.isArray(verifiedUsers.users)) throw new Error("Users sheet could not be re-read after save.");
     users=verifiedUsers.users.map(normUser);
     saveUsers();
+    // End the pending state immediately before closing after a confirmed write/read-back.
+    setUserSaveLoading(false);
     closeUserModal();
     renderAdminUsers();
     applyLiveConnectivity(window.__liveConnectivity||[]);
@@ -2078,6 +2318,8 @@ async function saveUser(){
     // report a successful user save as an error.
   }catch(err){
     alert("Could not save user to Google Sheets.\n\n"+err.message);
+  }finally{
+    setUserSaveLoading(false);
   }
 }
 
@@ -2285,22 +2527,30 @@ function renderUnits(){
     return `<div class="unit-card"><div class="unit-icon">\uD83D\uDCCD</div><div><div class="unit-name">${esc(b)}</div><div class="unit-meta"><span class="online-dot ${st==="Online"?"online":st==="Pending"?"pending":"offline"}"></span>${st} \u2022 ${u?esc(u.username):"No BHW account"} \u2022 ${cases} cases</div></div><div><span class="status ${st==="Online"?"badge-online":st==="Offline"?"badge-offline":"s-review"}">${st}</span></div></div>`;
   }).join("")||`<div class="empty" style="grid-column:1/-1">No units match this filter.</div>`;
 }
+// Prevent overlapping connectivity requests from the Refresh button and auto-refresh.
+let connectivityRefreshInFlight=false;
 async function refreshUnits(){
-  if(LIVE_API_URL&&navigator.onLine&&session?.role==="admin"){
-    try{
-      const data=await apiPost('connectivity',{user:session.user});
-      if(Array.isArray(data.units)){
-        window.__liveConnectivity=data.units;
-        applyLiveConnectivity(data.units);
-        renderUnits();
-        renderAdminDashboardConnectivity();
-      }
-    }catch(err){console.warn('Connectivity refresh failed',err.message)}
-    return;
+  if(connectivityRefreshInFlight)return;
+  connectivityRefreshInFlight=true;
+  try{
+    if(LIVE_API_URL&&navigator.onLine&&session?.role==="admin"){
+      try{
+        const data=await apiPost('connectivity',{user:session.user});
+        if(Array.isArray(data.units)){
+          window.__liveConnectivity=data.units;
+          applyLiveConnectivity(data.units);
+          renderUnits();
+          renderAdminDashboardConnectivity();
+        }
+      }catch(err){console.warn('Connectivity refresh failed',err.message)}
+      return;
+    }
+    applyLiveConnectivity(window.__liveConnectivity||[]);
+    renderUnits();
+    renderAdminDashboardConnectivity();
+  }finally{
+    connectivityRefreshInFlight=false;
   }
-  applyLiveConnectivity(window.__liveConnectivity||[]);
-  renderUnits();
-  renderAdminDashboardConnectivity();
 }
 
 let heartbeatTimer=null;
@@ -3158,14 +3408,8 @@ function startAutoRefresh(){
    refreshCurrentViewData();
  },LIVE_REFRESH_MS);
 }
-let connectivityFastTimer=null;
-function startConnectivityFastRefresh(){
- if(connectivityFastTimer)clearInterval(connectivityFastTimer);
- connectivityFastTimer=setInterval(()=>{
-   if(document.visibilityState==="visible" && currentView==="admin-monitoring" && session?.role==="admin") refreshUnits();
- },15000);
-}
-startConnectivityFastRefresh();
+// Connectivity now uses the existing 30-second active-view refresh only.
+// refreshUnits() is single-flight to avoid duplicate simultaneous requests.
 document.addEventListener("visibilitychange",()=>{
  if(document.visibilityState==="visible"){
    refreshCurrentViewData();
@@ -3468,18 +3712,46 @@ function updateFormLock(){document.getElementById("rBarangay").disabled=session?
 
 
 
+// Download platform chooser: ask device type before offering Android APK or iOS instructions.
+function openAppDownloadChooser(){
+  const el=document.getElementById('appDownloadChooser');
+  if(el){el.style.display='flex';document.body.classList.add('modal-open');}
+}
+// Keep scroll locking in sync with the three app-download overlays.
+function syncAppDownloadScrollLock(){
+  const ids=['appDownloadChooser','iosGuideModal','androidGuideModal'];
+  const anyOpen=ids.some(id=>{
+    const el=document.getElementById(id);
+    return !!el && el.style.display==='flex';
+  });
+  document.body.classList.toggle('modal-open',anyOpen);
+}
+function closeAllAppDownloadOverlays(){
+  ['appDownloadChooser','iosGuideModal','androidGuideModal'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.style.display='none';
+  });
+  // Navigation away from the download flow must always restore page scrolling.
+  document.body.classList.remove('modal-open');
+}
+function closeAppDownloadChooser(){
+  const el=document.getElementById('appDownloadChooser');
+  if(el)el.style.display='none';
+  syncAppDownloadScrollLock();
+}
+
 // V43 Public Access Guides
 function openAccessGuide(kind){
   const id = kind==='ios' ? 'iosGuideModal' : 'androidGuideModal';
   const el = document.getElementById(id);
-  if(el){ el.style.display='flex'; document.body.classList.add('modal-open'); }
+  if(el){ el.style.display='flex'; }
+  syncAppDownloadScrollLock();
 }
 function closeAccessGuide(kind){
   const id = kind==='ios' ? 'iosGuideModal' : 'androidGuideModal';
   const el = document.getElementById(id);
   if(el){ el.style.display='none'; }
-  const a=document.getElementById('iosGuideModal'), b=document.getElementById('androidGuideModal');
-  if((!a||a.style.display==='none')&&(!b||b.style.display==='none')) document.body.classList.remove('modal-open');
+  syncAppDownloadScrollLock();
 }
 
 function openLoginChooser(){
@@ -3611,12 +3883,7 @@ document.querySelectorAll(".nav button[data-view]").forEach(btn=>{
  btn.addEventListener("click",()=>{
    const v=btn.dataset.view;
    if(v==="app-downloads"){
-      const a=document.createElement("a");
-      a.href="e-konek.apk";
-      a.download="e-konek.apk";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
+      openAppDownloadChooser();
       return;
    }
    const adminViews=["admin","admin-users","admin-patients","admin-monitoring"];
@@ -3857,6 +4124,9 @@ function mergeAnnouncementLists(a,b){
 async function refreshCurrentViewData(){return refreshModuleLive(currentView)}
 
 function showView(v){
+ // If another dashboard view is selected, close any still-open download overlay
+ // and remove its scroll lock before switching navigation/content.
+ if(v!=="app-downloads")closeAllAppDownloadOverlays();
  currentView=v;
  document.body.classList.toggle("public-mode", v==="public");
  placeNetworkBanner();

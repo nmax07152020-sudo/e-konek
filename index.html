@@ -17,7 +17,7 @@
 <link rel="apple-touch-icon" sizes="152x152" href="./apple-touch-icon-152.png">
 <link rel="apple-touch-icon" sizes="120x120" href="./apple-touch-icon-120.png">
 <link rel="icon" type="image/png" href="./icon-192.png">
-<title>e-Konek</title>
+<title>Emergency - Connect | Antipolo City Health Office</title>
 <style>
 :root{
   --bg:#f4f7fb;--card:#fff;--text:#17202a;--muted:#64748b;--line:#dbe3ef;
@@ -65,6 +65,7 @@ button{cursor:pointer}
 .hero h1{margin:7px 0 7px;font-size:clamp(25px,3vw,37px);line-height:1.02}
 .hero p{margin:0;max-width:800px;font-size:13px;line-height:1.6;opacity:.94}
 .hero-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:15px}.hero-tag{font-size:10px;font-weight:900;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18)}
+.hero-tag-anchor{display:inline-flex;align-items:center;color:inherit;text-decoration:none;cursor:pointer;transition:background .16s ease,transform .16s ease}.hero-tag-anchor:hover,.hero-tag-anchor:focus-visible{background:rgba(255,255,255,.24);transform:translateY(-1px);outline:2px solid rgba(255,255,255,.7);outline-offset:2px}
 
 .section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:18px 0 12px;flex-wrap:wrap}
 .section-title{font-size:19px;font-weight:950}.section-sub{font-size:11px;color:var(--muted);margin-top:4px}
@@ -333,7 +334,7 @@ body.public-mode .content{max-width:1450px;padding-top:20px}
 
 .app-logo{display:block;object-fit:cover;border-radius:22%;box-shadow:0 8px 24px rgba(0,0,0,.18)}
 .sidebar-logo{width:44px;height:44px;flex:0 0 44px}
-.hero-logo{width:84px;height:84px;border:3px solid rgba(255,255,255,.65);margin-bottom:12px}
+.hero-logo{width:84px;height:84px;border:3px solid rgba(255,255,255,.65);margin-bottom:12px;object-fit:contain;background:rgba(255,255,255,.08)}
 .topbar-logo{width:34px;height:34px;border-radius:10px}
 .login-logo{width:88px;height:88px;margin:0 auto 12px}
 .report-logo{width:58px;height:58px;float:right;margin:-4px 0 8px 12px}
@@ -787,6 +788,33 @@ body{background:var(--bg)}
 @keyframes announcementSpin{to{transform:rotate(360deg)}}
 .public-announcement-loading{display:flex;align-items:center;gap:9px;padding:13px 14px;border:1px solid var(--line);border-radius:10px;color:#64748b;background:#f8fafc;font-size:12px;font-weight:750}
 .public-announcement-empty{padding:13px 14px;border:1px dashed var(--line);border-radius:10px;color:#64748b;font-size:12px;background:#fafafa}
+
+/* Dynamic conditions and hospital referral module */
+.hospital-card-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.hospital-public-card,.hospital-admin-card{border:1px solid var(--line);border-radius:14px;background:#fff;padding:13px;min-width:0}
+.hospital-public-card .hospital-name,.hospital-admin-card .hospital-name{font-weight:950;font-size:12px;line-height:1.35;overflow-wrap:anywhere}
+.hospital-public-card .hospital-short{font-size:10px;color:var(--muted);margin-top:3px}
+.hospital-bed-mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.hospital-bed-mini{border:1px solid var(--line);background:#f8fafc;border-radius:10px;padding:9px}
+.hospital-bed-mini .k{font-size:9px;font-weight:900;color:var(--muted);text-transform:uppercase}.hospital-bed-mini .v{font-size:18px;font-weight:950;margin-top:4px}
+.hospital-summary-total{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px;border:1px solid var(--line);background:#f8fafc;border-radius:12px;margin-bottom:10px}.hospital-summary-total strong{font-size:24px}
+.hospital-summary-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:10px}
+.hospital-summary-metrics .metric{padding:8px;border-radius:9px;background:#f8fafc;border:1px solid var(--line)}.hospital-summary-metrics .metric span{display:block;color:var(--muted);font-size:9px}.hospital-summary-metrics .metric strong{display:block;font-size:17px;margin-top:3px}
+.hospital-admin-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.hospital-admin-cap-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.hospital-beds-layout{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hospital-bed-number{font-size:30px;font-weight:950;margin:14px 0}.hospital-bed-actions{display:flex;gap:8px}.hospital-bed-actions button{flex:1}
+
+.patient-attachment-field{border:1px dashed #9fb5d0;background:#f8fbff;border-radius:12px;padding:12px}
+.patient-attachment-list{font-size:12px;color:#475569;line-height:1.6;margin-top:7px;overflow-wrap:anywhere}
+.patient-attachment-note{font-size:11px;color:#64748b;line-height:1.5;margin-top:5px}
+.attachment-preview-image{display:block;max-width:100%;max-height:65vh;object-fit:contain;margin:12px auto;border-radius:10px;border:1px solid #dbe4ef;background:#f8fafc}
+.attachment-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #e2e8f0}
+.attachment-row:last-child{border-bottom:0}
+.hospital-referral-status{display:inline-flex;padding:4px 7px;border-radius:99px;font-size:9px;font-weight:900;background:#f1f5f9;color:#334155}.hospital-referral-status.pending{background:#fef3c7;color:#92400e}.hospital-referral-status.accepted{background:#dcfce7;color:#166534}.hospital-referral-status.refused{background:#fee2e2;color:#991b1b}
+@media(max-width:1000px){.hospital-card-grid,.hospital-admin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.hospital-card-grid,.hospital-admin-grid,.hospital-beds-layout{grid-template-columns:1fr}.hospital-summary-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
 </style>
 <style>body.modal-open{overflow:hidden}</style>
 
@@ -860,7 +888,7 @@ button:disabled{cursor:wait;opacity:.72}
   <aside class="sidebar" id="sidebar">
     <div class="brand">
       <img class="app-logo sidebar-logo" data-logo="cho" src="" alt="Antipolo City Health Office logo">
-      <div><div class="brand-title"><span class="brand-red">SUPER</span> <span class="brand-blue">EL NI&#xD1;O</span></div><div class="brand-sub">Heat-Related Illness Surveillance</div></div>
+      <div><div class="brand-title">Emergency - Connect</div><div class="brand-sub">Antipolo City Health Office</div></div>
     </div>
 
     <div class="nav">
@@ -868,6 +896,9 @@ button:disabled{cursor:wait;opacity:.72}
       <div class="separator">Authorized Views</div>
       <button data-view="admin">&#x1F6E1;&#xFE0F; Admin Dashboard <span class="lock-badge">&#x1F512;</span></button>
       <button data-view="admin-users">&#x1F465; User Management <span class="nav-badge">ADMIN</span></button>
+      <button data-view="admin-conditions">&#x1FA7A; Patient Conditions</button>
+      <button data-view="admin-branding">&#x1F3A8; Dashboard Title &amp; Logo</button>
+      <button data-view="admin-hospitals">&#x1F3E5; Antipolo Hospital</button>
       <button data-view="admin-personnel">&#x1F4C7; Personnel Directory</button>
       <button data-view="admin-patients">&#x1F4CB; Patient Records <span class="nav-badge">ALL</span></button>
       <button data-view="admin-monitoring">&#x1F4E1; Barangay Online Monitoring</button>
@@ -882,6 +913,8 @@ button:disabled{cursor:wait;opacity:.72}
       <button data-view="bhw-personnel">&#x1F4C7; Personnel Directory</button>
       <button data-view="bhw-announcements">&#x1F4E2; Announcements</button>
       <button data-view="bhw-inventory">&#x1F4E6; My Medical Inventory</button>
+      <div class="separator" id="hospitalNavSeparator" style="display:none">Antipolo Hospital</div>
+      <button data-view="hospital-dashboard" id="hospitalDashboardNav" style="display:none">&#x1F3E5; Hospital Dashboard</button>
       <button data-view="app-downloads">&#x1F4F2; Download e-Konek App</button>
       <button data-view="report">&#x1F4DD; Submit Patient Report</button>
     </div>
@@ -934,16 +967,16 @@ button:disabled{cursor:wait;opacity:.72}
           </div>
         </div>
         <div class="hero">
-          <img class="app-logo hero-logo" data-logo="super" src="" alt="Super El Ni&#xF1;o logo">
-          <div class="hero-kicker">Heat Alert Monitoring &#x2022; Community Health Surveillance</div>
-          <h1>SUPER EL NI&#xD1;O</h1>
-          <p>Public situation dashboard for heat-related illness reports.</p>
-          <div class="hero-tags">
-            <span class="hero-tag">&#x2600; Heat Response</span><span class="hero-tag">&#x1F4CD; Barangay Tally</span><span class="hero-tag">&#x1F3E5; Community Reports</span>
+          <img id="publicHeroLogo" class="app-logo hero-logo" data-logo="super" src="" alt="Super El Ni&#xF1;o logo">
+          <div id="publicHeroKicker" class="hero-kicker">Heat Alert Monitoring &#x2022; Community Health Surveillance</div>
+          <h1 id="publicHeroTitle">SUPER EL NI&#xD1;O</h1>
+          <p id="publicHeroDescription">Public situation dashboard for heat-related illness reports.</p>
+          <div class="hero-tags" id="publicHeroActions" aria-label="Public dashboard quick links">
+            <a class="hero-tag hero-tag-anchor" href="#publicHeatMonitoring">&#x2600; Heat Response</a><a class="hero-tag hero-tag-anchor" href="#publicBarangayTally">&#x1F4CD; Barangay Tally</a><a class="hero-tag hero-tag-anchor" href="#publicSituationDashboard">&#x1F3E5; Community Reports</a>
           </div>
         </div>
 
-        <div class="section-head">
+        <div class="section-head" id="publicSituationDashboard">
           <div><div class="section-title">Public Situation Dashboard</div><div class="section-sub">Aggregate surveillance figures only.</div></div>
           <div class="filters">
             <select id="publicPeriod" onchange="renderAll()"><option value="all">All Reports</option><option value="today">Today</option><option value="7">Last 7 Days</option><option value="30">Last 30 Days</option></select>
@@ -976,7 +1009,7 @@ button:disabled{cursor:wait;opacity:.72}
           </div>
         </div>
 
-        <div class="panel public-dashboard-card public-announcements-card">
+        <div class="panel public-dashboard-card public-announcements-card" id="publicAnnouncementsAnchor">
           <div class="section-head" style="margin:0 0 9px">
             <div>
               <div class="panel-title">&#x1F6A8; Emergency Alerts &amp; Announcements</div>
@@ -986,7 +1019,7 @@ button:disabled{cursor:wait;opacity:.72}
           <div id="publicAnnouncementArea" class="public-announcement-panel"></div>
         </div>
 
-        <div class="panel heat-panel">
+        <div class="panel heat-panel" id="publicHeatMonitoring">
           <div class="section-head" style="margin:0 0 9px">
             <div><div class="panel-title">&#x1F321;&#xFE0F; Heat Index Monitoring</div><div class="panel-sub">Antipolo City barangay-level live monitoring.</div></div>
             <div class="heat-refresh"><span class="chip">PAGASA classification</span></div>
@@ -1011,10 +1044,17 @@ button:disabled{cursor:wait;opacity:.72}
           <div class="heat-note">Source/classification basis: DOST-PAGASA effect-based heat-index bands. Caution 27&#x2013;32&#xB0;C, Extreme Caution 33&#x2013;41&#xB0;C, Danger 42&#x2013;51&#xB0;C, and Extreme Danger 52&#xB0;C and above. The embedded map below is the official DOST-PAGASA iHeatMap. Per-barangay values in our table are shown only when an authorized live per-area value is available; a Tanay AWS reference is never copied to Antipolo barangays.</div><div class="panel" style="margin-top:13px"><div class="section-head" style="margin:0 0 9px"><div><div class="panel-title">&#x1F6F0;&#xFE0F; Official DOST-PAGASA iHeatMap</div><div class="panel-sub">Real-time / high-resolution gridded heat-index monitoring and prediction from PAGASA.</div></div><a class="btn btn-light" href="https://iheatmap.pagasa.dost.gov.ph/" target="_blank" rel="noopener">Open Full Map &#x2197;</a></div><div class="official-heat-frame"><iframe src="https://iheatmap.pagasa.dost.gov.ph/" title="DOST-PAGASA iHeatMap" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe></div></div>
         </div>
 
-        <div class="panel" style="margin-top:13px">
+        <div class="panel" id="publicBarangayTally" style="margin-top:13px">
           <div class="section-head" style="margin:0 0 9px"><div><div class="panel-title">Total Cases per Barangay</div><div class="panel-sub" style="margin-bottom:0">Public aggregate tally &#x2014; no patient names shown.</div></div><input id="pubBrgySearch" placeholder="Search barangay..." oninput="renderPublicBarangays()"></div>
           <div class="table-wrap"><table><thead><tr><th>#</th><th>Barangay</th><th>Cases</th><th>Share</th><th>Tally</th></tr></thead><tbody id="pubBarangayBody"></tbody></table></div>
         </div>
+
+        <div class="panel public-dashboard-card" id="publicHospitalsPanel" style="margin-top:13px">
+          <div class="section-head" style="margin:0 0 10px"><div><div class="panel-title">&#x1F3E5; Antipolo Hospital Bed Availability</div><div class="panel-sub">Public summary of ER and Ward beds last reported by each hospital.</div></div><button class="btn btn-light" onclick="refreshPublicHospitals(true)">&#x21BB; Refresh</button></div>
+          <div class="hospital-card-grid" id="publicHospitalsGrid"><div class="empty">Hospital availability has not loaded yet.</div></div>
+          <div class="small-note" id="publicHospitalsUpdated">Availability is shown only after the hospital updates its counts.</div>
+        </div>
+
       </section>
 
       <!-- ADMIN -->
@@ -1032,71 +1072,23 @@ button:disabled{cursor:wait;opacity:.72}
           <div class="card stat-card"><div class="stat-top"><span>Critical</span><span class="icon">&#x1F6A8;</span></div><div class="num" id="admCritical">0</div><div class="small-note">Marked critical</div></div>
         </div>
 
-        <div class="panel" id="adminBhwRegistrationPanel" style="margin-top:13px">
-          <div class="section-head" style="margin:0 0 10px">
-            <div><div class="panel-title">&#x1F465; BHW Registration per Barangay</div><div class="panel-sub">Live account counts from Admin User Management. No target is assumed.</div></div>
-            <div class="filters"><button class="btn btn-light" onclick="refreshBhwRegistrationSummary(true)">&#x21BB; Refresh</button><button class="btn btn-light" onclick="showView('admin-users')">Manage Accounts</button></div>
-          </div>
-          <div class="bhw-registration-totals">
-            <div class="bhw-registration-total"><span>Total BHW Accounts</span><strong id="bhwRegTotal">&#x2014;</strong></div>
-            <div class="bhw-registration-total"><span>Active Accounts / Access</span><strong id="bhwRegActive">&#x2014;</strong></div>
-            <div class="bhw-registration-total"><span>Inactive Accounts</span><strong id="bhwRegInactive">&#x2014;</strong></div>
-          </div>
-          <div class="bhw-registration-grid" id="bhwRegistrationCards"><div class="empty">Registration totals load from the Google Sheets Users records when the live backend is available.</div></div>
-          <div class="small-note" id="bhwRegistrationUpdated" style="margin-top:9px">Waiting for authoritative registration counts.</div>
+        
+
+        <div class="panel" style="margin-top:13px" id="adminHospitalReferralPanel">
+          <div class="section-head" style="margin:0 0 10px"><div><div class="panel-title">&#x1F3E5; Hospital Referral Summary</div><div class="panel-sub">Referrals sent to the three designated hospitals and their response status.</div></div><div class="filters"><button class="btn btn-light" onclick="refreshAdminHospitalData(true)">&#x21BB; Refresh</button><button class="btn btn-light" onclick="showView('admin-hospitals')">Manage Hospitals</button></div></div>
+          <div class="hospital-summary-total"><span>Total Referrals Sent</span><strong id="adminReferralsSentTotal">&#x2014;</strong><span class="small-note" id="adminReferralTotalsSub">Waiting for referral summary.</span></div>
+          <div class="hospital-card-grid" id="adminHospitalReferralCards"><div class="empty">Hospital referral summary loads from Google Sheets.</div></div>
         </div>
 
-        <div class="panel heat-panel">
-          <div class="section-head" style="margin:0 0 9px">
-            <div><div class="panel-title">&#x1F321;&#xFE0F; Antipolo Heat Index Monitoring</div><div class="panel-sub">Admin view of all 16 barangays, risk level, and highest heat index.</div></div>
-            <button class="btn btn-light" onclick="refreshHeatIndexLive()">&#x21BB; Refresh</button>
-          </div>
-          <div class="heat-summary">
-            <div class="heat-level-card"><div class="hl">Average Heat Index</div><div class="hv" id="admAvgHeat">&#x2014;</div></div>
-            <div class="heat-level-card"><div class="hl">Highest Heat Index</div><div class="hv" id="admMaxHeat">&#x2014;</div></div>
-            <div class="heat-level-card"><div class="hl">Danger / Above</div><div class="hv" id="admDangerCount">0</div></div>
-            <div class="heat-level-card"><div class="hl">Extreme Caution</div><div class="hv" id="admExtremeCount">0</div></div>
-          </div>
-          <div class="heat-map-wrap" style="margin-top:11px">
-            <div class="heat-map"><div class="heat-map-inner" id="adminHeatMap"></div>
-              <div class="heat-legend">
-                <div><span class="legend-dot" style="background:#60a5fa"></span>27&#x2013;32 Caution</div>
-                <div><span class="legend-dot" style="background:#4779B9"></span>33&#x2013;41 Extreme Caution</div>
-                <div><span class="legend-dot" style="background:#dc2626"></span>42&#x2013;51 Danger</div>
-                <div><span class="legend-dot" style="background:#7f1d1d"></span>52+ Extreme Danger</div>
-              </div>
-            </div>
-            <div class="heat-table-wrap"><table><thead><tr><th>Barangay</th><th>HI</th><th>Level</th><th>BHW</th></tr></thead><tbody id="adminHeatBody"></tbody></table></div>
-          </div>
-        </div>
+        
 
         <div class="panel" style="margin-top:13px" id="adminDashboardLatestAnnouncements"><div class="section-head" style="margin:0 0 9px"><div><div class="panel-title">&#x1F4E2; Latest Announcements</div><div class="panel-sub">Quick view of active advisories.</div></div><button class="btn btn-light" onclick="showView('admin-announcements')">Manage</button></div><div class="announcement-list" id="adminDashboardAnnouncementsMini"></div></div>
 
 
 
-        <div class="panel heat-panel">
-          <div class="section-head" style="margin:0 0 9px">
-            <div><div class="panel-title">&#x1F321;&#xFE0F; My Barangay Heat Index</div><div class="panel-sub">Heat monitoring for your locked barangay.</div></div>
-          </div>
-          <div class="bhw-heat-card">
-            <div><div class="bhw-heat-value" id="bhwHeatValue">&#x2014;</div><div class="bhw-heat-status" id="bhwHeatStatus">&#x2014;</div><div class="small-note" id="bhwHeatUpdated">Waiting for live official data</div></div>
-            <div class="heat-level-card" style="min-width:150px"><div class="hl">City Average</div><div class="hv" id="bhwCityAvg">&#x2014;</div></div>
-          </div>
-          <div class="heat-note">Use the heat-index level as a surveillance/awareness indicator. Official heat-index data and operational advisories will be connected during the Google Sheets/Code.gs phase.</div>
-        </div>
+        
 
-        <div class="demographic-grid">
-          <div class="panel">
-            <div class="panel-title">&#x1F465; Gender Distribution</div>
-            <div class="panel-sub">Total recorded cases by sex.</div>
-            <div id="adminGenderProfile" class="demographic-list"></div>
-          </div>
-          <div class="panel">
-            <div class="panel-title">&#x1F382; Age Group Distribution</div>
-            <div class="panel-sub">Pedia/Bata and Adult only.</div>
-            <div id="adminAgeProfile" class="demographic-list"></div>
-          </div>
-        </div>
+        
 
         <div class="grid-2 admin-dashboard-summary-grid">
           <div class="panel admin-case-ranking-panel"><div class="panel-title">Barangay Case Ranking</div><div class="panel-sub">All barangays, highest first.</div><div class="table-wrap admin-case-ranking-wrap"><table class="admin-case-ranking-table"><thead><tr><th>#</th><th>Barangay</th><th>Cases</th><th>Visual</th></tr></thead><tbody id="admBrgyBody"></tbody></table></div></div>
@@ -1127,6 +1119,20 @@ button:disabled{cursor:wait;opacity:.72}
           <div><div class="section-title">&#x1F4CA; Reporting &amp; Analytics</div><div class="section-sub">Weekly and monthly surveillance analysis based on the live PatientRecords data.</div></div>
           <div class="filters"><button class="btn btn-light" onclick="refreshReportingAnalytics()">&#x21BB; Refresh</button><button class="btn btn-orange" onclick="exportReportingCSV()">&#x2B07; Export Report CSV</button></div>
         </div>
+
+        <div class="demographic-grid">
+          <div class="panel">
+            <div class="panel-title">&#x1F465; Gender Distribution</div>
+            <div class="panel-sub">Total recorded cases by sex.</div>
+            <div id="adminGenderProfile" class="demographic-list"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">&#x1F382; Age Group Distribution</div>
+            <div class="panel-sub">Pedia/Bata and Adult only.</div>
+            <div id="adminAgeProfile" class="demographic-list"></div>
+          </div>
+        </div>
+
 
         <div class="panel" style="margin-top:13px">
           <div class="report-filter-bar">
@@ -1191,11 +1197,55 @@ button:disabled{cursor:wait;opacity:.72}
         </div>
       </section>
 
+      <!-- ADMIN CONDITION CATALOG -->
+      <section id="view-admin-conditions" class="hidden">
+        <div class="section-head"><div><div class="section-title">Patient Condition Management</div><div class="section-sub">Manage the shared choices shown in New Patient Report and BHW/Admin patient forms.</div></div><button class="btn btn-light" onclick="refreshConditionsLive(true)">&#x21BB; Refresh</button></div>
+        <div class="notice">Deactivate an old condition instead of deleting it. Historical patient records remain in the database.</div>
+        <div class="panel" style="margin-top:12px"><div class="panel-title">Add / Edit Condition</div><div class="form-grid" style="margin-top:10px"><div class="field full"><div class="label">Condition Name *</div><input id="conditionNameInput" maxlength="100" placeholder="Enter condition name"></div><div class="field"><div class="label">Status</div><select id="conditionActiveInput"><option value="true">Active — available for new reports</option><option value="false">Inactive — historical only</option></select></div></div><div class="form-actions"><button class="btn btn-light" onclick="resetConditionEditor()">Clear</button><button class="btn btn-orange" id="saveConditionBtn" onclick="saveConditionCatalogItem()">Save Condition</button></div><div class="save-status" id="conditionSaveStatus" role="status" aria-live="polite"><span class="loading-spinner"></span><span>Saving condition to Google Sheets…</span></div></div>
+        <div class="panel" style="margin-top:12px"><div class="panel-title">Shared Condition Catalog</div><div class="panel-sub">Updates are saved in the backend and used by both Admin and BHW accounts.</div><div class="table-wrap"><table><thead><tr><th>Condition</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead><tbody id="conditionCatalogBody"><tr><td colspan="4" class="empty">Load the live condition catalog.</td></tr></tbody></table></div></div>
+      </section>
+
+      <!-- ADMIN PUBLIC DASHBOARD BRANDING -->
+      <section id="view-admin-branding" class="hidden">
+        <div class="section-head"><div><div class="section-title">Public Dashboard Header &amp; Quick Links</div><div class="section-sub">Edit the title, subtitle, description, logo/header image, and three quick-action links. Other dashboard features and records remain untouched.</div></div><button class="btn btn-light" onclick="loadDashboardBranding(true)">&#x21BB; Refresh</button></div>
+        <div class="notice">Changes are saved in the TEST backend and appear on the Public Dashboard after refresh. Use only approved public text, logos, and event images; do not upload patient photos or confidential material. Leave an action label blank to hide that button.</div>
+        <div class="grid-2" style="margin-top:12px;align-items:start">
+          <div class="panel">
+            <div class="panel-title">Edit Public Header</div>
+            <div class="field" style="margin-top:12px"><div class="label">Public Dashboard Title *</div><input id="brandTitleInput" maxlength="80" value="SUPER EL NIÑO" placeholder="e.g. ANTIPOLO TYPHOON RESPONSE" oninput="renderBrandingPreview()"><div class="panel-sub">Up to 80 characters. Displayed as the main banner title.</div></div>
+            <div class="field" style="margin-top:12px"><div class="label">Header Subtitle / Kicker</div><input id="brandKickerInput" maxlength="120" value="Heat Alert Monitoring • Community Health Surveillance" placeholder="e.g. CITY HEALTH EMERGENCY OPERATIONS" oninput="renderBrandingPreview()"><div class="panel-sub">Short uppercase-style line shown above the main title. Up to 120 characters.</div></div>
+            <div class="field" style="margin-top:12px"><div class="label">Description</div><textarea id="brandDescriptionInput" maxlength="180" rows="2" placeholder="Short public-facing dashboard description" oninput="renderBrandingPreview()">Public situation dashboard for heat-related illness reports.</textarea><div class="panel-sub">Short explanatory text beneath the title. Up to 180 characters.</div></div>
+            <div class="field" style="margin-top:12px"><div class="label">Logo / Header Image</div><input id="brandImageInput" type="file" accept="image/png,image/jpeg,image/webp" onchange="previewBrandingImage(event)"><div class="panel-sub">JPG, PNG, or WebP. The image is optimized to fit within 1 MB before saving.</div></div>
+            <div class="panel-title" style="margin-top:18px">Quick-action Buttons (up to 3)</div>
+            <div class="panel-sub">Customize each icon, label, and destination. Choose a built-in dashboard section or an external HTTPS link.</div>
+            <div id="brandActionEditorList" class="brand-action-editor-list" style="display:grid;gap:10px;margin-top:10px">
+              <div class="panel" style="padding:12px;background:var(--surface-soft,#f8fafc)"><div class="panel-title">Button 1</div><div class="form-grid" style="margin-top:8px"><div class="field"><div class="label">Icon / Emoji</div><input id="brandAction1Icon" maxlength="8" value="☀" placeholder="☀" oninput="renderBrandingPreview()"></div><div class="field"><div class="label">Button Label</div><input id="brandAction1Label" maxlength="36" value="Heat Response" placeholder="e.g. Health Alerts" oninput="renderBrandingPreview()"></div><div class="field full"><div class="label">Destination</div><select id="brandAction1Target" onchange="toggleBrandingActionUrl(1);renderBrandingPreview()"><option value="heat">Heat Index Monitoring</option><option value="tally">Barangay Tally</option><option value="reports">Public Situation Dashboard</option><option value="announcements">Emergency Alerts &amp; Announcements</option><option value="hospitals">Hospital Bed Availability</option><option value="top">Top of Dashboard</option><option value="external">External HTTPS Link</option></select></div><div class="field full" id="brandAction1UrlWrap" hidden><div class="label">External HTTPS URL</div><input id="brandAction1Url" type="url" maxlength="500" placeholder="https://example.gov.ph" oninput="renderBrandingPreview()"></div></div></div>
+              <div class="panel" style="padding:12px;background:var(--surface-soft,#f8fafc)"><div class="panel-title">Button 2</div><div class="form-grid" style="margin-top:8px"><div class="field"><div class="label">Icon / Emoji</div><input id="brandAction2Icon" maxlength="8" value="📍" placeholder="📍" oninput="renderBrandingPreview()"></div><div class="field"><div class="label">Button Label</div><input id="brandAction2Label" maxlength="36" value="Barangay Tally" placeholder="e.g. Evacuation Centers" oninput="renderBrandingPreview()"></div><div class="field full"><div class="label">Destination</div><select id="brandAction2Target" onchange="toggleBrandingActionUrl(2);renderBrandingPreview()"><option value="heat">Heat Index Monitoring</option><option value="tally" selected>Barangay Tally</option><option value="reports">Public Situation Dashboard</option><option value="announcements">Emergency Alerts &amp; Announcements</option><option value="hospitals">Hospital Bed Availability</option><option value="top">Top of Dashboard</option><option value="external">External HTTPS Link</option></select></div><div class="field full" id="brandAction2UrlWrap" hidden><div class="label">External HTTPS URL</div><input id="brandAction2Url" type="url" maxlength="500" placeholder="https://example.gov.ph" oninput="renderBrandingPreview()"></div></div></div>
+              <div class="panel" style="padding:12px;background:var(--surface-soft,#f8fafc)"><div class="panel-title">Button 3</div><div class="form-grid" style="margin-top:8px"><div class="field"><div class="label">Icon / Emoji</div><input id="brandAction3Icon" maxlength="8" value="🏥" placeholder="🏥" oninput="renderBrandingPreview()"></div><div class="field"><div class="label">Button Label</div><input id="brandAction3Label" maxlength="36" value="Community Reports" placeholder="e.g. Relief &amp; Assistance" oninput="renderBrandingPreview()"></div><div class="field full"><div class="label">Destination</div><select id="brandAction3Target" onchange="toggleBrandingActionUrl(3);renderBrandingPreview()"><option value="heat">Heat Index Monitoring</option><option value="tally">Barangay Tally</option><option value="reports" selected>Public Situation Dashboard</option><option value="announcements">Emergency Alerts &amp; Announcements</option><option value="hospitals">Hospital Bed Availability</option><option value="top">Top of Dashboard</option><option value="external">External HTTPS Link</option></select></div><div class="field full" id="brandAction3UrlWrap" hidden><div class="label">External HTTPS URL</div><input id="brandAction3Url" type="url" maxlength="500" placeholder="https://example.gov.ph" oninput="renderBrandingPreview()"></div></div></div>
+            </div>
+            <div class="form-actions" style="flex-wrap:wrap"><button class="btn btn-light" onclick="resetBrandingImageSelection()">Cancel Image Selection</button><button class="btn btn-light" onclick="useDefaultBrandingLogo()">Use Default Logo</button><button class="btn btn-orange" id="saveBrandingBtn" onclick="saveDashboardBranding()">Save &amp; Publish</button></div>
+            <div class="save-status" id="brandingSaveStatus" role="status" aria-live="polite"><span class="loading-spinner"></span><span>Saving dashboard branding…</span></div>
+            <div id="brandingMessage" class="panel-sub" style="margin-top:10px" aria-live="polite"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">Live Preview</div>
+            <div id="brandingPreview" style="margin-top:12px;min-height:185px;border-radius:18px;padding:22px 18px;background:linear-gradient(115deg,#285eaa 0%,#4a78b7 60%,#bd1e2d 100%);color:#fff;overflow:hidden;position:relative">
+              <img id="brandLogoPreview" src="" alt="Dashboard logo preview" style="display:block;width:76px;height:76px;object-fit:contain;border:3px solid rgba(255,255,255,.72);border-radius:16px;background:rgba(255,255,255,.1);margin-bottom:12px">
+              <div id="brandKickerPreview" class="hero-kicker">Heat Alert Monitoring · Community Health Surveillance</div>
+              <div id="brandTitlePreview" style="font-size:clamp(22px,3vw,32px);font-weight:950;line-height:1.1;margin-top:6px;overflow-wrap:anywhere">SUPER EL NIÑO</div>
+              <div id="brandDescriptionPreview" style="font-size:12px;margin-top:7px">Public situation dashboard for heat-related illness reports.</div>
+              <div class="hero-tags" id="brandActionPreview" aria-label="Quick action preview" style="margin-top:12px"></div>
+            </div>
+            <div class="panel-sub" style="margin-top:9px">Preview only. Public changes become active after you select <strong>Save &amp; Publish</strong>.</div>
+          </div>
+        </div>
+      </section>
+
       <!-- ADMIN PATIENTS -->
       <section id="view-admin-patients" class="hidden">
         <div class="section-head">
           <div><div class="section-title">Patient Records &#x2014; Overall</div><div class="section-sub">Area-wide patient records and illness breakdown across all 16 barangays.</div></div>
-          <div class="filters"><button class="btn btn-orange" onclick="showView('report')">&#x2795; New Report</button><button class="btn btn-light" onclick="exportCSV()">&#x2B07; Export CSV</button></div>
+          <div class="filters"><button class="btn btn-light" onclick="exportCSV()">&#x2B07; Export CSV</button></div>
         </div>
         <div class="admin-kpi-grid">
           <div class="card stat-card"><div class="stat-top"><span>Total Reports</span><span class="icon">&#x1F4CB;</span></div><div class="num" id="patTotalReports">0</div><div class="small-note">All records</div></div>
@@ -1218,7 +1268,7 @@ button:disabled{cursor:wait;opacity:.72}
               <input id="patientSearch" placeholder="Search patient..." oninput="renderAdminPatients()">
             </div>
           </div>
-          <div class="table-wrap"><table><thead><tr><th>Date</th><th>Patient</th><th>Age</th><th>Sex</th><th>Age Group</th><th>Barangay</th><th>Condition</th><th>Disposition</th><th>Status</th><th>Sync</th><th>Actions</th></tr></thead><tbody id="patientBody"></tbody></table></div>
+          <div class="table-wrap"><table><thead><tr><th>Date</th><th>Patient</th><th>Age</th><th>Sex</th><th>Age Group</th><th>Barangay</th><th>Condition</th><th>Disposition</th><th>Referral</th><th>Status</th><th>Sync</th><th>Actions</th></tr></thead><tbody id="patientBody"></tbody></table></div>
         </div>
       </section>
 
@@ -1239,6 +1289,21 @@ button:disabled{cursor:wait;opacity:.72}
           <div class="unit-grid" id="unitGrid"></div>
         </div>
         <div class="notice" style="margin-top:13px">&#x1F4E1; <strong>Live heartbeat:</strong> each authenticated BHW session updates its last-seen timestamp. Admin sees Online, Recently Seen, or Offline status from the backend.</div>
+      
+
+        <div class="panel" id="adminBhwRegistrationPanel" style="margin-top:13px">
+          <div class="section-head" style="margin:0 0 10px">
+            <div><div class="panel-title">&#x1F465; BHW Registration per Barangay</div><div class="panel-sub">Live account counts from Admin User Management. No target is assumed.</div></div>
+            <div class="filters"><button class="btn btn-light" onclick="refreshBhwRegistrationSummary(true)">&#x21BB; Refresh</button><button class="btn btn-light" onclick="showView('admin-users')">Manage Accounts</button></div>
+          </div>
+          <div class="bhw-registration-totals">
+            <div class="bhw-registration-total"><span>Total BHW Accounts</span><strong id="bhwRegTotal">&#x2014;</strong></div>
+            <div class="bhw-registration-total"><span>Active Accounts / Access</span><strong id="bhwRegActive">&#x2014;</strong></div>
+            <div class="bhw-registration-total"><span>Inactive Accounts</span><strong id="bhwRegInactive">&#x2014;</strong></div>
+          </div>
+          <div class="bhw-registration-grid" id="bhwRegistrationCards"><div class="empty">Registration totals load from the Google Sheets Users records when the live backend is available.</div></div>
+          <div class="small-note" id="bhwRegistrationUpdated" style="margin-top:9px">Waiting for authoritative registration counts.</div>
+        </div>
       </section>
 
 
@@ -1357,6 +1422,70 @@ button:disabled{cursor:wait;opacity:.72}
           </div>
           <div class="table-wrap"><table><thead><tr><th>Submitted</th><th>Barangay / Facility</th><th>Concern</th><th>Priority</th><th>Reporting BHW</th><th>Status</th><th>Action</th></tr></thead><tbody id="healthFacilityReportBody"><tr><td colspan="7" class="empty">Facility reports load from Google Sheets when the live backend is available.</td></tr></tbody></table></div>
         </div>
+      
+
+        <div class="panel heat-panel">
+          <div class="section-head" style="margin:0 0 9px">
+            <div><div class="panel-title">&#x1F321;&#xFE0F; Antipolo Heat Index Monitoring</div><div class="panel-sub">Admin view of all 16 barangays, risk level, and highest heat index.</div></div>
+            <button class="btn btn-light" onclick="refreshHeatIndexLive()">&#x21BB; Refresh</button>
+          </div>
+          <div class="heat-summary">
+            <div class="heat-level-card"><div class="hl">Average Heat Index</div><div class="hv" id="admAvgHeat">&#x2014;</div></div>
+            <div class="heat-level-card"><div class="hl">Highest Heat Index</div><div class="hv" id="admMaxHeat">&#x2014;</div></div>
+            <div class="heat-level-card"><div class="hl">Danger / Above</div><div class="hv" id="admDangerCount">0</div></div>
+            <div class="heat-level-card"><div class="hl">Extreme Caution</div><div class="hv" id="admExtremeCount">0</div></div>
+          </div>
+          <div class="heat-map-wrap" style="margin-top:11px">
+            <div class="heat-map"><div class="heat-map-inner" id="adminHeatMap"></div>
+              <div class="heat-legend">
+                <div><span class="legend-dot" style="background:#60a5fa"></span>27&#x2013;32 Caution</div>
+                <div><span class="legend-dot" style="background:#4779B9"></span>33&#x2013;41 Extreme Caution</div>
+                <div><span class="legend-dot" style="background:#dc2626"></span>42&#x2013;51 Danger</div>
+                <div><span class="legend-dot" style="background:#7f1d1d"></span>52+ Extreme Danger</div>
+              </div>
+            </div>
+            <div class="heat-table-wrap"><table><thead><tr><th>Barangay</th><th>HI</th><th>Level</th><th>BHW</th></tr></thead><tbody id="adminHeatBody"></tbody></table></div>
+          </div>
+        </div>
+
+        <div class="panel heat-panel">
+          <div class="section-head" style="margin:0 0 9px;gap:10px;flex-wrap:wrap">
+            <div><div class="panel-title">&#x1F321;&#xFE0F; My Barangay Heat Index</div><div class="panel-sub" id="bhwHeatPanelSub">Heat monitoring for your locked barangay.</div></div>
+            <div class="filters"><select id="adminMyHeatBarangay" class="hidden" aria-label="Select barangay heat index" onchange="renderBhwHeat()"><option value="">Select barangay...</option></select></div>
+          </div>
+          <div class="bhw-heat-card">
+            <div><div class="bhw-heat-value" id="bhwHeatValue">&#x2014;</div><div class="bhw-heat-status" id="bhwHeatStatus">&#x2014;</div><div class="small-note" id="bhwHeatUpdated">Waiting for live official data</div></div>
+            <div class="heat-level-card" style="min-width:150px"><div class="hl">City Average</div><div class="hv" id="bhwCityAvg">&#x2014;</div></div>
+          </div>
+          <div class="heat-note">Use the heat-index level as a surveillance/awareness indicator. Official heat-index data and operational advisories will be connected during the Google Sheets/Code.gs phase.</div>
+        </div>
+      </section>
+
+      <!-- ADMIN HOSPITAL REGISTRY -->
+      <section id="view-admin-hospitals" class="hidden">
+        <div class="section-head"><div><div class="section-title">Antipolo Hospital Management</div><div class="section-sub">Configure total ER/Ward capacity and monitor referral responses for the three authorized hospitals.</div></div><button class="btn btn-light" onclick="refreshAdminHospitalData(true)">&#x21BB; Refresh</button></div>
+        <div class="notice">Capacity is configured by the Admin. Hospital accounts update available beds using + / − controls. The system prevents available counts from exceeding configured capacity.</div>
+        <div class="hospital-admin-grid" id="adminHospitalsGrid" style="margin-top:12px"><div class="empty">Hospital registry loads from Google Sheets.</div></div>
+        <div class="panel" style="margin-top:12px"><div class="panel-title">Referral Summary by Hospital</div><div class="table-wrap" style="margin-top:8px"><table><thead><tr><th>Hospital</th><th>Sent / Received</th><th>Pending</th><th>Accepted</th><th>Refused</th><th>ER Beds</th><th>Ward Beds</th></tr></thead><tbody id="adminHospitalSummaryBody"></tbody></table></div></div>
+        <div class="panel" style="margin-top:12px"><div class="panel-title">All Hospital Referrals</div><div class="filter-bar" style="margin:10px 0"><select id="adminReferralHospitalFilter" onchange="renderAdminReferralList()"><option value="all">All Hospitals</option></select><select id="adminReferralStatusFilter" onchange="renderAdminReferralList()"><option value="all">All Statuses</option><option>Pending</option><option>Accepted</option><option>Refused</option></select><input id="adminReferralSearch" placeholder="Search patient / hospital / report ID" oninput="renderAdminReferralList()"></div><div class="table-wrap"><table><thead><tr><th>Sent</th><th>Patient</th><th>Age / Sex</th><th>Barangay</th><th>Condition</th><th>Clinical Details</th><th>Hospital</th><th>Reason</th><th>Status</th><th>Receiving Personnel</th><th>Remarks</th><th>Labs / Photos</th><th>Patient Record</th></tr></thead><tbody id="adminReferralListBody"></tbody></table></div></div>
+      </section>
+
+      <!-- HOSPITAL DASHBOARD -->
+      <section id="view-hospital-dashboard" class="hidden">
+        <div class="section-head"><div><div class="section-title" id="hospitalDashboardTitle">Hospital Dashboard</div><div class="section-sub">Update public bed availability and respond to referrals assigned to this hospital only.</div></div><button class="btn btn-light" onclick="refreshHospitalDashboard(true)">&#x21BB; Refresh</button></div>
+        <div class="notice">You can view referrals sent to your assigned hospital only. Do not share patient details outside authorized care coordination.</div>
+        <div class="cards" style="margin-top:12px">
+          <div class="card stat-card"><div class="stat-top"><span>Referrals Received</span><span class="icon">&#x1F4E5;</span></div><div class="num" id="hospitalReferralsTotal">0</div></div>
+          <div class="card stat-card"><div class="stat-top"><span>Pending</span><span class="icon">&#x23F3;</span></div><div class="num" id="hospitalReferralsPending">0</div></div>
+          <div class="card stat-card"><div class="stat-top"><span>Accepted</span><span class="icon">&#x2705;</span></div><div class="num" id="hospitalReferralsAccepted">0</div></div>
+          <div class="card stat-card"><div class="stat-top"><span>Refused</span><span class="icon">&#x274C;</span></div><div class="num" id="hospitalReferralsRefused">0</div></div>
+        </div>
+        <div class="hospital-beds-layout" style="margin-top:12px">
+          <div class="panel"><div class="panel-title">Emergency Room Beds</div><div class="panel-sub">Available beds / configured capacity</div><div class="hospital-bed-number" id="hospitalErBedValue">0 / 0</div><div class="hospital-bed-actions"><button class="btn btn-light" onclick="adjustHospitalBeds('er',-1)">&#x2212; Minus</button><button class="btn btn-orange" onclick="adjustHospitalBeds('er',1)">&#x2B; Add</button></div></div>
+          <div class="panel"><div class="panel-title">Ward Beds</div><div class="panel-sub">Available beds / configured capacity</div><div class="hospital-bed-number" id="hospitalWardBedValue">0 / 0</div><div class="hospital-bed-actions"><button class="btn btn-light" onclick="adjustHospitalBeds('ward',-1)">&#x2212; Minus</button><button class="btn btn-orange" onclick="adjustHospitalBeds('ward',1)">&#x2B; Add</button></div></div>
+        </div>
+        <div class="small-note" id="hospitalBedsUpdated" style="margin-top:7px">Bed availability has not loaded.</div>
+        <div class="panel" style="margin-top:13px"><div class="section-head" style="margin:0 0 9px"><div><div class="panel-title">Incoming Patient Referrals</div><div class="panel-sub">Only referrals sent to this hospital are shown.</div></div></div><div class="table-wrap"><table><thead><tr><th>Sent</th><th>Patient</th><th>Age / Sex</th><th>Barangay</th><th>Condition</th><th>Clinical Details</th><th>Referral Reason</th><th>Status</th><th>Receiving Personnel</th><th>Remarks</th><th>Labs / Photos</th><th>Action</th></tr></thead><tbody id="hospitalReferralBody"></tbody></table></div></div>
       </section>
 
       <!-- ADMIN INVENTORY -->
@@ -1494,9 +1623,17 @@ button:disabled{cursor:wait;opacity:.72}
                   <div class="check-grid" id="conditionChoices"></div>
                 </div>
 
-                <div class="field"><div class="label">Temperature (&#xB0;C)</div><input id="rTemp" type="number" step="0.1" placeholder="e.g. 38.2"></div>
+                <div class="field"><div class="label">Blood Pressure (BP)</div><input id="rBp" maxlength="20" placeholder="e.g. 120/80 mmHg"></div>
+                <div class="field"><div class="label">Temperature (&#xB0;C)</div><input id="rTemp" type="number" step="0.1" min="25" max="45" placeholder="e.g. 38.2"></div>
+                <div class="field"><div class="label">Heart Rate (HR, bpm)</div><input id="rHr" type="number" min="0" max="300" placeholder="e.g. 88"></div>
+                <div class="field"><div class="label">Respiratory Rate (RR/min)</div><input id="rRr" type="number" min="0" max="100" placeholder="e.g. 20"></div>
+                <div class="field"><div class="label">Oxygen Saturation (SpO₂ %)</div><input id="rO2Sat" type="number" min="0" max="100" placeholder="e.g. 98"></div>
+                <div class="field"><div class="label">Glasgow Coma Scale (GCS)</div><input id="rGcs" type="number" min="3" max="15" placeholder="3–15"></div>
                 <div class="field"><div class="label">Disposition</div><select id="rDisposition"><option>Home care / advised</option><option>Seen at RHU</option><option>Referred to hospital</option><option>Admitted</option><option>Transferred</option></select></div>
-                <div class="field full"><div class="label">Notes / Symptoms</div><textarea id="rNotes" placeholder="Symptoms, actions taken, referral details, etc."></textarea></div>
+                <div class="field full"><div class="label">Chief Complaint</div><textarea id="rChiefComplaint" rows="2" maxlength="2000" placeholder="Patient's main complaint"></textarea></div>
+                <div class="field full"><div class="label">Working Impression / Diagnosis</div><textarea id="rWorkingDiagnosis" rows="2" maxlength="2000" placeholder="Initial clinical impression or diagnosis"></textarea></div>
+                <div class="field full"><div class="label">Laboratory / Referral Photos (Optional)</div><div class="patient-attachment-field"><input id="rAttachments" type="file" multiple accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" onchange="updatePatientAttachmentList(this)"><div class="patient-attachment-note">You may attach up to 10 JPG, PNG, or WebP photos (e.g., laboratory results, ECG, referral documents). Each photo is compressed for upload and stored privately. This field is optional; the patient report can still be submitted without photos.</div><div class="patient-attachment-list" aria-live="polite">No photos selected.</div></div></div>
+                <div class="field full"><div class="label">Notes / Symptoms</div><textarea id="rNotes" placeholder="Additional symptoms, actions taken, referral details, etc."></textarea></div>
                 <div class="field full"><label class="check"><input id="rCritical" type="checkbox"> Mark as critical / urgent for admin review</label></div>
               </div>
               <div class="form-actions"><button type="button" class="btn btn-light" onclick="clearForm()">Clear</button><button type="submit" class="btn btn-orange">Submit Report</button></div>
@@ -1556,9 +1693,9 @@ button:disabled{cursor:wait;opacity:.72}
     <div class="login-logos" aria-label="Antipolo City Health Office and Super El Ni&#xF1;o logos"><img class="app-logo login-logo" data-logo="cho" src="" alt="Antipolo City Health Office logo"><img class="app-logo login-logo" data-logo="super" src="" alt="Super El Ni&#xF1;o logo"></div>
     <div class="login-title">Authorized Access</div>
     <div class="login-sub">Choose the dashboard you are authorized to access.</div>
-    <div style="display:grid;gap:9px;margin-top:17px">
-      <button class="btn btn-orange" onclick="chooseLogin('admin')">&#x1F6E1;&#xFE0F; Admin Dashboard</button>
-      <button class="btn btn-green" onclick="chooseLogin('bhw')">&#x1FA7A; BHW Dashboard</button>
+    <div style="display:grid;gap:9px;margin-top:17px;text-align:left">
+      <div class="field"><div class="label">Dashboard</div><select id="authorizedDashboardSelect" style="width:100%"><option value="admin">Admin Dashboard</option><option value="bhw">BHW Dashboard</option><option value="hospital-dalig">Rizal Provincial Hospital System (Dalig)</option><option value="hospital-cabading">Antipolo City Hospital System (Cabading)</option><option value="hospital-mambugan">Antipolo City Hospital System (Mambugan)</option></select></div>
+      <button class="btn btn-orange" onclick="continueAuthorizedAccess()">Continue to Login</button>
       <button class="btn btn-light" onclick="closeLoginChooser()">Cancel</button>
     </div>
   </div>
@@ -1662,13 +1799,14 @@ button:disabled{cursor:wait;opacity:.72}
   <div class="login-card">
     <div class="login-logos" aria-label="Antipolo City Health Office and Super El Ni&#xF1;o logos"><img class="app-logo login-logo" data-logo="cho" src="" alt="Antipolo City Health Office logo"><img class="app-logo login-logo" data-logo="super" src="" alt="Super El Ni&#xF1;o logo"></div>
     <div class="login-title">&#x1F510; Authorized Login</div>
-    <div class="login-sub">Authorized access for Admin and BHW dashboards.</div>
+    <div class="login-sub">Authorized access for Admin, BHW, and designated hospital dashboards.</div>
     <div class="login-form">
       <div class="error" id="loginError">Please enter your authorized account credentials.</div>
-      <div class="field"><div class="label">Role</div><select id="loginRole" onchange="syncLoginBrgy()"><option value="admin">Admin</option><option value="bhw">BHW</option></select></div>
+      <div class="field"><div class="label">Role</div><select id="loginRole" onchange="syncLoginBrgy()"><option value="admin">Admin</option><option value="bhw">BHW</option><option value="hospital">Hospital</option></select></div>
       <div class="field"><div class="label">Username</div><input id="loginUser" placeholder="Username"></div>
       <div class="field"><div class="label">Password</div><input id="loginPass" type="password" placeholder="Password"></div>
       <div class="field" id="loginBrgyWrap"><div class="label">Assigned Barangay</div><select id="loginBrgy"></select></div>
+      <div class="field" id="loginHospitalWrap" style="display:none"><div class="label">Selected Hospital</div><input id="loginHospitalDisplay" readonly></div>
       <div class="login-offline-note" style="font-size:10px;line-height:1.45;color:#64748b;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:8px 10px">Offline login is available after this device has successfully authenticated online once. No plain-text password is stored.</div>
       <div class="form-actions"><button class="btn btn-light" onclick="closeLogin()">Cancel</button><button class="btn btn-orange" id="loginSubmitBtn" onclick="login()">Login</button></div>
     </div>
@@ -1716,10 +1854,17 @@ button:disabled{cursor:wait;opacity:.72}
       <div class="field"><div class="label">Age</div><input id="apeAge" type="number" min="0" max="120"></div>
       <div class="field"><div class="label">Sex</div><select id="apeSex"><option>Male</option><option>Female</option><option>Prefer not to say</option></select></div>
       <div class="field"><div class="label">Contact</div><input id="apeContact"></div>
-      <div class="field"><div class="label">Condition</div><select id="apeCondition"></select></div>
-      <div class="field"><div class="label">Temperature (&#xB0;C)</div><input id="apeTemp" type="number" step="0.1"></div>
+      <div class="field"><div class="label">Condition *</div><select id="apeCondition"></select></div>
+      <div class="field"><div class="label">Blood Pressure (BP)</div><input id="apeBp" placeholder="e.g. 120/80" maxlength="30"></div>
+      <div class="field"><div class="label">Temperature (&#xB0;C)</div><input id="apeTemp" type="number" step="0.1" min="25" max="50"></div>
+      <div class="field"><div class="label">Heart Rate (HR / bpm)</div><input id="apeHr" type="number" min="0" max="300"></div>
+      <div class="field"><div class="label">Respiratory Rate (RR / min)</div><input id="apeRr" type="number" min="0" max="100"></div>
+      <div class="field"><div class="label">Oxygen Saturation (SpO&#x2082; / %)</div><input id="apeO2Sat" type="number" min="0" max="100" step="0.1"></div>
+      <div class="field"><div class="label">Glasgow Coma Scale (GCS)</div><input id="apeGcs" type="number" min="3" max="15"></div>
+      <div class="field full"><div class="label">Chief Complaint</div><textarea id="apeChiefComplaint" rows="2" maxlength="3000" placeholder="Patient's main complaint"></textarea></div>
+      <div class="field full"><div class="label">Working Impression / Diagnosis</div><textarea id="apeWorkingDiagnosis" rows="2" maxlength="3000" placeholder="Initial clinical impression or working diagnosis"></textarea></div>
       <div class="field"><div class="label">Disposition</div><select id="apeDisposition"></select></div>
-      <div class="field full"><div class="label">Notes / Symptoms</div><textarea id="apeNotes"></textarea></div>
+      <div class="field full"><div class="label">Notes / Symptoms</div><textarea id="apeNotes" rows="3" maxlength="5000"></textarea></div>
       <div class="field full"><label class="check"><input id="apeCritical" type="checkbox"> Mark as critical / urgent</label></div>
     </div>
     <div class="form-actions">
@@ -1809,6 +1954,15 @@ button:disabled{cursor:wait;opacity:.72}
   </div>
 </div>
 
+<!-- SEND HOSPITAL REFERRAL MODAL -->
+<div class="modal" id="sendHospitalReferralModal"><div class="modal-box"><div class="section-head" style="margin:0 0 10px"><div><div class="panel-title">Send Patient Referral</div><div class="panel-sub">The selected receiving hospital will be the only hospital account able to view this referral.</div></div><button class="btn btn-light" onclick="closeSendHospitalReferral()">&#x2715;</button></div><div id="sendReferralPatientSummary" class="notice"></div><div class="form-grid" style="margin-top:10px"><div class="field full"><div class="label">Receiving Hospital *</div><select id="sendReferralHospital" required></select></div><div class="field full"><div class="label">Referral Reason / Clinical Concern *</div><textarea id="sendReferralReason" rows="4" maxlength="3000" placeholder="Reason for referral and necessary information for receiving team"></textarea></div></div><div class="save-status" id="sendReferralStatus" role="status" aria-live="polite"><span class="loading-spinner"></span><span>Sending referral to hospital…</span></div><div class="form-actions"><button class="btn btn-light" onclick="closeSendHospitalReferral()">Cancel</button><button class="btn btn-orange" id="sendHospitalReferralBtn" onclick="submitHospitalReferral()">Send Referral</button></div></div></div>
+
+<!-- HOSPITAL RESPONSE MODAL -->
+<div class="modal" id="hospitalResponseModal"><div class="modal-box"><div class="section-head" style="margin:0 0 10px"><div><div class="panel-title" id="hospitalResponseTitle">Respond to Referral</div><div class="panel-sub">Your response is saved to the referral record and status history.</div></div><button class="btn btn-light" onclick="closeHospitalResponseModal()">&#x2715;</button></div><div class="field"><div class="label">Response *</div><select id="hospitalResponseStatus"><option>Accepted</option><option>Refused</option></select></div><div class="field" style="margin-top:9px"><div class="label">Receiving Personnel *</div><input id="hospitalReceivingPersonnel" maxlength="160" placeholder="Name of authorized receiving personnel"></div><div class="field" style="margin-top:9px"><div class="label">Remarks / Reason *</div><textarea id="hospitalResponseRemarks" rows="4" maxlength="3000" placeholder="Acceptance notes or reason for refusal"></textarea></div><div class="form-actions"><button class="btn btn-light" onclick="closeHospitalResponseModal()">Cancel</button><button class="btn btn-orange" id="saveHospitalResponseBtn" onclick="saveHospitalReferralResponse()">Save Response</button></div></div></div>
+
+<!-- REQUIRED HOSPITAL PASSWORD CHANGE MODAL -->
+<div class="modal" id="hospitalPasswordModal"><div class="modal-box"><div class="panel-title">&#x1F512; Change Temporary Password</div><div class="panel-sub" style="margin-bottom:12px">For security, change the temporary password before using the hospital dashboard.</div><div class="form-grid"><div class="field full"><div class="label">Temporary / Current Password *</div><input id="hospitalCurrentPassword" type="password" autocomplete="current-password"></div><div class="field full"><div class="label">New Password * (minimum 10 characters)</div><input id="hospitalNewPassword" type="password" autocomplete="new-password" minlength="10"></div><div class="field full"><div class="label">Confirm New Password *</div><input id="hospitalConfirmPassword" type="password" autocomplete="new-password" minlength="10"></div></div><div id="hospitalPasswordError" class="error" style="display:none;margin-top:9px"></div><div class="save-status" id="hospitalPasswordStatus" role="status" aria-live="polite"><span class="loading-spinner"></span><span>Updating password…</span></div><div class="form-actions"><button class="btn btn-orange" id="changeHospitalPasswordBtn" onclick="changeHospitalPassword()">Change Password</button></div></div></div>
+
 <!-- USER MODAL -->
 <div class="modal" id="userModal">
   <div class="modal-box">
@@ -1817,18 +1971,22 @@ button:disabled{cursor:wait;opacity:.72}
       <button class="btn btn-light" onclick="closeUserModal()">&#x2715;</button>
     </div>
     <div class="form-grid">
-      <div class="field"><div class="label">Account Type *</div><select id="uRole" onchange="toggleUserBarangayField()"><option value="bhw">BHW</option><option value="admin">Admin</option></select></div>
+      <div class="field"><div class="label">Account Type *</div><select id="uRole" onchange="toggleUserBarangayField()"><option value="bhw">BHW</option><option value="hospital">Hospital</option><option value="admin">Admin</option></select></div>
       <div class="field"><div class="label">Full Name *</div><input id="uName" required placeholder="Account holder name"></div>
       <div class="field"><div class="label">Contact Number *</div><input id="uContact" type="tel" required placeholder="09XXXXXXXXX"></div>
       <div class="field"><div class="label">Username *</div><input id="uUsername" required placeholder="Login username"></div>
-      <div class="field"><div class="label">Password *</div><input id="uPassword" type="password" placeholder="Password"></div>
       <div class="field" id="uBarangayField"><div class="label">Assigned Barangay *</div><select id="uBarangay"></select></div>
+      <div class="field" id="uHospitalField" style="display:none"><div class="label">Assigned Hospital *</div><select id="uHospital"><option value="hospital-dalig">Rizal Provincial Hospital System (Dalig)</option><option value="hospital-cabading">Antipolo City Hospital System (Cabading)</option><option value="hospital-mambugan">Antipolo City Hospital System (Mambugan)</option></select></div>
+      <div class="field"><div class="label">Password <span class="small-note">(leave blank for auto-generated hospital temporary password)</span></div><input id="uPassword" type="password" placeholder="Required for Admin/BHW; optional for Hospital"></div>
       <div class="field"><div class="label">Status</div><select id="uStatus"><option>Active</option><option>Inactive</option></select></div>
     </div>
     <div class="save-status" id="userSaveStatus" role="status" aria-live="polite"><span class="loading-spinner"></span><span>Saving user to Google Sheets…</span></div>
     <div class="form-actions"><button class="btn btn-light" id="cancelUserSaveBtn" onclick="closeUserModal()">Cancel</button><button class="btn btn-orange" id="saveUserBtn" onclick="saveUser()">Save User</button></div>
   </div>
 </div>
+
+<!-- PRIVATE PATIENT / LABORATORY ATTACHMENTS VIEWER -->
+<div class="modal" id="patientAttachmentsModal"><div class="modal-box" style="max-width:820px"><div class="section-head" style="margin:0 0 10px"><div><div class="panel-title">Laboratory Photos & Attachments</div><div class="panel-sub" id="patientAttachmentsSubtitle">Only authorized users can view files for this patient/referral.</div></div><button class="btn btn-light" onclick="closePatientAttachments()">&#x2715;</button></div><div id="patientAttachmentsContent"><div class="empty">Loading attachments…</div></div><div id="patientAttachmentPreview"></div><div class="form-actions"><button class="btn btn-light" onclick="closePatientAttachments()">Close</button></div></div></div>
 
 <!-- MODAL -->
 <div class="modal" id="reportModal">
@@ -1881,7 +2039,7 @@ function applyLogoAssets(){
   document.querySelectorAll('img[data-logo="super"]').forEach(function(img){img.src=SUPER_ELNINO_LOGO_DATA_URL;});
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',applyLogoAssets); else applyLogoAssets();
-const FRONTEND_VERSION = "V48-SHARED-ANNOUNCEMENT-FLOW";
+const FRONTEND_VERSION = "V48-TEST-PATIENT-LAB-ATTACHMENTS";
 const LIVE_REFRESH_MS = 30000; // Auto-refresh every 30 seconds for live surveillance.
 const V19_CLEAN_FLAG = "super_elnino_v19_clean_initialized";
 let liveRefreshTimer=null;
@@ -1895,7 +2053,7 @@ let liveRefreshing=false;
 let backendLastSync=null;
 
 const BARANGAYS = ["Bagong Nayon","Beverly Hills","Calawis","Cupang","Dalig","Dela Paz","Inarawan","Mambugan","Mayamot","Muntindilaw","San Isidro","San Jose","San Juan","San Luis","San Roque","Santa Cruz"];
-const CONDITIONS = [
+let CONDITIONS = [
   "Heat Cramps",
   "Heat Fatigue",
   "Dehydration",
@@ -1905,12 +2063,11 @@ const CONDITIONS = [
   "Diarrhea"
 ];
 
-// Conditions intentionally removed from the active surveillance profile.
-// Historical backend/local-cache records with these values are excluded from
-// totals, profiles, patient tables, filters, reports, and analytics.
-const REMOVED_CONDITIONS = new Set(["Heat Rash","Heat Edema","Heat Syncope","Rhabdomyolysis"]);
+// The Admin-managed catalog controls choices for new reports. Do not hide old records
+// merely because a condition was deactivated; only rows with no condition are invalid.
+const REMOVED_CONDITIONS = new Set();
 function isActiveCondition(value){
-  return !REMOVED_CONDITIONS.has(String(value ?? "").trim());
+  return String(value ?? "").trim().length > 0;
 }
 
 
@@ -1934,13 +2091,13 @@ async function deriveOfflineVerifier(username,password,salt){
   const bits=await crypto.subtle.deriveBits({name:"PBKDF2",salt:new TextEncoder().encode(String(salt)),iterations:120000,hash:"SHA-256"},base,256);
   return Array.from(new Uint8Array(bits)).map(b=>b.toString(16).padStart(2,"0")).join("");
 }
-async function cacheOfflineAuth(password,u){
+async function cacheOfflineAuth(password,u,sessionToken=""){
   try{
     const salt=(crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random());
     const verifier=await deriveOfflineVerifier(u.Username,password,salt);
     const safeUser={};
     ["User_ID","Username","Full_Name","Role","Barangay","Contact_Number","Status","Device_ID"].forEach(k=>{if(u[k]!==undefined)safeUser[k]=u[k]});
-    localStorage.setItem(OFFLINE_AUTH_KEY,JSON.stringify({username:u.Username,role:String(u.Role||"").toLowerCase(),barangay:u.Barangay||null,user:safeUser,salt,verifier,verifiedAt:Date.now()}));
+    localStorage.setItem(OFFLINE_AUTH_KEY,JSON.stringify({username:u.Username,role:String(u.Role||"").toLowerCase(),barangay:u.Barangay||null,user:safeUser,salt,verifier,sessionToken:String(sessionToken||""),verifiedAt:Date.now()}));
   }catch(e){console.warn("Offline auth cache unavailable",e.message)}
 }
 function readOfflineAuth(){try{const x=JSON.parse(localStorage.getItem(OFFLINE_AUTH_KEY)||"null");return x&&x.username&&x.salt&&x.verifier?x:null}catch(e){return null}}
@@ -1962,6 +2119,8 @@ function normalizeForDuplicate(r){return [r.name,r.age,r.barangay,r.condition,r.
 let reports=loadReports();
 let outbox=loadOutbox();
 let session = null;
+const PERSISTED_TAB_SESSION_KEY = "emergency_connect_tab_session_v1";
+const HOSPITAL_SEEN_REFERRALS_KEY = "emergency_connect_seen_referrals_v1";
 let users=[];
 let editingUserId=null;
 
@@ -2026,6 +2185,18 @@ let publicAnnouncementsLoadError=false;
 let announcements=[];
 let inventory=[];
 let bhwRegistrationSummary=null;
+let conditionCatalog=[];
+let publicConditionCatalog=[];
+let publicConditionCatalogUpdatedAt='';
+let publicConditionCatalogLoading=false;
+let hospitalRegistry=[];
+let hospitalReferrals=[];
+let hospitalData=null;
+let selectedSendReportId="";
+let sendReferralEventId="";
+let selectedHospitalReferralId="";
+let hospitalPasswordRequired=false;
+let selectedHospitalLoginId="";
 let healthFacilityReports=[];
 let healthFacilityReportSummary=null;
 let selectedHealthFacilityReportId="";
@@ -2134,7 +2305,7 @@ function renderAdminUsers(){
       <td><div style="display:flex;align-items:center;gap:8px"><div class="personnel-avatar-wrap">${userInitial(u)}</div><div><strong>${esc(u.name)}</strong><div style="font-size:9px;color:#64748b">${role}</div></div></div></td>
       <td>${esc(u.username)}</td>
       <td><a class="personnel-contact" href="tel:${esc(u.contact||"")}">\u260E ${esc(u.contact||"\u2014")}</a></td>
-      <td><strong>${u.role==="bhw"?esc(u.barangay):"ALL BARANGAYS"}</strong></td>
+      <td><strong>${u.role==="bhw"?esc(u.barangay):u.role==="hospital"?esc(hospitalNameById(u.hospitalId)||"Unassigned hospital"):"ALL BARANGAYS"}</strong></td>
       <td><span class="status ${u.status==="Active"?"badge-online":"badge-offline"}">${u.status}</span></td>
       <td>${esc(u.lastSeen||"Never")}</td>
       <td><div class="action-row"><button class="action-btn action-edit" onclick='editUser(${idArg})'>Edit</button>${deleteBtn}</div></td>
@@ -2203,6 +2374,254 @@ async function refreshBhwOwnRegistrationSummary(showError=false){
 
 function facilityStatusClass(status){return "facility-status-"+String(status||"new").toLowerCase().replace(/[^a-z]+/g,"-").replace(/^-|-$/g,"")}
 function facilityPriorityClass(priority){return "facility-priority-"+String(priority||"normal").toLowerCase().replace(/[^a-z]+/g,"-").replace(/^-|-$/g,"")}
+function hospitalDefaults(){return [
+  {Hospital_ID:'hospital-dalig',Hospital_Name:'Rizal Provincial Hospital System (Dalig)',Short_Name:'RPH Dalig'},
+  {Hospital_ID:'hospital-cabading',Hospital_Name:'Antipolo City Hospital System (Cabading)',Short_Name:'ACHS Cabading'},
+  {Hospital_ID:'hospital-mambugan',Hospital_Name:'Antipolo City Hospital System (Mambugan)',Short_Name:'ACHS Mambugan'}
+];}
+function hospitalNameById(id){const key=String(id||'');return (hospitalRegistry.find(h=>String(h.Hospital_ID)===key)||hospitalDefaults().find(h=>h.Hospital_ID===key)||{}).Hospital_Name||'';}
+function populateHospitalSelect(el,selected){if(!el)return;const items=hospitalRegistry.length?hospitalRegistry:hospitalDefaults();el.innerHTML=items.map(h=>`<option value="${esc(h.Hospital_ID)}" ${String(h.Hospital_ID)===String(selected||'')?'selected':''}>${esc(h.Hospital_Name)}</option>`).join("");if(!selected&&items[0])el.value=items[0].Hospital_ID;}
+function hospitalStatusPill(status){const k=String(status||'Pending').toLowerCase();return `<span class="hospital-referral-status ${['pending','accepted','refused'].includes(k)?k:''}">${esc(status||'Pending')}</span>`;}
+function renderPublicHospitals(){
+ const el=document.getElementById('publicHospitalsGrid');if(!el)return;
+ if(!Array.isArray(publicHospitals)||!publicHospitals.length){el.innerHTML='<div class="empty">Hospital bed availability is not available yet.</div>';return;}
+ el.innerHTML=publicHospitals.map(h=>{const configured=Number(h.ER_Capacity||0)+Number(h.Ward_Capacity||0)>0;return `<div class="hospital-public-card"><div class="hospital-name">${esc(h.Hospital_Name)}</div><div class="hospital-short">${esc(h.Short_Name||'Hospital')}</div><div class="hospital-bed-mini-grid"><div class="hospital-bed-mini"><div class="k">ER Available / Capacity</div><div class="v">${Number(h.ER_Available||0)} / ${Number(h.ER_Capacity||0)}</div></div><div class="hospital-bed-mini"><div class="k">Ward Available / Capacity</div><div class="v">${Number(h.Ward_Available||0)} / ${Number(h.Ward_Capacity||0)}</div></div></div><div class="small-note">${configured?'Updated '+(h.Updated_At?esc(new Date(h.Updated_At).toLocaleString()):'time not recorded'):'Capacity not configured yet'}</div></div>`;}).join('');
+ const updated=document.getElementById('publicHospitalsUpdated');if(updated)updated.textContent='Last refreshed '+new Date().toLocaleString()+'. Counts are reported by hospital accounts.';
+}
+let publicHospitals=[];
+async function refreshPublicHospitals(showError=false){
+ if(!LIVE_API_URL||!navigator.onLine)return;
+ try{const data=await apiPost('publicHospitals',{});publicHospitals=Array.isArray(data.hospitals)?data.hospitals:[];hospitalRegistry=publicHospitals.slice();renderPublicHospitals();}
+ catch(err){console.warn('Public hospital availability refresh failed',err.message);if(showError)alert('Could not refresh hospital bed availability.\n\n'+err.message);}
+}
+function renderAdminHospitals(){
+ const grid=document.getElementById('adminHospitalsGrid');if(!grid)return;
+ if(!hospitalRegistry.length){grid.innerHTML='<div class="empty">Hospital registry is not loaded. Connect to the test Apps Script backend and refresh.</div>';return;}
+ grid.innerHTML=hospitalRegistry.map(h=>`<div class="hospital-admin-card"><div class="hospital-name">${esc(h.Hospital_Name)}</div><div class="hospital-short">${esc(h.Short_Name||'')}</div><div class="hospital-bed-mini-grid"><div class="hospital-bed-mini"><div class="k">ER Available</div><div class="v">${Number(h.ER_Available||0)} / ${Number(h.ER_Capacity||0)}</div></div><div class="hospital-bed-mini"><div class="k">Ward Available</div><div class="v">${Number(h.Ward_Available||0)} / ${Number(h.Ward_Capacity||0)}</div></div></div><div class="hospital-admin-cap-grid"><div class="field"><div class="label">Total ER Capacity</div><input id="er-cap-${esc(h.Hospital_ID)}" type="number" min="0" max="100000" step="1" value="${Number(h.ER_Capacity||0)}"></div><div class="field"><div class="label">Total Ward Capacity</div><input id="ward-cap-${esc(h.Hospital_ID)}" type="number" min="0" max="100000" step="1" value="${Number(h.Ward_Capacity||0)}"></div></div><div class="form-actions"><button class="btn btn-orange" onclick='saveHospitalCapacity(${JSON.stringify(String(h.Hospital_ID))}, event)'>Save Capacity</button></div><div class="small-note">${h.Updated_At?'Updated '+esc(new Date(h.Updated_At).toLocaleString()):'Capacity not configured'}</div></div>`).join('');
+ const tbody=document.getElementById('adminHospitalSummaryBody');if(tbody)tbody.innerHTML=hospitalRegistry.map(h=>{const m=(adminHospitalSummaries||[]).find(x=>x.Hospital_ID===h.Hospital_ID)||{};return `<tr><td><strong>${esc(h.Hospital_Name)}</strong></td><td>${Number(m.totalSent||0)}</td><td>${Number(m.pending||0)}</td><td>${Number(m.accepted||0)}</td><td>${Number(m.refused||0)}</td><td>${Number(h.ER_Available||0)} / ${Number(h.ER_Capacity||0)}</td><td>${Number(h.Ward_Available||0)} / ${Number(h.Ward_Capacity||0)}</td></tr>`}).join('');
+ const filter=document.getElementById('adminReferralHospitalFilter');if(filter){const old=filter.value;filter.innerHTML='<option value="all">All Hospitals</option>'+hospitalRegistry.map(h=>`<option value="${esc(h.Hospital_ID)}">${esc(h.Hospital_Name)}</option>`).join('');filter.value=old||'all';}
+ renderAdminReferralSummary();renderAdminReferralList();
+}
+let adminHospitalSummaries=[];
+let adminReferralTotals={totalReceived:0,pending:0,accepted:0,refused:0};
+async function refreshAdminHospitalData(showError=false){
+ if(session?.role!=='admin'||!LIVE_API_URL||!navigator.onLine)return;
+ try{
+  const [h,r]=await Promise.all([apiPost('adminHospitals',{user:session.user}),apiPost('hospitalReferrals',{user:session.user})]);
+  hospitalRegistry=Array.isArray(h.hospitals)?h.hospitals:[];adminHospitalSummaries=Array.isArray(h.summaries)?h.summaries:[];
+  hospitalReferrals=Array.isArray(r.referrals)?r.referrals:[];publicHospitals=hospitalRegistry.slice();
+  adminReferralTotals=adminReferralTotalsFromList(hospitalReferrals);
+  renderAdminHospitals();renderPublicHospitals();renderAdminReferralSummary();renderAdminReferralList();renderAdminPatients();
+ }catch(err){console.warn('Admin hospital data refresh failed',err.message);if(showError)alert('Could not refresh hospital data.\n\n'+err.message);}
+}
+function adminReferralTotalsFromList(rows){const out={totalReceived:0,pending:0,accepted:0,refused:0};(rows||[]).forEach(r=>{out.totalReceived++;const s=String(r.Referral_Status||'Pending').toLowerCase();if(s==='accepted')out.accepted++;else if(s==='refused')out.refused++;else out.pending++;});return out;}
+function renderAdminReferralSummary(){
+ const total=document.getElementById('adminReferralsSentTotal'),sub=document.getElementById('adminReferralTotalsSub'),grid=document.getElementById('adminHospitalReferralCards');
+ if(total)total.textContent=String(adminReferralTotals.totalReceived||0);
+ if(sub)sub.textContent=`Pending ${adminReferralTotals.pending||0} • Accepted ${adminReferralTotals.accepted||0} • Refused ${adminReferralTotals.refused||0}`;
+ if(grid)grid.innerHTML=(hospitalRegistry||[]).map(h=>{const m=(adminHospitalSummaries||[]).find(x=>x.Hospital_ID===h.Hospital_ID)||{};return `<div class="hospital-admin-card"><div class="hospital-name">${esc(h.Hospital_Name)}</div><div class="hospital-summary-metrics"><div class="metric"><span>Sent / Received</span><strong>${Number(m.totalSent||0)}</strong></div><div class="metric"><span>Pending</span><strong>${Number(m.pending||0)}</strong></div><div class="metric"><span>Accepted</span><strong>${Number(m.accepted||0)}</strong></div><div class="metric"><span>Refused</span><strong>${Number(m.refused||0)}</strong></div></div></div>`;}).join('')||'<div class="empty">Waiting for hospital records.</div>';
+}
+function renderAdminReferralList(){
+ const body=document.getElementById('adminReferralListBody');if(!body)return;
+ const hf=document.getElementById('adminReferralHospitalFilter')?.value||'all',sf=document.getElementById('adminReferralStatusFilter')?.value||'all',q=(document.getElementById('adminReferralSearch')?.value||'').toLowerCase().trim();
+ const rows=(hospitalReferrals||[]).filter(r=>(hf==='all'||r.Hospital_ID===hf)&&(sf==='all'||r.Referral_Status===sf)&&[r.Patient_Name,r.Hospital_Name,r.Report_ID,r.Barangay,r.Referral_Reason].join(' ').toLowerCase().includes(q));
+ body.innerHTML=rows.map(r=>`<tr><td>${esc(formatReferralDate(r.Sent_At))}</td><td><strong>${esc(r.Patient_Name)}</strong><div class="small-note">${esc(r.Report_ID)}</div><div class="small-note">${esc(formatReferralDate(r.Date_Time))}</div></td><td>${esc(String(r.Age??'—')+' / '+String(r.Sex||'—'))}</td><td>${esc(r.Barangay)}</td><td>${esc(r.Condition)}</td><td>${referralClinicalDetailsHtml(r)}</td><td>${esc(r.Hospital_Name)}</td><td>${esc(r.Referral_Reason)}</td><td>${hospitalStatusPill(r.Referral_Status)}</td><td>${esc(r.Receiving_Personnel||'—')}</td><td>${esc(r.Response_Remarks||'—')}</td><td>${referralAttachmentCellHtml(r)}</td><td><button class="action-btn action-edit" onclick='editPatientFromReferral(${JSON.stringify(String(r.Report_ID||''))})'>Edit Patient</button></td></tr>`).join('')||'<tr><td colspan="13" class="empty">No hospital referrals match this filter.</td></tr>';
+}
+async function editPatientFromReferral(reportId){
+ if(!session||session.role!=='admin')return;
+ try{
+  const data=await apiPost('patients',{user:session.user});
+  if(Array.isArray(data.patients))reports=data.patients.map(normPatient).filter(Boolean);
+  renderAll();
+ }catch(err){alert('Could not load the latest patient record from Google Sheets.\n\n'+err.message);return;}
+ const idx=reports.findIndex(r=>String(r.reportId)===String(reportId));
+ if(idx<0){alert('The linked patient record was not found in the current PatientRecords sheet. Refresh Patient Records and try again.');return;}
+ editAdminPatient(idx);
+}
+
+async function saveHospitalCapacity(hospitalId, ev){
+ if(session?.role!=='admin')return;
+ const er=document.getElementById('er-cap-'+hospitalId),ward=document.getElementById('ward-cap-'+hospitalId);if(!er||!ward)return;
+ const button=ev?.currentTarget;const old=button?.textContent;if(button){button.disabled=true;button.textContent='Saving…';}
+ try{await apiPost('saveHospitalCapacity',{user:session.user,hospitalId,erCapacity:Number(er.value),wardCapacity:Number(ward.value)});await refreshAdminHospitalData(false);alert('Hospital bed capacity saved.');}
+ catch(err){alert('Could not save capacity.\n\n'+err.message);}
+ finally{if(button){button.disabled=false;button.textContent=old||'Save Capacity';}}
+}
+function updatePatientAttachmentList(input){
+ const files=Array.from(input?.files||[]),field=input?.closest('.patient-attachment-field'),list=field?.querySelector('.patient-attachment-list');
+ if(!list)return;
+ if(!files.length){list.textContent='No photos selected.';return;}
+ if(files.length>10){list.innerHTML='<span style="color:#b91c1c;font-weight:800">Select no more than 10 photos.</span>';return;}
+ list.innerHTML=files.map(f=>`<div>${esc(f.name)} <span class="small-note">(${(f.size/1024/1024).toFixed(2)} MB original)</span></div>`).join('')+`<div class="patient-attachment-note">${files.length} photo(s) selected. Upload requires an internet connection.</div>`;
+}
+function attachmentEventIdFor(form,file){
+ let map={};try{map=JSON.parse(form.dataset.attachmentEventIds||'{}')||{}}catch(_){map={}}
+ const key=[file.name,file.size,file.lastModified,file.type].join('|');
+ if(!map[key])map[key]='att-'+makeReportId();
+ form.dataset.attachmentEventIds=JSON.stringify(map);
+ return map[key];
+}
+async function preparePatientAttachment(file){
+ const allowed=['image/jpeg','image/png','image/webp'];
+ if(!allowed.includes(String(file.type||'').toLowerCase()))throw new Error('Unsupported photo format: '+file.name+'. Please use JPG, PNG, or WebP. iPhone HEIC photos may need to be converted to JPG first.');
+ const objectUrl=URL.createObjectURL(file);
+ try{
+  const img=await new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>reject(new Error('Could not read image '+file.name+'. Please choose a JPG, PNG, or WebP photo.'));image.src=objectUrl;});
+  const maxDim=2200,scale=Math.min(1,maxDim/Math.max(img.naturalWidth||img.width,img.naturalHeight||img.height));
+  const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round((img.naturalWidth||img.width)*scale));canvas.height=Math.max(1,Math.round((img.naturalHeight||img.height)*scale));
+  const ctx=canvas.getContext('2d');if(!ctx)throw new Error('Image compression is not available in this browser.');
+  ctx.fillStyle='#ffffff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);
+  let quality=0.88,dataUrl=canvas.toDataURL('image/jpeg',quality);
+  while(dataUrl.length>4100000&&quality>0.58){quality-=0.08;dataUrl=canvas.toDataURL('image/jpeg',quality);}
+  if(dataUrl.length>4100000)throw new Error(file.name+' remains too large after compression. Please crop or reduce the image size.');
+  const stem=String(file.name||'laboratory-photo').replace(/\.[^.]+$/,'').slice(0,70)||'laboratory-photo';
+  return {dataUrl:dataUrl,fileName:stem+'.jpg',mimeType:'image/jpeg'};
+ }finally{URL.revokeObjectURL(objectUrl);}
+}
+async function uploadSelectedPatientAttachments(form,reportId,button){
+ const input=form?.querySelector('#rAttachments'),files=Array.from(input?.files||[]);
+ if(!files.length)return [];
+ if(files.length>10)throw new Error('A patient report can include up to 10 photos.');
+ if(!LIVE_API_URL||!navigator.onLine)throw new Error('Photos can only be uploaded while online. Reconnect or remove the selected photos; the report form itself does not require photos.');
+ const uploaded=[];
+ for(let i=0;i<files.length;i++){
+  if(button)button.innerHTML=`<span class="inline-loading"><span class="loading-spinner"></span> Uploading photo ${i+1}/${files.length}…</span>`;
+  const prepared=await preparePatientAttachment(files[i]);
+  const result=await apiPost('uploadPatientAttachment',{user:session.user,reportId:reportId,clientEventId:attachmentEventIdFor(form,files[i]),fileName:prepared.fileName,dataUrl:prepared.dataUrl});
+  if(!result||result.ok!==true||!result.attachment)throw new Error('The backend did not confirm upload of '+files[i].name+'.');
+  uploaded.push(result.attachment);
+ }
+ return uploaded;
+}
+function closePatientAttachments(){const modal=document.getElementById('patientAttachmentsModal');if(modal)modal.style.display='none';const preview=document.getElementById('patientAttachmentPreview');if(preview)preview.innerHTML='';}
+async function openPatientAttachments(reportId){
+ if(!session||!['admin','bhw','hospital'].includes(session.role)){alert('Authorized login is required to view patient attachments.');return;}
+ const modal=document.getElementById('patientAttachmentsModal'),content=document.getElementById('patientAttachmentsContent'),preview=document.getElementById('patientAttachmentPreview'),sub=document.getElementById('patientAttachmentsSubtitle');
+ if(!modal||!content)return;content.innerHTML='<div class="empty"><span class="loading-spinner"></span> Loading private attachments…</div>';if(preview)preview.innerHTML='';if(sub)sub.textContent='Report ID: '+reportId+' · Loading securely from the authorized backend.';modal.style.display='flex';
+ try{
+  const data=await apiPost('patientAttachments',{user:session.user,reportId:reportId});const items=Array.isArray(data.attachments)?data.attachments:[];
+  if(sub)sub.textContent='Report ID: '+reportId+' · Files are shown only to users authorized for this patient/referral.';
+  if(!items.length){content.innerHTML='<div class="empty">No photos or laboratory images attached to this patient report.</div>';return;}
+  content.innerHTML=items.map((a,i)=>`<div class="attachment-row"><div style="min-width:0;flex:1"><strong>${esc(a.File_Name||('Photo '+(i+1)))}</strong><div class="small-note">${(Number(a.Size_Bytes||0)/1024).toFixed(0)} KB · ${esc(a.Uploaded_At?fmtDate(a.Uploaded_At):'Upload date unavailable')}</div></div><button type="button" class="btn btn-light" onclick='viewPatientAttachment(${JSON.stringify(String(a.Attachment_ID))})'>View photo</button></div>`).join('');
+ }catch(err){content.innerHTML='<div class="empty" style="color:#b91c1c">Could not load attachments: '+esc(err.message)+'</div>';}
+}
+async function viewPatientAttachment(attachmentId){
+ const preview=document.getElementById('patientAttachmentPreview');if(!preview)return;preview.innerHTML='<div class="empty"><span class="loading-spinner"></span> Loading image securely…</div>';
+ try{const result=await apiPost('patientAttachmentData',{user:session.user,attachmentId:attachmentId});const a=result?.attachment;if(!a?.Data_URL)throw new Error('The backend did not return the photo.');preview.innerHTML=`<div class="panel" style="margin-top:12px"><div class="panel-title">${esc(a.File_Name||'Patient photo')}</div><img class="attachment-preview-image" src="${a.Data_URL}" alt="Authorized patient laboratory or referral photo" decoding="async"></div>`;}
+ catch(err){preview.innerHTML='<div class="empty" style="color:#b91c1c">Could not open photo: '+esc(err.message)+'</div>';}
+}
+function referralAttachmentCellHtml(r){const count=Number(r.Attachment_Count||0);return count>0?`<button class="action-btn action-edit" onclick='openPatientAttachments(${JSON.stringify(String(r.Report_ID||''))})'>View ${count} photo${count===1?'':'s'}</button>`:'<span class="small-note">No photos</span>';}
+
+function renderHospitalDashboard(){
+ const h=hospitalData?.hospital;if(!h)return;
+ const title=document.getElementById('hospitalDashboardTitle');if(title)title.textContent=h.Hospital_Name||'Hospital Dashboard';
+ const metrics=hospitalData.summary||adminReferralTotalsFromList(hospitalReferrals);
+ ['totalReceived','pending','accepted','refused'].forEach((k,i)=>{const id=['hospitalReferralsTotal','hospitalReferralsPending','hospitalReferralsAccepted','hospitalReferralsRefused'][i];const e=document.getElementById(id);if(e)e.textContent=String(metrics[k]||0);});
+ const er=document.getElementById('hospitalErBedValue'),ward=document.getElementById('hospitalWardBedValue');if(er)er.textContent=`${Number(h.ER_Available||0)} / ${Number(h.ER_Capacity||0)}`;if(ward)ward.textContent=`${Number(h.Ward_Available||0)} / ${Number(h.Ward_Capacity||0)}`;
+ const updated=document.getElementById('hospitalBedsUpdated');if(updated)updated.textContent=h.Updated_At?'Last updated '+new Date(h.Updated_At).toLocaleString():'Bed availability not updated yet.';
+ const body=document.getElementById('hospitalReferralBody');if(!body)return;
+ notifyNewHospitalReferrals(hospitalReferrals||[]);
+ body.innerHTML=(hospitalReferrals||[]).map(r=>`<tr><td>${esc(formatReferralDate(r.Sent_At))}</td><td><strong>${esc(r.Patient_Name)}</strong><div class="small-note">${esc(r.Report_ID)}</div><div class="small-note">${esc(formatReferralDate(r.Date_Time))}</div></td><td>${esc(String(r.Age??'—')+' / '+String(r.Sex||'—'))}</td><td>${esc(r.Barangay)}</td><td>${esc(r.Condition)}</td><td>${referralClinicalDetailsHtml(r)}</td><td><strong>${esc(r.Referral_Reason)}</strong><div class="small-note">${esc(r.Notes||'')}</div></td><td>${hospitalStatusPill(r.Referral_Status)}</td><td>${esc(r.Receiving_Personnel||'—')}</td><td>${esc(r.Response_Remarks||'—')}</td><td>${referralAttachmentCellHtml(r)}</td><td><button class="action-btn action-edit" onclick='openHospitalResponseModal(${JSON.stringify(String(r.Referral_ID))})'>Respond</button></td></tr>`).join('')||'<tr><td colspan="12" class="empty">No referrals have been sent to this hospital.</td></tr>';
+}
+function notifyNewHospitalReferrals(referrals){
+ if(session?.role!=="hospital"||document.visibilityState!=="visible")return;
+ let seen={};try{seen=JSON.parse(sessionStorage.getItem(HOSPITAL_SEEN_REFERRALS_KEY)||"{}")}catch(_){seen={}}
+ const pending=(referrals||[]).filter(r=>String(r.Referral_Status||"").toLowerCase()==="pending"&&r.Referral_ID&&!seen[String(r.Referral_ID)]);
+ (referrals||[]).forEach(r=>{if(r.Referral_ID)seen[String(r.Referral_ID)]=true});
+ try{sessionStorage.setItem(HOSPITAL_SEEN_REFERRALS_KEY,JSON.stringify(seen))}catch(_){ }
+ if(pending.length){const first=pending[0];alert("New incoming patient referral"+(pending.length>1?"s":"")+" ("+pending.length+").\nHospital: "+(hospitalData?.hospital?.Hospital_Name||"Assigned hospital")+"\nPatient: "+(first.Patient_Name||"Patient")+"\nPlease review Incoming Patient Referrals.");}
+}
+async function refreshHospitalDashboard(showError=false){
+ if(session?.role!=='hospital'||!LIVE_API_URL||!navigator.onLine)return;
+ try{const d=await apiPost('hospitalDashboard',{user:session.user});hospitalData=d;hospitalReferrals=Array.isArray(d.referrals)?d.referrals:[];if(d.hospital){hospitalRegistry=[...hospitalRegistry.filter(h=>h.Hospital_ID!==d.hospital.Hospital_ID),d.hospital];}renderHospitalDashboard();renderPublicHospitals();}
+ catch(err){console.warn('Hospital dashboard refresh failed',err.message);if(showError)alert('Could not refresh hospital dashboard.\n\n'+err.message);}
+}
+async function adjustHospitalBeds(type,delta){
+ if(session?.role!=='hospital')return;
+ try{const payload={user:session.user,erDelta:type==='er'?delta:0,wardDelta:type==='ward'?delta:0};await apiPost('updateHospitalBeds',payload);await refreshHospitalDashboard(false);await refreshPublicHospitals(false);}
+ catch(err){alert('Bed availability was not changed.\n\n'+err.message);}
+}
+function openSendHospitalReferral(reportId){
+ if(session?.role!=='admin'){openLogin('admin');return;}
+ const p=reports.find(r=>String(r.reportId)===String(reportId));if(!p){alert('Refresh Patient Records and select a valid record.');return;}
+ selectedSendReportId=String(reportId);sendReferralEventId=makeReportId();
+ const summary=document.getElementById('sendReferralPatientSummary');if(summary)summary.innerHTML=`<strong>${esc(p.name)}</strong> • Age ${esc(p.age)} • ${esc(p.sex||'')}<br>${esc(p.barangay)} • ${esc(p.condition)}<br>Report ID: ${esc(p.reportId)}`;
+ populateHospitalSelect(document.getElementById('sendReferralHospital'));document.getElementById('sendReferralReason').value=p.notes||'';document.getElementById('sendReferralModalStatus')?.classList.remove('visible');document.getElementById('sendReferralStatus')?.classList.remove('visible');document.getElementById('sendHospitalReferralModal').style.display='flex';
+ if(!hospitalRegistry.length)refreshPublicHospitals(false);
+}
+function closeSendHospitalReferral(){document.getElementById('sendHospitalReferralModal').style.display='none';}
+async function submitHospitalReferral(){
+ if(session?.role!=='admin'||!selectedSendReportId)return;
+ const reason=document.getElementById('sendReferralReason').value.trim(),hospitalId=document.getElementById('sendReferralHospital').value,button=document.getElementById('sendHospitalReferralBtn'),status=document.getElementById('sendReferralStatus');
+ if(!reason){alert('Enter the reason / clinical concern for referral.');return;}
+ if(!hospitalId){alert('Choose a receiving hospital.');return;}
+ button.disabled=true;button.innerHTML='<span class="inline-loading"><span class="loading-spinner"></span> Sending…</span>';status?.classList.add('visible');
+ try{
+  const result=await apiPost('sendHospitalReferral',{user:session.user,reportId:selectedSendReportId,hospitalId,clientEventId:sendReferralEventId,reason});
+  const patient=reports.find(r=>String(r.reportId)===String(selectedSendReportId));if(patient)patient.disposition='Referred to hospital';
+  if(result.referral){hospitalReferrals=[result.referral,...hospitalReferrals.filter(x=>String(x.Referral_ID)!==String(result.referral.Referral_ID))];}
+  persistReports();renderAdminPatients();renderAdmin();closeSendHospitalReferral();await refreshAdminHospitalData(false);alert(result.duplicate?'This referral was already saved; no duplicate was created.':'Referral sent to '+hospitalNameById(hospitalId)+'.');
+  selectedSendReportId='';sendReferralEventId='';
+ }catch(err){alert('Referral was not confirmed by the backend. Keep this modal open and retry; the same submission ID is retained.\n\n'+err.message);}
+ finally{button.disabled=false;button.textContent='Send Referral';status?.classList.remove('visible');}
+}
+function latestReferralForReport(reportId){return (hospitalReferrals||[]).filter(x=>String(x.Report_ID)===String(reportId)).sort((a,b)=>new Date(b.Sent_At||0)-new Date(a.Sent_At||0))[0]||null;}
+function openHospitalResponseModal(referralId){
+ if(session?.role!=='hospital')return;const r=hospitalReferrals.find(x=>String(x.Referral_ID)===String(referralId));if(!r)return;
+ selectedHospitalReferralId=String(referralId);document.getElementById('hospitalResponseTitle').textContent='Respond to Referral — '+(r.Patient_Name||'Patient');document.getElementById('hospitalResponseStatus').value=['Accepted','Refused'].includes(r.Referral_Status)?r.Referral_Status:'Accepted';document.getElementById('hospitalReceivingPersonnel').value=r.Receiving_Personnel||'';document.getElementById('hospitalResponseRemarks').value=r.Response_Remarks||'';document.getElementById('hospitalResponseModal').style.display='flex';
+}
+function closeHospitalResponseModal(){document.getElementById('hospitalResponseModal').style.display='none';selectedHospitalReferralId='';}
+async function saveHospitalReferralResponse(){
+ if(session?.role!=='hospital'||!selectedHospitalReferralId)return;
+ const status=document.getElementById('hospitalResponseStatus').value,receivingPersonnel=document.getElementById('hospitalReceivingPersonnel').value.trim(),remarks=document.getElementById('hospitalResponseRemarks').value.trim(),btn=document.getElementById('saveHospitalResponseBtn');
+ if(!receivingPersonnel){alert('Receiving personnel name is required.');return;}if(status==='Refused'&&!remarks){alert('Remarks are required when refusing a referral.');return;}
+ btn.disabled=true;btn.textContent='Saving…';
+ try{await apiPost('respondHospitalReferral',{user:session.user,referralId:selectedHospitalReferralId,status,receivingPersonnel,remarks});closeHospitalResponseModal();await refreshHospitalDashboard(false);alert('Hospital response saved.');}
+ catch(err){alert('Could not save hospital response.\n\n'+err.message);}
+ finally{btn.disabled=false;btn.textContent='Save Response';}
+}
+function openHospitalPasswordModal(required=false){
+ if(session?.role!=='hospital')return;hospitalPasswordRequired=!!required;
+ document.getElementById('hospitalPasswordModal').style.display='flex';
+ const btn=document.getElementById('changeHospitalPasswordBtn');if(btn)btn.textContent=required?'Change Password to Continue':'Change Password';
+ const e=document.getElementById('hospitalPasswordError');if(e)e.style.display='none';
+ document.getElementById('hospitalPasswordStatus')?.classList.remove('visible');
+}
+async function changeHospitalPassword(){
+ if(session?.role!=='hospital')return;
+ const cur=document.getElementById('hospitalCurrentPassword').value,n1=document.getElementById('hospitalNewPassword').value,n2=document.getElementById('hospitalConfirmPassword').value,btn=document.getElementById('changeHospitalPasswordBtn'),err=document.getElementById('hospitalPasswordError'),status=document.getElementById('hospitalPasswordStatus');
+ if(!cur||n1.length<10||n1!==n2){if(err){err.textContent=!cur?'Enter the temporary/current password.':n1.length<10?'New password must be at least 10 characters.':'New passwords do not match.';err.style.display='block';}return;}
+ btn.disabled=true;btn.textContent='Updating…';status?.classList.add('visible');if(err)err.style.display='none';
+ try{const result=await apiPost('changePassword',{user:session.user,currentPassword:cur,newPassword:n1});session.user=result.user;hospitalPasswordRequired=false;document.getElementById('hospitalCurrentPassword').value='';document.getElementById('hospitalNewPassword').value='';document.getElementById('hospitalConfirmPassword').value='';document.getElementById('hospitalPasswordModal').style.display='none';await refreshHospitalDashboard(false);alert('Password changed successfully.');}
+ catch(ex){if(err){err.textContent=ex.message||'Could not change password.';err.style.display='block';}}
+ finally{btn.disabled=false;btn.textContent=hospitalPasswordRequired?'Change Password to Continue':'Change Password';status?.classList.remove('visible');}
+}
+
+function conditionOptionHtml(selectedName){
+ const current=String(selectedName||'');const names=CONDITIONS.slice();if(current&&!names.includes(current))names.push(current);
+ return names.map(n=>`<option value="${esc(n)}" ${n===current?'selected':''}>${esc(n)}</option>`).join('');
+}
+async function refreshConditionsLive(showError=false){
+ if(!session||!['admin','bhw'].includes(session.role)||!LIVE_API_URL||!navigator.onLine)return;
+ try{const data=await apiPost('conditions',{user:session.user});conditionCatalog=Array.isArray(data.conditions)?data.conditions:[];const active=conditionCatalog.filter(c=>c.Active).map(c=>c.Name);CONDITIONS=active;conditionInputs();const pe=document.getElementById('peCondition');if(pe){const val=pe.value;pe.innerHTML=conditionOptionHtml(val);}const ape=document.getElementById('apeCondition');if(ape){const val=ape.value;ape.innerHTML=conditionOptionHtml(val);}const mount=document.getElementById('modalReportMount');if(mount){const select=mount.querySelector('#conditionChoices');if(select)conditionInputsModal(mount);}renderConditionCatalog();populatePatientFilters();renderAll();}
+ catch(err){console.warn('Condition catalog load failed',err.message);if(showError)alert('Could not load the shared condition catalog.\n\n'+err.message);}
+}
+function renderConditionCatalog(){
+ const body=document.getElementById('conditionCatalogBody');if(!body)return;
+ body.innerHTML=(conditionCatalog||[]).map(c=>`<tr><td><strong>${esc(c.Name)}</strong></td><td><span class="status ${c.Active?'badge-online':'badge-offline'}">${c.Active?'Active':'Inactive'}</span></td><td>${esc(c.Updated_At||'—')}</td><td><div class="action-row"><button class="action-btn action-edit" onclick='editConditionCatalogItem(${JSON.stringify(String(c.Condition_ID))})'>Edit</button>${c.Active?`<button class="action-btn action-delete" onclick='deactivateConditionCatalogItem(${JSON.stringify(String(c.Condition_ID))})'>Deactivate</button>`:''}</div></td></tr>`).join('')||'<tr><td colspan="4" class="empty">No conditions loaded. Ensure the ConditionCatalog sheet is migrated and the user is connected.</td></tr>';
+}
+let editingConditionId='';
+function resetConditionEditor(){editingConditionId='';document.getElementById('conditionNameInput').value='';document.getElementById('conditionActiveInput').value='true';document.getElementById('saveConditionBtn').textContent='Save Condition';}
+function editConditionCatalogItem(id){const c=conditionCatalog.find(x=>String(x.Condition_ID)===String(id));if(!c)return;editingConditionId=String(id);document.getElementById('conditionNameInput').value=c.Name;document.getElementById('conditionActiveInput').value=c.Active?'true':'false';document.getElementById('saveConditionBtn').textContent='Update Condition';}
+async function saveConditionCatalogItem(){
+ if(session?.role!=='admin')return;const name=document.getElementById('conditionNameInput').value.trim(),active=document.getElementById('conditionActiveInput').value==='true',btn=document.getElementById('saveConditionBtn'),status=document.getElementById('conditionSaveStatus');
+ if(!name){alert('Enter a condition name.');return;}btn.disabled=true;btn.textContent='Saving…';status?.classList.add('visible');
+ try{await apiPost('saveCondition',{user:session.user,condition:{Condition_ID:editingConditionId,Name:name,Active:active}});await refreshConditionsLive(false);resetConditionEditor();alert('Condition saved. Admin and BHW forms will use the updated catalog on refresh.');}
+ catch(err){alert('Could not save condition.\n\n'+err.message);}
+ finally{btn.disabled=false;btn.textContent=editingConditionId?'Update Condition':'Save Condition';status?.classList.remove('visible');}
+}
+async function deactivateConditionCatalogItem(id){const c=conditionCatalog.find(x=>String(x.Condition_ID)===String(id));if(!c)return;if(!confirm('Deactivate "'+c.Name+'"? Historical patient records will be retained.'))return;try{await apiPost('saveCondition',{user:session.user,condition:{Condition_ID:c.Condition_ID,Name:c.Name,Active:false}});await refreshConditionsLive(false);alert('Condition deactivated; past records are retained.');}catch(err){alert('Could not deactivate condition.\n\n'+err.message);}}
+
 function normHealthFacilityReport(x){
   const history=Array.isArray(x.history)?x.history.map(h=>({id:h.History_ID||h.id||"",action:h.Action||h.action||"",fromStatus:h.From_Status||h.fromStatus||"",toStatus:h.To_Status||h.toStatus||"",remarks:h.Remarks||h.remarks||"",changedBy:h.Changed_By_Username||h.changedBy||"",changedRole:h.Changed_By_Role||h.changedRole||"",changedAt:h.Changed_At||h.changedAt||""})):[];
   return {id:String(x.Report_ID||x.id||""),clientEventId:String(x.Client_Event_ID||x.clientEventId||""),barangay:String(x.Barangay||x.barangay||""),facilityName:String(x.Facility_Name||x.facilityName||""),category:String(x.Category||x.category||""),priority:String(x.Priority||x.priority||"Normal"),title:String(x.Title||x.title||""),description:String(x.Description||x.description||""),bhwId:String(x.Reporting_BHW_ID||x.bhwId||""),bhwName:String(x.Reporting_BHW_Name||x.bhwName||""),bhwUsername:String(x.Reporting_BHW_Username||x.bhwUsername||""),submittedAt:x.Submitted_At||x.submittedAt||"",status:String(x.Status||x.status||"New"),adminRemarks:String(x.Admin_Remarks||x.adminRemarks||""),acknowledgedAt:x.Acknowledged_At||x.acknowledgedAt||"",inProgressAt:x.In_Progress_At||x.inProgressAt||"",resolvedAt:x.Resolved_At||x.resolvedAt||"",updatedAt:x.Updated_At||x.updatedAt||"",history};
@@ -2350,8 +2769,12 @@ async function saveHealthFacilityReportUpdate(){
 
 function toggleUserBarangayField(){
   const role=document.getElementById("uRole").value;
-  document.getElementById("uBarangayField").style.display=role==="bhw"?"flex":"none";
+  const b=document.getElementById("uBarangayField"), h=document.getElementById("uHospitalField");
+  if(b)b.style.display=role==="bhw"?"flex":"none";
+  if(h)h.style.display=role==="hospital"?"flex":"none";
   document.getElementById("uBarangay").required=role==="bhw";
+  const hs=document.getElementById("uHospital");if(hs)hs.required=role==="hospital";
+  const pass=document.getElementById("uPassword");if(pass)pass.required=role!=="hospital"&&!editingUserId;
 }
 
 function openUserModal(role="bhw"){
@@ -2367,7 +2790,8 @@ function openUserModal(role="bhw"){
   document.getElementById("uUsername").disabled=false;
   document.getElementById("uRole").disabled=false;
   document.getElementById("uBarangay").disabled=false;
-  document.getElementById("uBarangay").innerHTML=BARANGAYS.map(b=>`<option>${b}</option>`).join("");
+  document.getElementById("uBarangay").innerHTML=BARANGAYS.map(b=>`<option>${esc(b)}</option>`).join("");
+  populateHospitalSelect(document.getElementById("uHospital"));
   toggleUserBarangayField();
   document.getElementById("userModal").style.display="flex";
 }
@@ -2385,7 +2809,8 @@ function editUser(id){
   document.getElementById("uUsername").value=u.username||"";
   document.getElementById("uPassword").value="";
   document.getElementById("uStatus").value=u.status||"Active";
-  document.getElementById("uBarangay").innerHTML=BARANGAYS.map(b=>`<option ${b===u.barangay?"selected":""}>${b}</option>`).join("");
+  document.getElementById("uBarangay").innerHTML=BARANGAYS.map(b=>`<option ${b===u.barangay?"selected":""}>${esc(b)}</option>`).join("");
+  populateHospitalSelect(document.getElementById("uHospital"),u.hospitalId);
   toggleUserBarangayField();
   // Protect the primary admin identity while still allowing profile/password edits.
   const primary=String(u.username||"").toLowerCase()==="admin";
@@ -2407,7 +2832,8 @@ async function saveUser(){
   const barangay=role==="bhw"?document.getElementById("uBarangay").value:null;
   const status=document.getElementById("uStatus").value;
 
-  if(!name||!contact||!username||(!editingUserId&&!password)||(role==="bhw"&&!barangay)){
+  const hospitalId=role==="hospital"?document.getElementById("uHospital").value:"";
+  if(!name||!contact||!username||(!editingUserId&&!password&&role!=="hospital")||(role==="bhw"&&!barangay)||(role==="hospital"&&!hospitalId)){
     alert("Complete the required fields.");return;
   }
   const duplicate=users.find(u=>u.username.toLowerCase()===username.toLowerCase()&&String(u.id)!==String(editingUserId||""));
@@ -2420,6 +2846,7 @@ async function saveUser(){
     Username:username,
     Contact_Number:contact,
     Barangay:role==="bhw"?barangay:"ALL",
+    Hospital_ID:role==="hospital"?hospitalId:"",
     Status:status
   };
   if(password) userPayload.password=password;
@@ -2452,7 +2879,11 @@ async function saveUser(){
     applyLiveConnectivity(window.__liveConnectivity||[]);
     renderUnits();
     renderAdminDashboardConnectivity();
-    alert(isEdit?"User updated and saved to Google Sheets.":"User created and saved to Google Sheets.");
+    if(result.temporaryPassword){
+      alert("Hospital account created. Temporary password (shown once):\n\n"+result.temporaryPassword+"\n\nGive this password securely to the assigned hospital. They must change it at first login. It will not be shown again.");
+    }else{
+      alert(isEdit?"User updated and saved to Google Sheets.":"User created and saved to Google Sheets.");
+    }
     // Users have already been re-read from the authoritative Users sheet above.
     // Do not issue another dashboard request here; it can fail independently and falsely
     // report a successful user save as an error.
@@ -2489,20 +2920,56 @@ async function deleteUser(id){
 
 let editingAdminPatientIndex=null;
 
+// Render timestamps consistently in Manila time and never expose the raw ISO value in tables.
+function formatReferralDate(value){
+  if(value===undefined||value===null||String(value).trim()==="")return "—";
+  const raw=String(value).trim();
+  let d;
+  // Datetime-local strings have no zone suffix; treat them as Asia/Manila local time.
+  const localMatch=raw.match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?$/);
+  if(localMatch){
+    const [,yy,mm,dd,hh,mi,ss="0",ms="0"]=localMatch;
+    d=new Date(Date.UTC(Number(yy),Number(mm)-1,Number(dd),Number(hh)-8,Number(mi),Number(ss),Number((ms+"00").slice(0,3))));
+  }else d=new Date(raw);
+  if(Number.isNaN(d.getTime()))return raw.replace("T"," ").replace(/([+-]\d{2}:?\d{2}|Z)$/i,"");
+  return new Intl.DateTimeFormat("en-PH",{timeZone:"Asia/Manila",year:"numeric",month:"short",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:true}).format(d);
+}
+function toDateTimeLocalValue(value){
+  if(!value)return "";
+  const raw=String(value).trim();
+  let d;
+  const localMatch=raw.match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?$/);
+  if(localMatch){
+    const [,yy,mm,dd,hh,mi,ss="0",ms="0"]=localMatch;
+    d=new Date(Date.UTC(Number(yy),Number(mm)-1,Number(dd),Number(hh)-8,Number(mi),Number(ss),Number((ms+"00").slice(0,3))));
+  }else d=new Date(raw);
+  if(Number.isNaN(d.getTime()))return raw.slice(0,16);
+  const parts=new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Manila",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(d);
+  const p=Object.fromEntries(parts.map(x=>[x.type,x.value]));
+  return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}`;
+}
+
 function editAdminPatient(index){
   if(!session||session.role!=="admin")return;
   const r=reports[index];if(!r)return;
   editingAdminPatientIndex=index;
   document.getElementById("adminPatientEditModal").style.display="flex";
-  document.getElementById("apeDate").value=r.date||"";
+  document.getElementById("apeDate").value=toDateTimeLocalValue(r.date);
   document.getElementById("apeName").value=r.name||"";
   document.getElementById("apeAge").value=r.age??"";
   document.getElementById("apeBarangay").innerHTML=BARANGAYS.map(b=>`<option ${b===r.barangay?"selected":""}>${b}</option>`).join("");
-  document.getElementById("apeCondition").innerHTML=CONDITIONS.map(c=>`<option ${c===r.condition?"selected":""}>${c}</option>`).join("");
+  document.getElementById("apeCondition").innerHTML=conditionOptionHtml(r.condition);
   document.getElementById("apeDisposition").innerHTML=["Home care / advised","Seen at RHU","Referred to hospital","Admitted","Transferred"].map(c=>`<option ${c===r.disposition?"selected":""}>${c}</option>`).join("");
   document.getElementById("apeSex").value=r.sex||"Male";
   document.getElementById("apeContact").value=r.contact||"";
-  document.getElementById("apeTemp").value=r.temp||"";
+  document.getElementById("apeBp").value=r.bp??"";
+  document.getElementById("apeTemp").value=r.temp??"";
+  document.getElementById("apeHr").value=r.hr??"";
+  document.getElementById("apeRr").value=r.rr??"";
+  document.getElementById("apeO2Sat").value=r.o2sat??"";
+  document.getElementById("apeGcs").value=r.gcs??"";
+  document.getElementById("apeChiefComplaint").value=r.chiefComplaint||"";
+  document.getElementById("apeWorkingDiagnosis").value=r.workingDiagnosis||"";
   document.getElementById("apeNotes").value=r.notes||"";
   document.getElementById("apeCritical").checked=!!r.critical;
 }
@@ -2512,28 +2979,37 @@ function closeAdminPatientEdit(){
   editingAdminPatientIndex=null;
 }
 
-function saveAdminPatient(){
+async function saveAdminPatient(){
   if(editingAdminPatientIndex===null||!session||session.role!=="admin")return;
   const r=reports[editingAdminPatientIndex];if(!r){closeAdminPatientEdit();return}
   r.date=document.getElementById("apeDate").value;
   r.name=document.getElementById("apeName").value.trim();
-  r.age=Number(document.getElementById("apeAge").value);
+  const editedAgeText=document.getElementById("apeAge").value.trim();
+  r.age=editedAgeText===""?"":Number(editedAgeText);
   r.barangay=document.getElementById("apeBarangay").value;
   r.condition=document.getElementById("apeCondition").value;
   r.disposition=document.getElementById("apeDisposition").value;
   r.sex=document.getElementById("apeSex").value;
   r.contact=document.getElementById("apeContact").value.trim();
+  r.bp=document.getElementById("apeBp").value.trim();
   r.temp=document.getElementById("apeTemp").value;
+  r.hr=document.getElementById("apeHr").value;
+  r.rr=document.getElementById("apeRr").value;
+  r.o2sat=document.getElementById("apeO2Sat").value;
+  r.gcs=document.getElementById("apeGcs").value;
+  r.chiefComplaint=document.getElementById("apeChiefComplaint").value.trim();
+  r.workingDiagnosis=document.getElementById("apeWorkingDiagnosis").value.trim();
   r.notes=document.getElementById("apeNotes").value.trim();
   r.critical=document.getElementById("apeCritical").checked;
   r.status=r.critical?"Critical":"Review";
   r.syncStatus="queued";r.updatedAt=new Date().toISOString();
   queueForSync(r);save();closeAdminPatientEdit();renderAll();
-  if(networkState.online)syncOutbox();
-  alert(networkState.online?"Patient record updated and queued for sync.":"Patient record updated locally and queued for sync.");
+  let synced=false;if(networkState.online)synced=await syncOutbox();
+  if(synced){alert("Patient record updated and saved to Google Sheets.");await refreshAdminHospitalData(false);}
+  else alert(networkState.online?"Patient record updated locally but could not be saved to Google Sheets yet. It remains queued for retry.\n\n"+(networkState.lastError||"Check the Apps Script deployment and try Sync again."):"Patient record updated locally and queued for sync until internet returns.");
 }
 
-function deleteAdminPatient(index){
+async function deleteAdminPatient(index){
   if(!session||session.role!=="admin")return;
   const r=reports[index];if(!r)return;
   const ok=confirm(`Delete patient record for "${r.name}" from ${r.barangay}?
@@ -2542,12 +3018,13 @@ This action cannot be undone.`);
   if(!ok)return;
   const deleted=r;
   reports.splice(index,1);
-  if(!outbox.some(x=>x.reportId===deleted.reportId&&x.action==="delete")){
-    outbox.push({reportId:deleted.reportId,action:"delete",deletedAt:new Date().toISOString(),payload:{...deleted}});
-  }
+  // A delete supersedes any pending create/update for the same record.
+  outbox=outbox.filter(x=>String(x.reportId)!==String(deleted.reportId));
+  outbox.push({reportId:deleted.reportId,action:"delete",deletedAt:new Date().toISOString(),payload:{...deleted}});
   persistReports();persistOutbox();renderAll();
-  if(networkState.online)syncOutbox();
-  alert(networkState.online?"Patient record deleted and queued for online sync.":"Patient record deleted locally and queued for sync.");
+  let synced=false;if(networkState.online)synced=await syncOutbox();
+  if(synced){alert("Patient record deleted from Google Sheets.");}
+  else alert(networkState.online?"The record was removed from this view, but deletion has not been confirmed in Google Sheets. It remains queued for retry.\n\n"+(networkState.lastError||"Check the Apps Script deployment and try Sync again."):"The record was removed locally and queued for deletion when internet returns.");
 }
 
 
@@ -2586,14 +3063,16 @@ function renderAdminPatients(){
       <td>${getAgeGroup(r.age)}</td>
       <td>${r.barangay}</td>
       <td>${r.condition}</td>
-      <td>${r.disposition}</td>
-      <td><span class="status ${statusClass(r.status)}">${r.status}</span></td>
+      <td>${esc(r.disposition)}</td>
+      <td>${(()=>{const ref=latestReferralForReport(r.reportId);return ref?`${esc(ref.Hospital_Name)}<div class="small-note">${hospitalStatusPill(ref.Referral_Status)}</div>`:'—'})()}</td>
+      <td><span class="status ${statusClass(r.status)}">${esc(r.status)}</span></td>
       <td><span class="sync-pill ${r.syncStatus==="synced"?"sync-synced":r.syncStatus==="error"?"sync-error":"sync-queued"}">${r.syncStatus==="synced"?"Synced":r.syncStatus==="error"?"Sync Error":"Queued"}</span></td>
       <td><div class="admin-patient-action">
         <button class="action-btn action-edit" onclick="editAdminPatient(${i})">Edit</button>
+        <button class="action-btn action-edit" onclick='openSendHospitalReferral(${JSON.stringify(String(r.reportId))})'>Send Referral</button>
         <button class="action-btn action-delete" onclick="deleteAdminPatient(${i})">Delete</button>
       </div></td>
-    </tr>`).join("")||`<tr><td colspan="11" class="empty">No patient records found.</td></tr>`;
+    </tr>`).join("")||`<tr><td colspan="12" class="empty">No patient records found.</td></tr>`;
 }
 
 function populatePatientFilters(){
@@ -2717,9 +3196,9 @@ function stopBhwHeartbeat(){if(heartbeatTimer){clearInterval(heartbeatTimer);hea
 
 
 function queueForSync(report){
-  if(!outbox.some(x=>x.reportId===report.reportId)){
-    outbox.push({reportId:report.reportId,payload:{...report}});
-  }
+  const existing=outbox.find(x=>String(x.reportId)===String(report.reportId));
+  if(existing){existing.action='upsert';existing.payload={...report};existing.queuedAt=new Date().toISOString();}
+  else outbox.push({reportId:report.reportId,action:'upsert',payload:{...report},queuedAt:new Date().toISOString()});
   report.syncStatus=networkState.online?"syncing":"queued";
   report.syncAttempts=report.syncAttempts||0;
   persistReports();persistOutbox();updateNetworkUI();
@@ -2732,15 +3211,41 @@ function isDuplicateReport(candidate){
   return !!existing;
 }
 async function syncOutbox(){
- if(!LIVE_API_URL||!navigator.onLine||!outbox.length||networkState.syncing||!session)return;
+ if(!LIVE_API_URL){networkState.lastError="Google Apps Script Web App URL is not configured.";return false;}
+ if(!navigator.onLine){networkState.lastError="Device is offline.";return false;}
+ if(!outbox.length)return true;
+ if(networkState.syncing||!session){networkState.lastError="Sync is already running or the session is unavailable.";return false;}
  networkState.syncing=true;updateNetworkUI();
  try{
-   const result=await apiPost("syncReports",{user:session.user,deviceId:DEVICE_ID,reports:outbox.map(x=>({action:x.action||"upsert",reportId:x.reportId,payload:x.payload,deviceId:DEVICE_ID}))});
+   const queuedAtStart=outbox.slice();
+   const result=await apiPost("syncReports",{user:session.user,deviceId:DEVICE_ID,reports:queuedAtStart.map(x=>({action:x.action||"upsert",reportId:x.reportId,payload:x.payload,deviceId:DEVICE_ID}))});
    const good=new Set((result.results||[]).filter(x=>x.ok).map(x=>String(x.reportId)));
+   const failed=(result.results||[]).filter(x=>!x.ok);
    outbox=outbox.filter(x=>!good.has(String(x.reportId)));
    reports=reports.map(x=>good.has(String(x.reportId))?Object.assign({},x,{syncStatus:"synced"}):x);
-   backendLastSync=new Date().toISOString();persistReports();persistOutbox();renderAll();
- }catch(err){networkState.lastError=err.message||"Sync failed"}finally{networkState.syncing=false;updateNetworkUI()}
+   backendLastSync=new Date().toISOString();persistReports();persistOutbox();
+   if(!failed.length){
+     // Reload the server's saved rows so the UI cannot claim success while showing a stale local version.
+     try{
+       const latest=await apiPost('patients',{user:session.user,deviceId:DEVICE_ID});
+       if(Array.isArray(latest.patients)){
+         const byId=new Map();
+         latest.patients.map(normPatient).filter(Boolean).forEach(x=>byId.set(String(x.reportId),x));
+         // Keep only still-pending local work over the authoritative rows.
+         outbox.forEach(item=>{
+           const id=String(item.reportId||'');
+           if(item.action==='delete')byId.delete(id);
+           else if(item.payload){const pending=normPatient(Object.assign({},item.payload,{syncStatus:'queued'}));if(pending)byId.set(id,pending);}
+         });
+         reports=Array.from(byId.values());
+       }
+     }catch(readErr){console.warn('Sync succeeded, but authoritative patient refresh failed',readErr.message);}
+   }
+   persistReports();persistOutbox();renderAll();
+   if(failed.length){networkState.lastError=failed.map(x=>x.error||'Sync failed').join('; ');return false;}
+   networkState.lastError='';
+   return true;
+ }catch(err){networkState.lastError=err.message||"Sync failed";return false}finally{networkState.syncing=false;updateNetworkUI()}
 }
 
 function manualSync(){if(networkState.online){syncOutbox();syncAnnouncementOutbox()}else alert("Still offline. Reports and announcements will stay safely queued until the connection returns.");}
@@ -3441,15 +3946,27 @@ function renderAdminHeat(){
   renderHeatSummary("adm",heatIndexData);renderHeatMap("adminHeatMap",heatIndexData);renderHeatTable("adminHeatBody",heatIndexData,true);
 }
 function renderBhwHeat(){
-  if(!session||session.role!=="bhw")return;
-  const d=heatDataFor(session.barangay);
-  const value=Number(d.value);
-  const hasValue=Number.isFinite(value)&&value>0;
-  const lvl=hasValue?getHeatLevel(value):null;
-  document.getElementById("bhwHeatValue").textContent=hasValue?value.toFixed(1)+"\u00B0C":"\u2014";
-  document.getElementById("bhwHeatStatus").innerHTML=hasValue?`<span class="heat-status ${lvl.cls}">${lvl.label}</span>`:"<span class='heat-status heat-caution'>No live data</span>";
-  document.getElementById("bhwCityAvg").textContent=heatIndexData.length?avgHeat().toFixed(1)+"\u00B0C":"\u2014";
-  document.getElementById("bhwHeatUpdated").textContent=(d.observedAt?"Updated: "+d.observedAt:"Waiting for live official data")+" \u2022 barangay: "+session.barangay;
+  if(!session)return;
+  const selector=document.getElementById("adminMyHeatBarangay");
+  const isAdmin=session.role==="admin";
+  if(session.role!=="bhw"&&!isAdmin)return;
+  if(selector){
+    selector.classList.toggle("hidden",!isAdmin);
+    if(isAdmin&&selector.options.length<=1){
+      selector.innerHTML='<option value="">Select barangay...</option>'+BARANGAYS.map(b=>`<option value="${esc(b)}">${esc(b)}</option>`).join("");
+    }
+  }
+  let barangay=isAdmin?(selector?.value||""):String(session.barangay||"");
+  if(isAdmin&&!BARANGAYS.includes(barangay))barangay=BARANGAYS[0]||"";
+  if(isAdmin&&selector&&selector.value!==barangay)selector.value=barangay;
+  const d=heatDataFor(barangay),value=Number(d.value);
+  const hasValue=Number.isFinite(value)&&value>0,lvl=hasValue?getHeatLevel(value):null;
+  const valueEl=document.getElementById("bhwHeatValue"),statusEl=document.getElementById("bhwHeatStatus"),avgEl=document.getElementById("bhwCityAvg"),updatedEl=document.getElementById("bhwHeatUpdated"),subEl=document.getElementById("bhwHeatPanelSub");
+  if(valueEl)valueEl.textContent=hasValue?value.toFixed(1)+"\u00B0C":"\u2014";
+  if(statusEl)statusEl.innerHTML=hasValue?`<span class="heat-status ${lvl.cls}">${lvl.label}</span>`:"<span class='heat-status heat-caution'>No live data</span>";
+  if(avgEl)avgEl.textContent=heatIndexData.length?avgHeat().toFixed(1)+"\u00B0C":"\u2014";
+  if(updatedEl)updatedEl.textContent=(d.observedAt?"Updated: "+d.observedAt:"Waiting for live official data")+" \u2022 barangay: "+(barangay||"\u2014");
+  if(subEl)subEl.textContent=isAdmin?"Select a barangay to view its heat index. Current selection: "+(barangay||"\u2014")+".":"Heat monitoring for your locked barangay: "+(barangay||"\u2014")+".";
 }
 async function refreshHeatIndexLive(){
   if(!LIVE_API_URL||!navigator.onLine){alert("Live backend is not reachable. Check internet connection and Web App deployment.");return}
@@ -3473,6 +3990,7 @@ function renderBhwHeatDetailed(){
 async function apiPost(action,payload){
   if(!LIVE_API_URL) throw new Error("Google Apps Script Web App URL is not configured.");
   const requestBody=Object.assign({action:action},payload||{});
+  if(session&&session.sessionToken&&!requestBody.sessionToken)requestBody.sessionToken=session.sessionToken;
   // Google Apps Script Web Apps are more reliable from browser pages when we avoid
   // the application/json CORS preflight. text/plain remains a simple CORS request
   // while the body itself is still valid JSON for doPost()/parseRequestBody_().
@@ -3494,8 +4012,16 @@ async function apiPost(action,payload){
   return data;
 }
 function normPatient(x){
- const r={reportId:x.Report_ID||x.reportId,date:x.Date_Time||x.date,name:x.Patient_Name||x.name,age:Number(x.Age||0),barangay:x.Barangay,condition:x.Condition,contact:x.Contact_Number||"",sex:x.Sex||"",temp:x.Temperature_C??"",disposition:x.Disposition||"",notes:x.Notes||"",critical:Boolean(x.Critical),status:x.Status||"Review",syncStatus:"synced",deviceId:x.Device_ID||"",createdAt:x.Created_At||""};
+ const ageRaw=x.Age!==undefined?x.Age:x.age;
+ const age=ageRaw===''||ageRaw===null||ageRaw===undefined?"":Number(ageRaw);
+ const r={reportId:x.Report_ID||x.reportId,date:x.Date_Time||x.date,name:x.Patient_Name||x.name,age,barangay:x.Barangay||x.barangay,condition:x.Condition||x.condition,contact:x.Contact_Number??x.contact??"",sex:x.Sex??x.sex??"",bp:x.Blood_Pressure??x.bp??"",temp:x.Temperature_C??x.temp??"",hr:x.Heart_Rate??x.hr??"",rr:x.Respiratory_Rate??x.rr??"",o2sat:x.Oxygen_Saturation??x.o2sat??"",gcs:x.GCS??x.gcs??"",chiefComplaint:x.Chief_Complaint??x.chiefComplaint??"",workingDiagnosis:x.Working_Diagnosis??x.workingDiagnosis??"",disposition:x.Disposition??x.disposition??"",notes:x.Notes??x.notes??"",critical:normalizeClientBoolean(x.Critical??x.critical),status:x.Status||x.status||"Review",syncStatus:"synced",deviceId:x.Device_ID||x.deviceId||"",createdAt:x.Created_At||x.createdAt||""};
  return isActiveCondition(r.condition)?r:null;
+}
+function normalizeClientBoolean(value){if(value===true||value===1)return true;return ['true','1','yes','critical'].includes(String(value??'').trim().toLowerCase());}
+function referralClinicalDetailsHtml(r){
+ const items=[['BP',r.Blood_Pressure],['Temp',r.Temperature_C===undefined?'':r.Temperature_C],['HR',r.Heart_Rate],['RR',r.Respiratory_Rate],['SpO₂',r.Oxygen_Saturation],['GCS',r.GCS],['Chief complaint',r.Chief_Complaint],['Working impression',r.Working_Diagnosis]];
+ const text=items.map(([label,value])=>`${label}: ${value!==undefined&&value!==null&&String(value).trim()!==''?String(value):'—'}`).join(' • ');
+ return `<div class="small-note">${esc(text)}</div>`;
 }
 function normAnnouncement(x){
  const pick=(...keys)=>{for(const k of keys){const v=x&&x[k];if(v!==undefined&&v!==null&&String(v).trim()!=="")return v;}return ""};
@@ -3504,7 +4030,7 @@ function normAnnouncement(x){
  return {id:String(pick("Announcement_ID","AnnouncementID","ID","Id","Client_ID","id")||""),type:pick("Type","Announcement_Type","type")||"info",priority:pick("Priority","Urgency","priority")||"Normal",title:String(pick("Title","Announcement_Title","Subject","Heading","title")||""),barangay:String(pick("Barangay","Target_Barangay","Target Barangay","Target","Scope","barangay")||"All Barangays"),body:String(pick("Body","Message","Description","Announcement","Details","Content","Text","body")||""),validUntil,publishedAt:pick("Published_At","PublishedAt","Published At","Created_At","CreatedAt","Timestamp","Date","publishedAt"),active:announcementBool(pick("Active","Is_Active","IsActive","Published_Active","active")),createdBy:String(pick("Created_By","CreatedBy","Author","Username","createdBy")||""),createdByRole:creatorRole,pending:x&&x.pending===true||x&&x.syncStatus==="queued",syncStatus:pick("syncStatus")||""};
 }
 function normInventory(x){return {id:x.Inventory_ID||x.id,barangay:x.Barangay||x.barangay,category:x.Category||x.category,name:x.Item_Name||x.name,unit:x.Unit||x.unit,stock:Number(x.Current_Stock||0),reorder:Number(x.Reorder_Level||0),released:Number(x.Released||0)}}
-function normUser(x){return {id:x.User_ID,name:x.Full_Name||x.name,role:(x.Role||x.role||"bhw").toLowerCase(),username:x.Username||x.username,barangay:x.Barangay,contact:x.Contact_Number||"",status:x.Status||"Active",lastSeen:x.Last_Seen||"",deviceId:x.Device_ID||""}}
+function normUser(x){return {id:x.User_ID,name:x.Full_Name||x.name,role:(x.Role||x.role||"bhw").toLowerCase(),username:x.Username||x.username,barangay:x.Barangay,hospitalId:x.Hospital_ID||x.hospitalId||"",mustChangePassword:x.Must_Change_Password===true||String(x.Must_Change_Password).toLowerCase()==="true",contact:x.Contact_Number||"",status:x.Status||"Active",lastSeen:x.Last_Seen||"",deviceId:x.Device_ID||""}}
 function normHeat(x){const v=x.Heat_Index_C;return {barangay:x.Barangay,value:v===""||v===null||v===undefined?NaN:Number(v),risk:x.Risk_Level||"",source:x.Source||"",observedAt:x.Observed_At||""}}
 async function refreshLiveState(){
   if(!LIVE_API_URL||!navigator.onLine||liveRefreshing)return;
@@ -3550,13 +4076,19 @@ function startAutoRefresh(){
  liveRefreshTimer=setInterval(()=>{
    if(document.visibilityState!=="visible")return;
    refreshCurrentViewData();
- },LIVE_REFRESH_MS);
+   if(currentView==='public')refreshPublicConditionCatalog(false);
+   if(currentView==='public')refreshPublicBranding(false,false);
+   if(session&&(session.role==='admin'||session.role==='bhw'))refreshConditionsLive(false);
+ },currentView==="hospital-dashboard"?15000:LIVE_REFRESH_MS);
 }
 // Connectivity now uses the existing 30-second active-view refresh only.
 // refreshUnits() is single-flight to avoid duplicate simultaneous requests.
 document.addEventListener("visibilitychange",()=>{
  if(document.visibilityState==="visible"){
    refreshCurrentViewData();
+   if(currentView==='public')refreshPublicConditionCatalog(false);
+   if(currentView==='public')refreshPublicBranding(false,false);
+   if(session?.role==="admin"||session?.role==="bhw")refreshConditionsLive(false);
    if(session?.role==="bhw") sendBhwHeartbeat();
  }
 });
@@ -3600,6 +4132,21 @@ function renderConditions(target,list){
  const el=document.getElementById(target);
  if(!el)return;
  const cc=condCounts(list),total=list.length;
+ // Public view includes every active catalog label (even at zero cases), without patient-level details.
+ if(target==='pubConditions'){
+   const merged=Object.create(null);
+   (Array.isArray(publicConditionCatalog)?publicConditionCatalog:[]).forEach(name=>{const key=String(name||'').trim();if(key)merged[key]=Number(cc[key]||0);});
+   Object.keys(cc).forEach(name=>{if(!Object.prototype.hasOwnProperty.call(merged,name))merged[name]=Number(cc[name]||0);});
+   Object.keys(cc).forEach(name=>{if(merged[name]===undefined)merged[name]=Number(cc[name]||0);});
+   const ordered=Object.entries(merged).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
+   const denominator=Math.max(total,1);
+   el.innerHTML=ordered.map(([name,val],i)=>{const pct=((val/denominator)*100).toFixed(1);const colorIndex=(i%9)+1;return `<div class="profile-row"><div><strong>${esc(name)}</strong></div><div class="progress"><span class="c${colorIndex}" style="width:${pct}%"></span></div><div style="text-align:right;font-weight:950">${val}</div></div>`;}).join('')||`<div class="empty">No active conditions are configured.</div>`;
+   const activeTracked=new Set([...(Array.isArray(publicConditionCatalog)?publicConditionCatalog:[]),...Object.keys(cc)]).size;
+   const trackedEl=document.getElementById('pubIllnessConditionCount');if(trackedEl)trackedEl.textContent=String(activeTracked);
+   const reportsEl=document.getElementById('pubIllnessReports');if(reportsEl)reportsEl.textContent=String(Object.values(cc).reduce((sum,v)=>sum+Number(v||0),0));
+   const casesEl=document.getElementById('pubIllnessCases');if(casesEl)casesEl.textContent=String(total);
+   return;
+ }
  const overallTotal=Object.values(cc).reduce((sum,v)=>sum+Number(v||0),0);
  const summaryMap={
    pubConditions:{reports:"pubIllnessReports",cases:"pubIllnessCases",tracked:"pubIllnessConditionCount"},
@@ -3791,7 +4338,7 @@ function editBhwPatient(index){
   modal.querySelector("#peDate").value=r.date||"";
   modal.querySelector("#peName").value=r.name||"";
   modal.querySelector("#peAge").value=r.age??"";
-  modal.querySelector("#peCondition").innerHTML=CONDITIONS.map(c=>`<option ${c===r.condition?"selected":""}>${c}</option>`).join("");
+  modal.querySelector("#peCondition").innerHTML=conditionOptionHtml(r.condition);
   modal.querySelector("#peDisposition").innerHTML=["Home care / advised","Seen at RHU","Referred to hospital","Admitted","Transferred"].map(c=>`<option ${c===r.disposition?"selected":""}>${c}</option>`).join("");
   modal.querySelector("#peNotes").value=r.notes||"";
   modal.querySelector("#peCritical").checked=!!r.critical;
@@ -3845,7 +4392,7 @@ function renderBhw(){
  document.getElementById("bhwReportBody").innerHTML=rows.map(r=>`<tr><td>${fmtDate(r.date)}</td><td><strong>${esc(r.name)}</strong></td><td>${r.age}</td><td>${r.condition}</td><td>${r.disposition}</td><td><span class="status ${statusClass(r.status)}">${r.status}</span></td></tr>`).join("") || `<tr><td colspan="6" class="empty">No reports for this barangay.</td></tr>`;
 }
 
-function renderAll(){reports=(reports||[]).filter(r=>isActiveCondition(r?.condition));renderPublic();renderAdmin();renderBhw();renderAdminUsers();populatePatientFilters();renderAdminPatients();renderBhwPatientRecords();populateBarangays();updateFormLock();renderUnits();renderAdminDashboardConnectivity();renderPublicAnnouncements();renderAdminAnnouncements();renderAdminDashboardMiniAnnouncements();renderBhwAnnouncements();populateInventoryFilters();renderAdminInventory();renderBhwInventory();populatePersonnelFilters();renderPersonnelDirectory("admin");renderPersonnelDirectory("bhw");renderPublicHeat();renderAdminHeat();renderBhwHeat();if(document.getElementById("adminHeatMap2")){renderHeatMap("adminHeatMap2",heatIndexData);renderHeatTable("adminHeatBody2",heatIndexData,true)};if(document.getElementById("bhwHeatBody"))renderBhwHeatDetailed()}
+function renderAll(){reports=(reports||[]).filter(r=>isActiveCondition(r?.condition));renderPublic();renderPublicHospitals();renderAdmin();renderBhw();renderAdminUsers();populatePatientFilters();renderAdminPatients();renderBhwPatientRecords();populateBarangays();updateFormLock();renderUnits();renderAdminDashboardConnectivity();renderPublicAnnouncements();renderAdminAnnouncements();renderAdminDashboardMiniAnnouncements();renderBhwAnnouncements();populateInventoryFilters();renderAdminInventory();renderBhwInventory();populatePersonnelFilters();renderPersonnelDirectory("admin");renderPersonnelDirectory("bhw");renderPublicHeat();renderAdminHeat();renderBhwHeat();if(document.getElementById("adminHeatMap2")){renderHeatMap("adminHeatMap2",heatIndexData);renderHeatTable("adminHeatBody2",heatIndexData,true)};if(document.getElementById("bhwHeatBody"))renderBhwHeatDetailed()}
 function populateBarangays(){
  const sel=document.getElementById("rBarangay"),loggedBhw=session?.role==="bhw";
  sel.innerHTML=(loggedBhw?[session.barangay]:BARANGAYS).map(b=>`<option value="${b}">${b}</option>`).join("");
@@ -3884,45 +4431,58 @@ function closeAccessGuide(kind){
   if((!a||a.style.display==='none')&&(!b||b.style.display==='none')) document.body.classList.remove('modal-open');
 }
 
-function openLoginChooser(){
-  document.getElementById("loginChooser").style.display="flex";
-}
-function closeLoginChooser(){
-  document.getElementById("loginChooser").style.display="none";
-}
-function chooseLogin(role){
+function openLoginChooser(){ document.getElementById("loginChooser").style.display="flex"; }
+function closeLoginChooser(){ document.getElementById("loginChooser").style.display="none"; }
+function continueAuthorizedAccess(){ chooseLogin(document.getElementById("authorizedDashboardSelect").value); }
+function chooseLogin(access){
   closeLoginChooser();
-  openLogin(role);
+  selectedHospitalLoginId=String(access||"").startsWith("hospital-")?String(access):"";
+  openLogin(selectedHospitalLoginId?"hospital":access);
 }
-
 function openLogin(role){
- document.getElementById("loginRole").value=role;syncLoginBrgy(); document.getElementById("loginUser").value=""; document.getElementById("loginPass").value="";
+ selectedHospitalLoginId=String(role||"").startsWith("hospital-")?String(role):selectedHospitalLoginId;
+ const roleVal=selectedHospitalLoginId?"hospital":role;
+ document.getElementById("loginRole").value=roleVal;syncLoginBrgy(); document.getElementById("loginUser").value=""; document.getElementById("loginPass").value="";
+ document.getElementById("loginError").style.display="none";
  document.getElementById("loginOverlay").style.display="flex";document.getElementById("loginUser").focus()
 }
 function closeLogin(){document.getElementById("loginOverlay").style.display="none";document.getElementById("loginError").style.display="none"}
+// Enter in either credential field submits the login form without requiring a mouse click.
+["loginUser","loginPass"].forEach(id=>{const input=document.getElementById(id);if(input)input.addEventListener("keydown",ev=>{if(ev.key==="Enter"){ev.preventDefault();login();}})});
 function syncLoginBrgy(){
- const role=document.getElementById("loginRole").value;document.getElementById("loginBrgyWrap").style.display=role==="bhw"?"flex":"none";
- document.getElementById("loginBrgy").innerHTML=BARANGAYS.map(b=>`<option>${b}</option>`).join("");
+ const role=document.getElementById("loginRole").value;
+ document.getElementById("loginBrgyWrap").style.display=role==="bhw"?"flex":"none";
+ document.getElementById("loginHospitalWrap").style.display=role==="hospital"?"flex":"none";
+ document.getElementById("loginBrgy").innerHTML=BARANGAYS.map(b=>`<option>${esc(b)}</option>`).join("");
+ const h=document.getElementById("loginHospitalDisplay");if(h)h.value=hospitalNameById(selectedHospitalLoginId)||"Assigned hospital from Admin User Management";
 }
 
 // BHW/Admin login: online verification is preferred. If the device has previously
 // authenticated successfully, a network failure/airplane mode can use the local verifier.
-function applyAuthenticatedUser(u,offline=false){
+function applyAuthenticatedUser(u,offline=false,sessionToken=""){
  const role=String(u.Role||"").toLowerCase();
- session={role:role,username:u.Username,barangay:role==="bhw"?u.Barangay:null,user:u};
+ if(role==="hospital"&&offline)throw new Error("Hospital dashboard requires online verification.");
+ session={role:role,username:u.Username,barangay:role==="bhw"?u.Barangay:null,hospitalId:role==="hospital"?u.Hospital_ID||"":null,user:u,sessionToken:String(sessionToken||u.sessionToken||""),offline:!!offline};
+ // Keep the verified session only for this browser tab so a page refresh does not log the user out.
+ // sessionStorage clears when the tab/window is closed; no password is stored.
+ try{if(!offline&&session.sessionToken)sessionStorage.setItem(PERSISTED_TAB_SESSION_KEY,JSON.stringify({user:u,sessionToken:session.sessionToken,savedAt:Date.now()}));}catch(_){ }
  closeLogin();
- document.getElementById("sideUser").textContent=(role==="admin"?"ADMIN":`BHW \u2022 ${session.barangay}`).toUpperCase();
- document.getElementById("sideBrgy").textContent=role==="admin"?"All barangays":session.barangay;
- document.getElementById("sessionChip").textContent=offline?(role==="admin"?"Admin Access \u2022 Offline":"BHW \u2022 Offline"):(role==="admin"?"Admin Access":`BHW \u2022 ${session.barangay}`);
+ const roleLabel=role==="admin"?"ADMIN":role==="bhw"?`BHW • ${session.barangay}`:`HOSPITAL • ${hospitalNameById(session.hospitalId)||session.hospitalId}`;
+ document.getElementById("sideUser").textContent=roleLabel.toUpperCase();
+ document.getElementById("sideBrgy").textContent=role==="admin"?"All barangays":role==="bhw"?session.barangay:(hospitalNameById(session.hospitalId)||"Assigned hospital");
+ document.getElementById("sessionChip").textContent=offline?(role==="admin"?"Admin Access • Offline":`BHW • Offline`):(role==="admin"?"Admin Access":role==="bhw"?`BHW • ${session.barangay}`:"Hospital Access");
  document.getElementById("logoutBtn").classList.remove("hidden");
  applyRoleNavigation();
- showView(role==="admin"?"admin":"bhw");
- if(role==="bhw" && !offline) startBhwHeartbeat();
- // Use cached/local data immediately. Any online refresh runs in the background.
- if(!offline) setTimeout(()=>refreshModuleLive(role==="admin"?"admin":"bhw"),0);
- if(role==="bhw") setTimeout(maybeShowBhwAnnouncementPopup,250);
+ const initialView=role==="admin"?"admin":role==="bhw"?"bhw":"hospital-dashboard";
+ showView(initialView);
+ if(role==="bhw"&&!offline)startBhwHeartbeat();
+ if(!offline){
+   setTimeout(()=>refreshModuleLive(initialView),0);
+   if(role==="admin"||role==="bhw")setTimeout(()=>refreshConditionsLive(false),50);
+ }
+ if(role==="bhw"&&!offline)setTimeout(maybeShowBhwAnnouncementPopup,250);
+ if(role==="hospital"&&String(u.Must_Change_Password).toLowerCase()==="true")setTimeout(()=>openHospitalPasswordModal(true),120);
 }
-
 function isNetworkLoginError(err){
  const m=String(err?.message||err||"").toLowerCase();
  return m.includes("failed to fetch") || m.includes("networkerror") || m.includes("network error") || m.includes("timed out") || m.includes("timeout") || m.includes("load failed");
@@ -3938,22 +4498,23 @@ async function login(){
  try{
    // Airplane mode/offline: authenticate against the verifier created by a previous online login.
    if(!navigator.onLine){
+     if(role==="hospital") throw new Error("Hospital accounts must sign in online.");
      if(!readOfflineAuth()) throw new Error("No offline login is stored on this device yet. Connect to the internet and sign in once first.");
      const cached=await tryOfflineLogin(username,password,role);
      if(!cached) throw new Error("No offline login is stored for this account on this device.");
-     applyAuthenticatedUser(cached.user,true);
+     applyAuthenticatedUser(cached.user,true,cached.sessionToken);
      return;
    }
 
    if(!LIVE_API_URL){
      const cached=readOfflineAuth();
-     if(cached){const offline=await tryOfflineLogin(username,password,role);if(offline){applyAuthenticatedUser(offline,true);return;}}
+     if(cached){const offline=await tryOfflineLogin(username,password,role);if(offline){applyAuthenticatedUser(offline.user,true,offline.sessionToken);return;}}
      throw new Error("Live backend is not connected. Add the Code.gs Web App URL first.");
    }
 
    try{
      const cachedForFastPath=readOfflineAuth();
-     const loginRequest=apiPost("login",{username:username,password:password,deviceId:DEVICE_ID});
+     const loginRequest=apiPost("login",{username:username,password:password,deviceId:DEVICE_ID,requestedRole:role,hospitalId:role==="hospital"?selectedHospitalLoginId:""});
      let result;
 
      // Returning users get a fast fallback after 6 seconds. The real online request
@@ -3968,10 +4529,10 @@ async function login(){
        if(result===timedOut){
          const offline=await tryOfflineLogin(username,password,role);
          if(offline){
-           applyAuthenticatedUser(offline.user,true);
+           applyAuthenticatedUser(offline.user,true,offline.sessionToken);
            const e=document.getElementById("loginError");
            if(e){e.textContent="Offline access: last online verification is still valid. Online sync will continue in the background.";e.style.display="block";e.style.background="#eff6ff";e.style.color="#1e40af";}
-           loginRequest.then(async live=>{try{await cacheOfflineAuth(password,live.user)}catch(_){}}).catch(_=>{});
+           loginRequest.then(async live=>{try{if(live&&live.sessionToken){await cacheOfflineAuth(password,live.user,live.sessionToken);if(session&&session.username===live.user.Username){session.sessionToken=live.sessionToken||session.sessionToken;session.offline=false;}}}catch(_){}}).catch(_=>{});
            return;
          }
          result=await loginRequest;
@@ -3980,9 +4541,12 @@ async function login(){
        result=await loginRequest;
      }
 
+     if(!result||!result.sessionToken)throw new Error("The Apps Script backend is older than this test frontend. Deploy the updated Code.gs as a new Web App version, then sign in again.");
      const u=result.user;
-     await cacheOfflineAuth(password,u);
-     applyAuthenticatedUser(u,false);
+     if(String(u.Role||"").toLowerCase()!==role)throw new Error("This account is not authorized for the selected dashboard.");
+     if(role==="hospital"&&selectedHospitalLoginId&&String(u.Hospital_ID||"")!==selectedHospitalLoginId)throw new Error("This account is assigned to a different hospital.");
+     if(role!=="hospital")await cacheOfflineAuth(password,u,result.sessionToken);
+     applyAuthenticatedUser(u,false,result.sessionToken);
    }catch(err){
      // If Apps Script is temporarily slow/unreachable, a previously verified device can still open
      // the app offline instead of being blocked by a transient network error. Server-side auth errors
@@ -3990,7 +4554,7 @@ async function login(){
      if(isNetworkLoginError(err)){
        const offline=await tryOfflineLogin(username,password,role);
        if(offline){
-         applyAuthenticatedUser(offline.user,true);
+         applyAuthenticatedUser(offline.user,true,offline.sessionToken);
          const e=document.getElementById("loginError");
          if(e){e.textContent="Offline access: last online verification is still valid.";e.style.display="block";e.style.background="#eff6ff";e.style.color="#1e40af";}
          return;
@@ -4004,9 +4568,10 @@ async function login(){
  }finally{if(btn){btn.disabled=false;btn.textContent="Login"}}
 }
 function logout(){
+ if(LIVE_API_URL&&session?.sessionToken&&navigator.onLine){apiPost("logout",{user:session.user}).catch(()=>{});}
  stopBhwHeartbeat();
  bhwRegistrationSummary=null;healthFacilityReports=[];healthFacilityReportSummary=null;selectedHealthFacilityReportId="";facilityDraftEventId="";
- session=null;document.body.classList.add("public-mode");document.getElementById("sideUser").textContent="PUBLIC USER";document.getElementById("sideBrgy").textContent="Public access";
+ session=null;try{sessionStorage.removeItem(PERSISTED_TAB_SESSION_KEY);}catch(_){}selectedHospitalLoginId="";hospitalData=null;hospitalReferrals=[];hospitalPasswordRequired=false;document.getElementById("hospitalPasswordModal").style.display="none";document.body.classList.add("public-mode");document.getElementById("sideUser").textContent="PUBLIC USER";document.getElementById("sideBrgy").textContent="Public access";
  document.getElementById("sessionChip").textContent="Public View";document.getElementById("logoutBtn").classList.add("hidden");applyRoleNavigation();showView("public")
 }
 
@@ -4017,7 +4582,7 @@ document.querySelectorAll(".nav button[data-view]").forEach(btn=>{
       openAppDownloadChooser();
       return;
    }
-   const adminViews=["admin","admin-users","admin-patients","admin-monitoring","admin-health-facilities"];
+   const adminViews=["admin","admin-users","admin-branding","admin-patients","admin-monitoring","admin-health-facilities"];
    const bhwViews=["bhw","bhw-patients","report"];
 
    if(adminViews.includes(v) && session?.role!=="admin"){openLogin("admin");return}
@@ -4030,18 +4595,256 @@ document.querySelectorAll(".nav button[data-view]").forEach(btn=>{
 });
 
 function applyRoleNavigation(){
-  const adminOnly=["admin","admin-users","admin-personnel","admin-patients","admin-monitoring","admin-heat","admin-announcements","admin-health-facilities","admin-inventory","admin-reporting","app-downloads"];
+  const adminOnly=["admin","admin-users","admin-conditions","admin-branding","admin-hospitals","admin-personnel","admin-patients","admin-monitoring","admin-heat","admin-announcements","admin-health-facilities","admin-inventory","admin-reporting","app-downloads"];
   const bhwOnly=["bhw","bhw-patients","bhw-heat","bhw-personnel","bhw-announcements","bhw-inventory","app-downloads","report"];
+  const hospitalOnly=["hospital-dashboard"];
   document.querySelectorAll(".nav button[data-view]").forEach(btn=>{
     const v=btn.dataset.view;
-    if(!session){
-      btn.style.display=(v==="public")?"block":"none";
-    }else if(session.role==="admin"){
-      btn.style.display=(adminOnly.includes(v))?"block":"none";
-    }else if(session.role==="bhw"){
-      btn.style.display=(bhwOnly.includes(v))?"block":"none";
-    }
+    if(!session){btn.style.display=(v==="public")?"block":"none";}
+    else if(session.role==="admin")btn.style.display=adminOnly.includes(v)?"block":"none";
+    else if(session.role==="bhw")btn.style.display=bhwOnly.includes(v)?"block":"none";
+    else if(session.role==="hospital")btn.style.display=hospitalOnly.includes(v)?"block":"none";
   });
+  const sep=document.getElementById("hospitalNavSeparator");if(sep)sep.style.display=session?.role==="hospital"?"block":"none";
+}
+
+/* ======================================================
+   ADMIN-EDITABLE PUBLIC DASHBOARD BRANDING
+   ====================================================== */
+const DEFAULT_PUBLIC_BRANDING = {
+ title:'SUPER EL NIÑO',
+ kicker:'Heat Alert Monitoring • Community Health Surveillance',
+ description:'Public situation dashboard for heat-related illness reports.',
+ actions:[
+  {icon:'☀',label:'Heat Response',target:'heat',url:''},
+  {icon:'📍',label:'Barangay Tally',target:'tally',url:''},
+  {icon:'🏥',label:'Community Reports',target:'reports',url:''}
+ ]
+};
+const BRANDING_TARGETS = {
+ heat:'publicHeatMonitoring', tally:'publicBarangayTally', reports:'publicSituationDashboard',
+ announcements:'publicAnnouncementsAnchor', hospitals:'publicHospitalsPanel', top:'view-public'
+};
+let publicBrandingUpdatedAt = '';
+let publicBrandingLoading = false;
+let selectedBrandingClearLogo = false;
+
+function cleanBrandingActions(actions){
+ const input=Array.isArray(actions)?actions:DEFAULT_PUBLIC_BRANDING.actions;
+ return input.slice(0,3).map(function(a,i){
+   const fallback=DEFAULT_PUBLIC_BRANDING.actions[i]||{icon:'',label:'',target:'reports',url:''};
+   const target=String(a&&a.target||fallback.target);
+   return {
+     icon:String(a&&a.icon!==undefined?a.icon:fallback.icon).trim().slice(0,8),
+     label:String(a&&a.label!==undefined?a.label:fallback.label).trim().slice(0,36),
+     target:Object.prototype.hasOwnProperty.call(BRANDING_TARGETS,target)||target==='external'?target:fallback.target,
+     url:String(a&&a.url||'').trim().slice(0,500)
+   };
+ });
+}
+function addBrandingActionElements(container, actions, previewOnly){
+ if(!container)return;
+ container.replaceChildren();
+ cleanBrandingActions(actions).forEach(function(action){
+   if(!action.label)return;
+   const link=document.createElement('a');
+   link.className='hero-tag hero-tag-anchor';
+   link.textContent=(action.icon?action.icon+' ':'')+action.label;
+   link.setAttribute('aria-label',action.label);
+   if(action.target==='external'){
+     if(!/^https:\/\//i.test(action.url))return;
+     try{const u=new URL(action.url);if(u.protocol!=='https:')return;}catch(e){return;}
+     link.href=action.url;link.target='_blank';link.rel='noopener noreferrer';
+   }else{
+     const id=BRANDING_TARGETS[action.target]||BRANDING_TARGETS.reports;
+     link.href='#'+id;
+     link.addEventListener('click',function(event){
+       if(previewOnly){event.preventDefault();return;}
+       const target=document.getElementById(id);
+       if(!target)return;
+       event.preventDefault();
+       target.scrollIntoView({behavior:'smooth',block:'start'});
+     });
+   }
+   if(previewOnly)link.addEventListener('click',function(event){event.preventDefault();});
+   container.appendChild(link);
+ });
+}
+function applyBrandingText(data){
+ const title=String(data.title||DEFAULT_PUBLIC_BRANDING.title).trim()||DEFAULT_PUBLIC_BRANDING.title;
+ const kicker=String(data.kicker||DEFAULT_PUBLIC_BRANDING.kicker).trim()||DEFAULT_PUBLIC_BRANDING.kicker;
+ const description=String(data.description||DEFAULT_PUBLIC_BRANDING.description).trim()||DEFAULT_PUBLIC_BRANDING.description;
+ const titleEl=document.getElementById('publicHeroTitle');if(titleEl)titleEl.textContent=title;
+ const kickerEl=document.getElementById('publicHeroKicker');if(kickerEl)kickerEl.textContent=kicker;
+ const descEl=document.getElementById('publicHeroDescription');if(descEl)descEl.textContent=description;
+ addBrandingActionElements(document.getElementById('publicHeroActions'),data.actions, false);
+ document.title=title+' — Emergency - Connect';
+}
+function applyPublicBranding(data){
+ if(!data||typeof data!=='object')return;
+ applyBrandingText(data);
+ const logoEl=document.getElementById('publicHeroLogo');
+ if(logoEl&&Object.prototype.hasOwnProperty.call(data,'logoDataUrl')){
+   const src=String(data.logoDataUrl||'');
+   logoEl.src=src||SUPER_ELNINO_LOGO_DATA_URL;
+   logoEl.alt=String(data.title||DEFAULT_PUBLIC_BRANDING.title)+' logo/image';
+   logoEl.style.objectFit='contain';
+ }
+ publicBrandingUpdatedAt=String(data.updatedAt||'default');
+}
+async function refreshPublicBranding(forceImage=false,showError=false){
+ if(!LIVE_API_URL||!navigator.onLine||publicBrandingLoading)return;
+ publicBrandingLoading=true;
+ try{
+   const meta=await apiPost('publicBranding',{includeLogo:false});
+   if(!meta||meta.ok!==true)throw new Error('Public branding response was invalid.');
+   if(forceImage||String(meta.updatedAt||'default')!==publicBrandingUpdatedAt){
+     const full=await apiPost('publicBranding',{includeLogo:true});
+     applyPublicBranding(full);
+   }else{
+     applyPublicBranding(meta);
+   }
+ }catch(err){console.warn('Public branding refresh failed',err.message);if(showError)alert('Could not load dashboard branding.\n\n'+err.message);}
+ finally{publicBrandingLoading=false;}
+}
+function readBrandingActionInputs(){
+ const actions=[];
+ for(let i=1;i<=3;i++){
+   actions.push({
+     icon:String(document.getElementById('brandAction'+i+'Icon')?.value||'').trim(),
+     label:String(document.getElementById('brandAction'+i+'Label')?.value||'').trim(),
+     target:String(document.getElementById('brandAction'+i+'Target')?.value||'reports'),
+     url:String(document.getElementById('brandAction'+i+'Url')?.value||'').trim()
+   });
+ }
+ return actions;
+}
+function fillBrandingActionInputs(actions){
+ const safe=cleanBrandingActions(actions);
+ for(let i=1;i<=3;i++){
+   const a=safe[i-1]||{icon:'',label:'',target:'reports',url:''};
+   const icon=document.getElementById('brandAction'+i+'Icon');if(icon)icon.value=a.icon;
+   const label=document.getElementById('brandAction'+i+'Label');if(label)label.value=a.label;
+   const target=document.getElementById('brandAction'+i+'Target');if(target)target.value=a.target;
+   const url=document.getElementById('brandAction'+i+'Url');if(url)url.value=a.url||'';
+   toggleBrandingActionUrl(i);
+ }
+}
+function toggleBrandingActionUrl(index){
+ const target=document.getElementById('brandAction'+index+'Target');
+ const wrap=document.getElementById('brandAction'+index+'UrlWrap');
+ if(wrap)wrap.hidden=!(target&&target.value==='external');
+}
+async function loadDashboardBranding(showError=false){
+ if(!session||session.role!=='admin')return;
+ const status=document.getElementById('brandingMessage');if(status)status.textContent='Loading saved branding…';
+ try{
+   const d=await apiPost('publicBranding',{includeLogo:true});
+   if(!d||d.ok!==true)throw new Error('Branding response was invalid.');
+   const titleInput=document.getElementById('brandTitleInput');if(titleInput)titleInput.value=String(d.title||DEFAULT_PUBLIC_BRANDING.title);
+   const kickerInput=document.getElementById('brandKickerInput');if(kickerInput)kickerInput.value=String(d.kicker||DEFAULT_PUBLIC_BRANDING.kicker);
+   const descInput=document.getElementById('brandDescriptionInput');if(descInput)descInput.value=String(d.description||DEFAULT_PUBLIC_BRANDING.description);
+   fillBrandingActionInputs(d.actions||DEFAULT_PUBLIC_BRANDING.actions);
+   selectedBrandingClearLogo=false;
+   const fileInput=document.getElementById('brandImageInput');if(fileInput)fileInput.value='';
+   const preview=document.getElementById('brandLogoPreview');if(preview)preview.src=d.logoDataUrl||SUPER_ELNINO_LOGO_DATA_URL;
+   const msg=document.getElementById('brandingMessage');if(msg)msg.textContent='Loaded from TEST backend. '+(d.hasCustomImage?'A custom image is saved.':'Using the default Super El Niño logo.');
+   renderBrandingPreview();
+ }catch(err){if(status)status.textContent='Could not load saved branding: '+err.message;if(showError)alert('Could not load saved dashboard branding.\n\n'+err.message);}
+}
+function renderBrandingPreview(){
+ const title=String(document.getElementById('brandTitleInput')?.value||'').trim()||'Dashboard title';
+ const kicker=String(document.getElementById('brandKickerInput')?.value||'').trim()||'Header subtitle';
+ const description=String(document.getElementById('brandDescriptionInput')?.value||'').trim()||'Dashboard description';
+ const out=document.getElementById('brandTitlePreview');if(out)out.textContent=title;
+ const ko=document.getElementById('brandKickerPreview');if(ko)ko.textContent=kicker;
+ const de=document.getElementById('brandDescriptionPreview');if(de)de.textContent=description;
+ addBrandingActionElements(document.getElementById('brandActionPreview'),readBrandingActionInputs(),true);
+}
+function previewBrandingImage(event){
+ selectedBrandingClearLogo=false;
+ const file=event&&event.target&&event.target.files&&event.target.files[0];if(!file)return;
+ if(!/^image\/(png|jpeg|webp)$/i.test(file.type)){alert('Select a JPG, PNG, or WebP image.');event.target.value='';return;}
+ if(file.size>15*1024*1024){alert('Please select an image smaller than 15 MB; it will be optimized before saving.');event.target.value='';return;}
+ const reader=new FileReader();reader.onload=function(){const img=document.getElementById('brandLogoPreview');if(img)img.src=String(reader.result||'');};reader.onerror=function(){alert('Could not preview the selected image.');};reader.readAsDataURL(file);
+}
+function resetBrandingImageSelection(){
+ const input=document.getElementById('brandImageInput');if(input)input.value='';
+ selectedBrandingClearLogo=false;
+ loadDashboardBranding(false);
+}
+function useDefaultBrandingLogo(){
+ const input=document.getElementById('brandImageInput');if(input)input.value='';
+ selectedBrandingClearLogo=true;
+ const img=document.getElementById('brandLogoPreview');if(img)img.src=SUPER_ELNINO_LOGO_DATA_URL;
+ const msg=document.getElementById('brandingMessage');if(msg)msg.textContent='Default logo selected. Press Save & Publish to apply it.';
+}
+function optimizeBrandingImage(file){
+ return new Promise(function(resolve,reject){
+   if(!file){resolve('');return;}
+   if(file.size>15*1024*1024){reject(new Error('Source image must be 15 MB or smaller.'));return;}
+   const url=URL.createObjectURL(file);const img=new Image();
+   img.onload=function(){
+     try{
+       const max=800;const scale=Math.min(1,max/Math.max(img.naturalWidth||img.width,img.naturalHeight||img.height));
+       const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round((img.naturalWidth||img.width)*scale));canvas.height=Math.max(1,Math.round((img.naturalHeight||img.height)*scale));
+       const ctx=canvas.getContext('2d');if(!ctx)throw new Error('Image compression is not supported by this browser.');
+       ctx.drawImage(img,0,0,canvas.width,canvas.height);
+       let data=canvas.toDataURL('image/webp',0.84);
+       if(!data.startsWith('data:image/webp;base64,')){const jpg=document.createElement('canvas');jpg.width=canvas.width;jpg.height=canvas.height;const jctx=jpg.getContext('2d');jctx.fillStyle='#ffffff';jctx.fillRect(0,0,jpg.width,jpg.height);jctx.drawImage(img,0,0,jpg.width,jpg.height);data=jpg.toDataURL('image/jpeg',0.84);}
+       const bytes=Math.floor((data.length-data.indexOf(',')-1)*3/4);URL.revokeObjectURL(url);
+       if(bytes>1024*1024){reject(new Error('Optimized image is still larger than 1 MB. Please use a smaller or simpler image.'));return;}
+       resolve(data);
+     }catch(err){URL.revokeObjectURL(url);reject(err);}
+   };
+   img.onerror=function(){URL.revokeObjectURL(url);reject(new Error('Selected image could not be opened.'));};img.src=url;
+ });
+}
+async function saveDashboardBranding(){
+ if(!session||session.role!=='admin'){alert('Only an Admin can change public dashboard branding.');return;}
+ const title=String(document.getElementById('brandTitleInput')?.value||'').trim();
+ const kicker=String(document.getElementById('brandKickerInput')?.value||'').trim();
+ const description=String(document.getElementById('brandDescriptionInput')?.value||'').trim();
+ const actions=readBrandingActionInputs();
+ const input=document.getElementById('brandImageInput');const file=input&&input.files&&input.files[0];
+ const button=document.getElementById('saveBrandingBtn');const status=document.getElementById('brandingSaveStatus');const message=document.getElementById('brandingMessage');
+ if(!title||title.length>80){alert('Enter a title of 1–80 characters.');return;}
+ if(kicker.length>120){alert('Subtitle must be 120 characters or fewer.');return;}
+ if(description.length>180){alert('Description must be 180 characters or fewer.');return;}
+ for(let i=0;i<actions.length;i++){
+   const a=actions[i];if(a.label.length>36||a.icon.length>8){alert('Each button label must be 36 characters or fewer, and each icon must be 8 characters or fewer.');return;}
+   if(!a.label)continue;
+   if(a.target==='external'){
+     try{const u=new URL(a.url);if(u.protocol!=='https:')throw new Error();}
+     catch(e){alert('Button '+(i+1)+': enter a valid HTTPS URL, or choose a built-in dashboard destination.');return;}
+   }
+ }
+ if(!LIVE_API_URL||!navigator.onLine){alert('Save requires a connection to the TEST Apps Script backend.');return;}
+ if(button)button.disabled=true;if(status)status.classList.add('visible');if(message)message.textContent='Saving to TEST backend…';
+ try{
+   const logoDataUrl=file?await optimizeBrandingImage(file):'';
+   const result=await apiPost('savePublicBranding',{title:title,kicker:kicker,description:description,actions:actions,logoDataUrl:logoDataUrl,clearLogo:!!selectedBrandingClearLogo});
+   if(!result||result.ok!==true)throw new Error('Branding save could not be confirmed.');
+   const fileInput=document.getElementById('brandImageInput');if(fileInput)fileInput.value='';selectedBrandingClearLogo=false;
+   await refreshPublicBranding(true,false);
+   await loadDashboardBranding(false);
+   if(message)message.textContent='Saved successfully to the TEST backend. The public title, subtitle, description, image and quick links are updated.';
+   alert('Dashboard header and quick links saved to the TEST backend.');
+ }catch(err){if(message)message.textContent='Save failed: '+err.message;alert('Could not save dashboard branding.\n\n'+err.message);}
+ finally{if(button)button.disabled=false;if(status)status.classList.remove('visible');}
+}
+
+async function refreshPublicConditionCatalog(showError=false){
+ if(!LIVE_API_URL||!navigator.onLine||publicConditionCatalogLoading)return;
+ publicConditionCatalogLoading=true;
+ try{
+   const data=await apiPost('publicConditions',{});
+   if(!data||data.ok!==true||!Array.isArray(data.conditions))throw new Error('Public condition catalog response was invalid.');
+   publicConditionCatalog=[...new Set(data.conditions.map(x=>String(x||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+   publicConditionCatalogUpdatedAt=String(data.updatedAt||new Date().toISOString());
+   if(currentView==='public')renderAll();
+ }catch(err){console.warn('Public condition catalog refresh failed',err.message);if(showError)alert('Could not refresh public condition catalog.\n\n'+err.message);}
+ finally{publicConditionCatalogLoading=false;}
 }
 
 async function refreshPublicAnnouncementsLive(){
@@ -4111,9 +4914,10 @@ async function refreshModuleLive(view=currentView){
   try{
     if(view==='public'){
       if(!publicAnnouncementsLoaded){publicAnnouncementsLoading=true;renderPublicAnnouncements();}
-      const [dash,ann]=await Promise.all([
+      const [dash,ann,hospitals]=await Promise.all([
         apiPost('dashboard',{}),
-        apiPost('publicAnnouncements',{})
+        apiPost('publicAnnouncements',{}),
+        apiPost('publicHospitals',{})
       ]);
       updateAnnouncementFeedMeta(ann);
       updateAnnouncementFeedMeta(dash);
@@ -4126,11 +4930,18 @@ async function refreshModuleLive(view=currentView){
         announcements=mergeAnnouncementLists(remote,pending);saveAnnouncements();
       }
       publicAnnouncementsLoaded=true;publicAnnouncementsLoading=false;publicAnnouncementsLoadError=false;
-      renderPublic();renderPublicAnnouncements();renderPublicHeat();return;
+      publicHospitals=Array.isArray(hospitals.hospitals)?hospitals.hospitals:[];hospitalRegistry=publicHospitals.slice();
+      renderPublic();renderPublicAnnouncements();renderPublicHeat();renderPublicHospitals();return;
     }
     if(view==='admin'){
-      await Promise.all([refreshLiveState(),refreshBhwRegistrationSummary(false),refreshHealthFacilityReportSummary(false)]);
+      await Promise.all([refreshLiveState(),refreshBhwRegistrationSummary(false),refreshHealthFacilityReportSummary(false),refreshAdminHospitalData(false),refreshConditionsLive(false)]);
       return;
+    }
+    if(view==='admin-conditions'){
+      await refreshConditionsLive(false);return;
+    }
+    if(view==='admin-hospitals'){
+      await refreshAdminHospitalData(false);return;
     }
     if(view==='admin-reporting'){
       const data=await apiPost('patients',{user:session.user});
@@ -4146,11 +4957,14 @@ async function refreshModuleLive(view=currentView){
       populatePersonnelFilters();renderPersonnelDirectory('admin');return;
     }
     if(view==='admin-monitoring'){
-      await refreshUnits();return;
+      await refreshUnits();
+      await refreshBhwRegistrationSummary(false);
+      return;
     }
     if(view==='admin-patients'){
-      const data=await apiPost('patients',{user:session.user});
+      const [data,refData]=await Promise.all([apiPost('patients',{user:session.user}),apiPost('hospitalReferrals',{user:session.user})]);
       if(Array.isArray(data.patients)) reports=data.patients.map(normPatient).filter(Boolean);
+      if(Array.isArray(refData.referrals))hospitalReferrals=refData.referrals;
       populatePatientFilters();renderAdminPatients();return;
     }
     if(view==='admin-announcements'){
@@ -4164,7 +4978,15 @@ async function refreshModuleLive(view=currentView){
       renderAdminAnnouncements();renderAdminDashboardMiniAnnouncements();renderPublicAnnouncements();return;
     }
     if(view==='admin-health-facilities'){
-      await refreshHealthFacilityReports(false);return;
+      await refreshHealthFacilityReports(false);
+      try{
+        const heat=await apiPost('heatIndex',{user:session.user});
+        if(Array.isArray(heat.heatIndex)) heatIndexData=heat.heatIndex.map(normHeat).filter(x=>BARANGAYS.includes(x.barangay)&&Number.isFinite(x.value));
+        heatReference=heat.referenceStation||heatReference;
+        renderAdminHeat();
+        renderBhwHeat();
+      }catch(heatErr){console.warn('Moved heat summary refresh failed',heatErr.message)}
+      return;
     }
     if(view==='admin-inventory'){
       const data=await apiPost('inventory',{user:session.user,barangay:'ALL'});
@@ -4233,6 +5055,9 @@ async function refreshModuleLive(view=currentView){
     if(view==='bhw-inventory'){
       await refreshBhwInventoryLive();return;
     }
+    if(view==='hospital-dashboard'){
+      await refreshHospitalDashboard(false);return;
+    }
   }catch(err){
     console.warn('Module refresh failed',view,err.message);
     if(view==='public'){publicAnnouncementsLoading=false;publicAnnouncementsLoadError=true;renderPublicAnnouncements();}
@@ -4258,7 +5083,15 @@ function mergeAnnouncementLists(a,b){
 async function refreshCurrentViewData(){return refreshModuleLive(currentView)}
 
 function showView(v){
+ const adminViews=["admin","admin-users","admin-conditions","admin-branding","admin-hospitals","admin-personnel","admin-patients","admin-monitoring","admin-heat","admin-announcements","admin-health-facilities","admin-inventory","admin-reporting"];
+ if(adminViews.includes(v)&&session?.role!=="admin"){openLogin("admin");return;}
+ if(["bhw","bhw-patients","bhw-heat","bhw-personnel","bhw-announcements","bhw-inventory"].includes(v)&&session?.role!=="bhw"){openLogin("bhw");return;}
+ if(v==="hospital-dashboard"&&session?.role!=="hospital"){openLogin("hospital");return;}
+ if(v==="report"&&!["admin","bhw"].includes(session?.role)){openLogin("bhw");return;}
  currentView=v;
+ startAutoRefresh();
+ if(v==='public')setTimeout(()=>refreshPublicConditionCatalog(false),0);
+ if((session?.role==='admin'||session?.role==='bhw')&&v!=='public')setTimeout(()=>refreshConditionsLive(false),0);
  document.body.classList.toggle("public-mode", v==="public");
  placeNetworkBanner();
  document.querySelectorAll('[id^="view-"]').forEach(s=>s.classList.add("hidden"));
@@ -4268,6 +5101,10 @@ function showView(v){
   public:["Community Monitoring","Public Dashboard"],
   admin:["Authorized Monitoring","Admin Dashboard"],
   "admin-users":["Administration","User Management"],
+  "admin-conditions":["Administration","Patient Condition Management"],
+  "admin-branding":["Administration","Public Dashboard Branding"],
+  "admin-hospitals":["Antipolo Hospital","Hospital Capacity & Referral Monitoring"],
+  "hospital-dashboard":["Antipolo Hospital",hospitalNameById(session?.hospitalId)||"Hospital Dashboard"],
   "admin-personnel":["Administration","Personnel Directory"],
   "admin-patients":["Patient Surveillance","Patient Records \u2014 Overall"],
   "admin-monitoring":["Live Unit Monitoring","Barangay Online Monitoring"],
@@ -4290,12 +5127,19 @@ function showView(v){
  if(v==="public"){renderPublic();renderPublicAnnouncements();renderPublicHeat();}
  if(v==="admin"){renderAdmin();renderAdminAnnouncements();renderAdminInventory();renderAdminHeat();renderBhwRegistrationSummary();}
  if(v==="admin-users"){renderAdminUsers();}
+ if(v==="admin-conditions"){renderConditionCatalog();}
+ if(v==="admin-branding"){loadDashboardBranding(false);}
+ if(v==="admin-hospitals"){renderAdminHospitals();renderAdminReferralList();}
+ if(v==="hospital-dashboard"){renderHospitalDashboard();}
  if(v==="admin-personnel"){populatePersonnelFilters();renderPersonnelDirectory("admin");}
  if(v==="admin-monitoring"){renderUnits();}
  if(v==="admin-patients"){populatePatientFilters();renderAdminPatients();}
  if(v==="admin-heat"){renderHeatMap("adminHeatMap2",heatIndexData);renderHeatTable("adminHeatBody2",heatIndexData,true);}
  if(v==="admin-announcements")renderAdminAnnouncements();
  if(v==="admin-health-facilities"){populateHealthFacilityFilters();renderHealthFacilityReports();}
+ if(v==="admin-conditions"&&(session?.role==="admin"||session?.role==="bhw"))refreshConditionsLive(false);
+ if(v==="admin-hospitals"&&session?.role==="admin")refreshAdminHospitalData(false);
+ if(v==="hospital-dashboard"&&session?.role==="hospital")refreshHospitalDashboard(false);
  if(v==="admin-inventory"){populateInventoryFilters();renderAdminInventory();}
  if(v==="admin-reporting"){rptFillFilters();renderReportingAnalytics();}
  if(v==="bhw"){renderBhw();renderBhwAnnouncements();renderBhwDashboardMiniAnnouncements();renderBhwInventory();renderBhwHeat();refreshBhwOwnRegistrationSummary(false);maybeShowBhwAnnouncementPopup();}
@@ -4311,21 +5155,66 @@ function toggleSidebar(){document.getElementById("sidebar").classList.toggle("op
 
 function setDefaultDate(){document.getElementById("rDate").value=new Date().toISOString().slice(0,16)}
 function clearForm(){
- document.getElementById("reportForm").reset();document.getElementById("rCritical").checked=false;setDefaultDate();populateBarangays()
+ const form=document.getElementById("reportForm");if(form){form.reset();delete form.dataset.pendingReportId;delete form.dataset.attachmentEventIds;const input=form.querySelector('#rAttachments');if(input)updatePatientAttachmentList(input);}
+ const critical=document.getElementById("rCritical");if(critical)critical.checked=false;setDefaultDate();populateBarangays()
 }
 async function submitReport(e){
  e.preventDefault();
- if(!session||!["admin","bhw"].includes(session.role)){alert("Authorized login is required.");return}
- const selected=document.querySelector('input[name="condition"]:checked');if(!selected){alert("Please select a condition.");return}
- const brgy=session.role==="bhw"?session.barangay:document.getElementById("rBarangay").value;
- const r={reportId:makeReportId(),deviceId:DEVICE_ID,date:document.getElementById("rDate").value,name:document.getElementById("rName").value.trim(),age:Number(document.getElementById("rAge").value),barangay:brgy,condition:selected.value,sex:document.getElementById("rSex").value,contact:document.getElementById("rContact").value.trim(),temp:document.getElementById("rTemp").value,disposition:document.getElementById("rDisposition").value,notes:document.getElementById("rNotes").value.trim(),critical:document.getElementById("rCritical").checked,status:document.getElementById("rCritical").checked?"Critical":"Review",createdAt:new Date().toISOString()};
- if(isDuplicateReport(r)){alert("Duplicate report detected. The same patient report is already queued or saved on this device.");return}
- if(LIVE_API_URL&&navigator.onLine){try{const result=await apiPost("savePatient",{user:session.user,patient:r,deviceId:DEVICE_ID});reports=[...reports.filter(x=>x.reportId!==r.reportId),normPatient(result.patient||r)];persistReports();renderAll();clearForm();alert("Report saved online.");showView(session.role==="bhw"?"bhw":"admin");return}catch(err){console.warn("Online save failed; queueing locally",err.message)}}
- r.syncStatus="queued";r.createdOffline=!navigator.onLine;reports.push(r);queueForSync(r);persistReports();persistOutbox();renderAll();clearForm();alert("Report saved locally and queued for automatic sync.");showView(session.role==="bhw"?"bhw":"admin");
+ if(!session||!['admin','bhw'].includes(session.role)){alert('Authorized login is required.');return;}
+ const form=e.currentTarget||e.target;
+ const selected=form.querySelector('input[name="condition"]:checked');if(!selected){alert('Please select a condition.');return;}
+ const fileInput=form.querySelector('#rAttachments'),files=Array.from(fileInput?.files||[]);
+ if(files.length>10){alert('Select no more than 10 photos per patient report.');return;}
+ if(files.length&&(!LIVE_API_URL||!navigator.onLine)){alert('Selected laboratory/photos require an internet connection for secure upload. Reconnect before submitting, or remove the photos and submit the report without attachments.');return;}
+ const brgy=session.role==='bhw'?session.barangay:form.querySelector('#rBarangay').value;
+ const reportId=form.dataset.pendingReportId||makeReportId();
+ const r={reportId:reportId,deviceId:DEVICE_ID,date:form.querySelector('#rDate').value,name:form.querySelector('#rName').value.trim(),age:Number(form.querySelector('#rAge').value),barangay:brgy,condition:selected.value,sex:form.querySelector('#rSex').value,contact:form.querySelector('#rContact').value.trim(),bp:form.querySelector('#rBp').value.trim(),temp:form.querySelector('#rTemp').value,hr:form.querySelector('#rHr').value,rr:form.querySelector('#rRr').value,o2sat:form.querySelector('#rO2Sat').value,gcs:form.querySelector('#rGcs').value,chiefComplaint:form.querySelector('#rChiefComplaint').value.trim(),workingDiagnosis:form.querySelector('#rWorkingDiagnosis').value.trim(),disposition:form.querySelector('#rDisposition').value,notes:form.querySelector('#rNotes').value.trim(),critical:form.querySelector('#rCritical').checked,status:form.querySelector('#rCritical').checked?'Critical':'Review',createdAt:new Date().toISOString()};
+ if(isDuplicateReport(r)&&!form.dataset.pendingReportId){alert('Duplicate report detected. The same patient report is already queued or saved on this device.');return;}
+ const button=form.querySelector('button[type="submit"]'),oldText=button?.textContent;if(button){button.disabled=true;button.textContent='Saving report…';}
+ try{
+  if(LIVE_API_URL&&navigator.onLine){
+   let result;
+   try{result=await apiPost('savePatient',{user:session.user,patient:r,deviceId:DEVICE_ID});if(!result||result.ok!==true||!result.patient)throw new Error('Backend did not confirm the saved patient record.');}
+   catch(apiErr){
+    if(files.length||form.dataset.pendingReportId){form.dataset.pendingReportId=reportId;alert('The patient save was not confirmed by Google Sheets. Your form and selected photos were kept. Check the connection and submit again to retry the same report ID.\n\n'+apiErr.message);return;}
+    r.syncStatus='queued';r.createdOffline=false;r.syncError=apiErr.message;reports.push(r);queueForSync(r);persistReports();persistOutbox();renderAll();clearForm();alert('Could not confirm the online save. The patient report was queued for retry.\n\n'+apiErr.message);showView(session.role==='bhw'?'bhw':'admin');return;
+   }
+   const saved=normPatient(result.patient||r);reports=[...reports.filter(x=>String(x.reportId)!==String(r.reportId)),...(saved?[saved]:[])];persistReports();renderAll();form.dataset.pendingReportId=reportId;
+   let uploaded=[];
+   try{uploaded=await uploadSelectedPatientAttachments(form,reportId,button);}
+   catch(uploadErr){alert('Patient report was saved and verified in Google Sheets, but one or more photos were not confirmed. Keep this form open and submit again to retry the same report ID; duplicate uploads are protected.\n\n'+uploadErr.message);return;}
+   delete form.dataset.pendingReportId;delete form.dataset.attachmentEventIds;
+   if(form.id==='reportForm')clearForm();else form.reset();
+   renderAll();
+   if(session.role==='admin')await refreshAdminHospitalData(false);
+   alert('Patient report saved and verified in Google Sheets.'+(uploaded.length?' '+uploaded.length+' laboratory/photo attachment(s) uploaded privately.':''));
+   showView(session.role==='bhw'?'bhw':'admin');return;
+  }
+  if(files.length){alert('Photos can only be uploaded online. Reconnect or remove the selected photos, then submit.');return;}
+  r.syncStatus='queued';r.createdOffline=!navigator.onLine;reports.push(r);queueForSync(r);persistReports();persistOutbox();renderAll();clearForm();alert('Report saved locally and queued for automatic sync. It is not yet confirmed in Google Sheets.');showView(session.role==='bhw'?'bhw':'admin');
+ }finally{if(button){button.disabled=false;button.textContent=oldText||'Submit Report';}}
+}
+
+
+function applyRequestedDashboardOrder(){
+ const admin=document.getElementById("view-admin");
+ const referral=document.getElementById("adminHospitalReferralPanel");
+ const bhw=document.getElementById("adminBhwRegistrationPanel");
+ if(admin&&referral&&bhw&&referral.parentElement===admin&&bhw.parentElement===admin)admin.insertBefore(referral,bhw);
+ const pub=document.getElementById("view-public");
+ const bed=document.getElementById("publicHospitalsPanel");
+ if(pub&&bed){const headings=[...pub.querySelectorAll(".section-title")];const situation=headings.find(e=>e.textContent.trim()==="Public Situation Dashboard");const situationHeader=situation?.closest(".section-head");if(situationHeader?.parentElement) situationHeader.insertAdjacentElement("afterend",bed);}
+}
+function restoreTabSession(){
+ try{const raw=sessionStorage.getItem(PERSISTED_TAB_SESSION_KEY);if(!raw)return;const saved=JSON.parse(raw);if(!saved?.user||!saved?.sessionToken)return;
+   const age=Date.now()-Number(saved.savedAt||0);if(age>12*60*60*1000){sessionStorage.removeItem(PERSISTED_TAB_SESSION_KEY);return;}
+   applyAuthenticatedUser(saved.user,false,saved.sessionToken);
+ }catch(err){console.warn("Could not restore tab session",err.message);}
 }
 
 function conditionInputs(){
- document.getElementById("conditionChoices").innerHTML=CONDITIONS.map((c,i)=>`<label class="check"><input type="radio" name="condition" value="${c}" ${i===0?"checked":""}> ${c}</label>`).join("");
+ const el=document.getElementById("conditionChoices");if(!el)return;
+ el.innerHTML=CONDITIONS.map((c,i)=>`<label class="check"><input type="radio" name="condition" value="${esc(c)}" ${i===0?"checked":""}> ${esc(c)}</label>`).join("")||'<div class="empty">No active conditions configured. Contact the Admin.</div>';
 }
 function openReportModal(){
  if(session?.role!=="admin"){openLogin("admin");return}
@@ -4335,25 +5224,32 @@ function openReportModal(){
  mount.querySelector("#rBarangay").disabled=false;conditionInputsModal(mount);mount.querySelector("#rDate").value=new Date().toISOString().slice(0,16)
  document.getElementById("reportModal").style.display="flex"
 }
-function conditionInputsModal(mount){mount.querySelector("#conditionChoices").innerHTML=CONDITIONS.map((c,i)=>`<label class="check"><input type="radio" name="modalCondition" value="${c}" ${i===0?"checked":""}> ${c}</label>`).join("")}
+function conditionInputsModal(mount){const el=mount.querySelector("#conditionChoices");if(el)el.innerHTML=CONDITIONS.map((c,i)=>`<label class="check"><input type="radio" name="modalCondition" value="${esc(c)}" ${i===0?"checked":""}> ${esc(c)}</label>`).join("")||"<div class=\"empty\">No active conditions configured.</div>";}
 function closeReportModal(){document.getElementById("reportModal").style.display="none"}
-function submitModalReport(e){
+async function submitModalReport(e){
  e.preventDefault();
- const f=e.target;const q=s=>f.querySelector(s);
- const selected=f.querySelector('input[name="modalCondition"]:checked');if(!selected)return;
- const r={
-   reportId:makeReportId(),deviceId:DEVICE_ID,
-   date:q("#rDate").value,name:q("#rName").value.trim(),age:Number(q("#rAge").value),
-   barangay:q("#rBarangay").value,condition:selected.value,disposition:q("#rDisposition").value,
-   status:q("#rCritical").checked?"Critical":"Review",critical:q("#rCritical").checked,
-   syncStatus:"queued",syncAttempts:0,createdOffline:!networkState.online,
-   createdAt:new Date().toISOString()
- };
- if(isDuplicateReport(r)){alert("Duplicate report detected.");return}
- reports.push(r);queueForSync(r);persistReports();persistOutbox();renderAll();closeReportModal();
- if(networkState.online)syncOutbox();
- alert(networkState.online?"Report saved and queued for online sync.":"Report saved locally and queued for sync.");
- showView("admin");
+ if(!session||session.role!=='admin'){alert('Admin login is required to create a patient report.');return;}
+ const f=e.currentTarget||e.target,q=s=>f.querySelector(s),selected=f.querySelector('input[name="modalCondition"]:checked');
+ if(!selected){alert('Please select a condition.');return;}
+ const files=Array.from(q('#rAttachments')?.files||[]);if(files.length>10){alert('Select no more than 10 photos per patient report.');return;}
+ if(files.length&&(!LIVE_API_URL||!navigator.onLine)){alert('Selected laboratory/photos require an internet connection for secure upload. Reconnect before submitting, or remove the photos and submit without attachments.');return;}
+ const ageText=q('#rAge').value.trim(),reportId=f.dataset.pendingReportId||makeReportId();
+ const r={reportId:reportId,deviceId:DEVICE_ID,date:q('#rDate').value,name:q('#rName').value.trim(),age:ageText===''?'':Number(ageText),barangay:q('#rBarangay').value,condition:selected.value,sex:q('#rSex').value,contact:q('#rContact').value.trim(),bp:q('#rBp').value.trim(),temp:q('#rTemp').value,hr:q('#rHr').value,rr:q('#rRr').value,o2sat:q('#rO2Sat').value,gcs:q('#rGcs').value,chiefComplaint:q('#rChiefComplaint').value.trim(),workingDiagnosis:q('#rWorkingDiagnosis').value.trim(),disposition:q('#rDisposition').value,notes:q('#rNotes').value.trim(),status:q('#rCritical').checked?'Critical':'Review',critical:q('#rCritical').checked,createdAt:new Date().toISOString()};
+ if(!r.name||!r.condition){alert('Patient name and condition are required.');return;}
+ if(isDuplicateReport(r)&&!f.dataset.pendingReportId){alert('Duplicate report detected.');return;}
+ const btn=f.querySelector('button[type="submit"]'),oldText=btn?.textContent;if(btn){btn.disabled=true;btn.textContent='Saving report…';}
+ try{
+  if(LIVE_API_URL&&navigator.onLine){
+   let result;
+   try{result=await apiPost('savePatient',{user:session.user,patient:r,deviceId:DEVICE_ID});if(!result||result.ok!==true||!result.patient)throw new Error('Backend did not confirm the saved patient record.');}
+   catch(apiErr){if(files.length||f.dataset.pendingReportId){f.dataset.pendingReportId=reportId;alert('Patient save was not confirmed. Keep this form open and retry when connected; the same report ID will be reused.\n\n'+apiErr.message);return;}r.syncStatus='queued';r.syncError=apiErr.message;reports.push(r);queueForSync(r);persistReports();persistOutbox();renderAll();closeReportModal();alert('Report queued for retry; Google Sheets save is not confirmed.\n\n'+apiErr.message);showView('admin');return;}
+   const saved=normPatient(result.patient||r);reports=[...reports.filter(x=>String(x.reportId)!==String(r.reportId)),...(saved?[saved]:[])];persistReports();renderAll();f.dataset.pendingReportId=reportId;
+   let uploaded=[];try{uploaded=await uploadSelectedPatientAttachments(f,reportId,btn);}catch(uploadErr){alert('Patient report saved, but one or more photos were not confirmed. Keep this window open and submit again to retry the same report ID.\n\n'+uploadErr.message);return;}
+   delete f.dataset.pendingReportId;delete f.dataset.attachmentEventIds;f.reset();updatePatientAttachmentList(q('#rAttachments'));closeReportModal();await refreshAdminHospitalData(false);alert('Patient record saved and verified in Google Sheets.'+(uploaded.length?' '+uploaded.length+' private photo attachment(s) uploaded.':''));showView('admin');return;
+  }
+  if(files.length){alert('Photos can only be uploaded online. Reconnect or remove the selected photos before submitting.');return;}
+  reports.push(r);queueForSync(r);persistReports();persistOutbox();renderAll();closeReportModal();alert('Offline: report queued locally and is not yet confirmed in Google Sheets.');showView('admin');
+ }finally{if(btn){btn.disabled=false;btn.textContent=oldText||'Save Patient Report';}}
 }
 
 
@@ -4366,7 +5262,7 @@ function exportCSV(){
 function fmtDate(s){return new Date(s).toLocaleString([], {month:"short",day:"numeric",year:"numeric",hour:"2-digit",minute:"2-digit"})}
 function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
 
-conditionInputs();renderAll();setDefaultDate();applyRoleNavigation();updateNetworkUI();populateInventoryFilters();rptFillFilters();renderPublicAnnouncements();startAutoRefresh();refreshLiveState();showView("public");if(navigator.onLine&&announcementOutbox.length)setTimeout(syncAnnouncementOutbox,800);
+applyRequestedDashboardOrder();conditionInputs();renderAll();setDefaultDate();applyRoleNavigation();updateNetworkUI();populateInventoryFilters();rptFillFilters();renderPublicAnnouncements();startAutoRefresh();refreshLiveState();refreshPublicConditionCatalog(false);refreshPublicBranding(true,false);showView("public");restoreTabSession();if(navigator.onLine&&announcementOutbox.length)setTimeout(syncAnnouncementOutbox,800);
 </script>
 </body>
 </html>

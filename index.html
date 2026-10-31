@@ -855,6 +855,7 @@ body{background:var(--bg)}
 .admin-subtabs .admin-subtab:hover{background:#e7f0fc!important;color:#174a8b!important;border-color:#7fa6d9!important;box-shadow:0 2px 8px rgba(45,95,174,.12)}
 .admin-subtabs .admin-subtab.active{background:linear-gradient(135deg,#2D5FAE,#4779B9)!important;color:#fff!important;border-color:#2D5FAE!important;box-shadow:0 3px 9px rgba(45,95,174,.2)}
 @media(max-width:680px){.admin-subtabs{display:grid;grid-template-columns:1fr 1fr}.admin-subtabs .admin-subtab{font-size:10px;padding:9px 7px}}
+#loginRole:disabled{opacity:1;color:#334155;background:#f1f5f9;cursor:not-allowed;border-color:#cbd5e1;}
 </style>
 <style>body.modal-open{overflow:hidden}</style>
 
@@ -1890,7 +1891,7 @@ button:disabled{cursor:wait;opacity:.72}
     <div class="login-sub">Authorized access for Admin, BHW, Hospital, and assigned agency dashboards.</div>
     <div class="login-form">
       <div class="error" id="loginError">Please enter your authorized account credentials.</div>
-      <div class="field"><div class="label">Role</div><select id="loginRole" onchange="syncLoginBrgy()"><option value="admin">Admin</option><option value="bhw">BHW</option><option value="hospital">Hospital</option><option value="custom">Agency Account</option></select></div>
+      <div class="field"><div class="label">Role</div><select id="loginRole" onchange="syncLoginRoleLabel();syncLoginBrgy()"><option value="admin">Admin</option><option value="bhw">BHW</option><option value="hospital">Hospital</option><option value="custom">Agency Account</option></select></div>
       <div class="field"><div class="label">Username</div><input id="loginUser" placeholder="Username"></div>
       <div class="field"><div class="label">Password</div><input id="loginPass" type="password" placeholder="Password"></div>
       <div class="field" id="loginBrgyWrap"><div class="label">Assigned Barangay</div><select id="loginBrgy"></select></div>
@@ -2315,6 +2316,7 @@ let selectedHospitalReferralId="";
 let hospitalPasswordRequired=false;
 let selectedHospitalLoginId="";
 let selectedCustomLoginRoleId="";
+let selectedLoginDashboardLabel="";
 let healthFacilityReports=[];
 let healthFacilityReportSummary=null;
 let selectedHealthFacilityReportId="";
@@ -4711,19 +4713,44 @@ function openLoginChooser(){
 }
 function closeLoginChooser(){ document.getElementById("loginChooser").style.display="none"; }
 function continueAuthorizedAccess(){
- const value=document.getElementById("authorizedDashboardSelect").value;
- if(value.startsWith("custom:")){selectedCustomLoginRoleId=value.slice(7);chooseLogin("custom");return;}
- selectedCustomLoginRoleId="";chooseLogin(value);
+ const sel=document.getElementById("authorizedDashboardSelect");
+ const value=sel.value;
+ selectedLoginDashboardLabel=sel.selectedOptions?.[0]?.textContent?.trim()||"";
+ if(value.startsWith("custom:")){selectedCustomLoginRoleId=value.slice(7);chooseLogin("custom",selectedLoginDashboardLabel);return;}
+ selectedCustomLoginRoleId="";chooseLogin(value,selectedLoginDashboardLabel);
 }
-function chooseLogin(access){
+function chooseLogin(access, dashboardLabel=""){
   closeLoginChooser();
   selectedHospitalLoginId=String(access||"").startsWith("hospital-")?String(access):"";
+  selectedLoginDashboardLabel=String(dashboardLabel||selectedLoginDashboardLabel||"").trim();
   openLogin(selectedHospitalLoginId?"hospital":access);
 }
+function syncLoginRoleLabel(){
+ const sel=document.getElementById("loginRole");if(!sel)return;
+ const role=sel.value;
+ const hospitalOpt=sel.querySelector('option[value="hospital"]');
+ const customOpt=sel.querySelector('option[value="custom"]');
+ if(hospitalOpt)hospitalOpt.textContent=(role==="hospital"&&selectedHospitalLoginId&&selectedLoginDashboardLabel)?selectedLoginDashboardLabel:"Hospital";
+ if(customOpt)customOpt.textContent=(role==="custom"&&selectedCustomLoginRoleId&&selectedLoginDashboardLabel)?selectedLoginDashboardLabel:"Agency Account";
+}
 function openLogin(role){
- selectedHospitalLoginId=String(role||"").startsWith("hospital-")?String(role):selectedHospitalLoginId;
- const roleVal=selectedHospitalLoginId?"hospital":role;
- document.getElementById("loginRole").value=roleVal;syncLoginBrgy(); document.getElementById("loginUser").value=""; document.getElementById("loginPass").value="";
+ const requested=String(role||"");
+ if(requested.startsWith("hospital-"))selectedHospitalLoginId=requested;
+ else if(requested!=="hospital")selectedHospitalLoginId="";
+ const roleVal=selectedHospitalLoginId?"hospital":requested;
+ const roleSelect=document.getElementById("loginRole");
+ const roleFallback={admin:"Admin",bhw:"BHW",hospital:"Hospital",custom:"Agency Account"};
+ const roleLabel=(selectedLoginDashboardLabel||roleFallback[roleVal]||roleFallback.admin).trim();
+ // The dashboard selected in the chooser is authoritative. Do not let the user
+ // switch the role here, otherwise a hospital/agency selection can be mismatched.
+ if(roleSelect){
+   roleSelect.innerHTML="";
+   const option=document.createElement("option");
+   option.value=roleVal;option.textContent=roleLabel;option.selected=true;
+   roleSelect.appendChild(option);roleSelect.disabled=true;
+   roleSelect.title="Role is fixed by the dashboard selected on the previous screen.";
+ }
+ syncLoginBrgy(); document.getElementById("loginUser").value=""; document.getElementById("loginPass").value="";
  document.getElementById("loginError").style.display="none";
  document.getElementById("loginOverlay").style.display="flex";document.getElementById("loginUser").focus()
 }

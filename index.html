@@ -880,6 +880,7 @@ button:disabled{cursor:wait;opacity:.72}
 @media(max-width:1050px){.bhw-registration-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:760px){.bhw-registration-totals{grid-template-columns:1fr}.bhw-registration-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.facility-report-detail-grid{grid-template-columns:1fr}.facility-detail-item.full{grid-column:auto}}
 @media(max-width:420px){.bhw-registration-grid{grid-template-columns:1fr}.bhw-registration-card{padding:10px}.bhw-registration-card .brgy-name{min-height:0}.facility-report-details-box{padding:13px}}
+.role-permission-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:10px;border:1px solid #dbe3ef;border-radius:10px;background:#f8fafc}.role-permission-grid label{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:#334155}.role-permission-grid input{width:auto;min-width:16px}@media(max-width:600px){.role-permission-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body class="public-mode">
@@ -896,6 +897,7 @@ button:disabled{cursor:wait;opacity:.72}
       <div class="separator">Authorized Views</div>
       <button data-view="admin">&#x1F6E1;&#xFE0F; Admin Dashboard <span class="lock-badge">&#x1F512;</span></button>
       <button data-view="admin-users">&#x1F465; User Management <span class="nav-badge">ADMIN</span></button>
+      <button data-view="agency-dashboard" id="agencyDashboardNav" style="display:none">&#x1F3E2; Agency Dashboard</button>
       <button data-view="admin-conditions">&#x1FA7A; Patient Conditions</button>
       <button data-view="admin-branding">&#x1F3A8; Dashboard Title &amp; Logo</button>
       <button data-view="admin-hospitals">&#x1F3E5; Antipolo Hospital</button>
@@ -948,6 +950,15 @@ button:disabled{cursor:wait;opacity:.72}
 
 
       <!-- PUBLIC -->
+      <section id="view-agency-dashboard" class="hidden">
+        <div class="section-head"><div><div class="section-title" id="agencyDashboardTitle">Agency Dashboard</div><div class="section-sub" id="agencyDashboardDescription">Restricted agency workspace.</div></div><button class="btn btn-light" onclick="refreshAgencyDashboard(true)">&#x21BB; Refresh</button></div>
+        <div class="notice"><strong id="agencyDashboardIdentity">Agency access</strong> — this workspace is locked to the agency assigned to your account. Patient records and other agencies' reports are not available here.</div>
+        <div class="stat-grid" style="margin-top:12px"><div class="card stat-card"><div class="stat-top"><span>Total Reports</span><span class="icon">&#x1F4CB;</span></div><div class="num" id="agencyCountTotal">0</div></div><div class="card stat-card"><div class="stat-top"><span>Open</span><span class="icon">&#x1F7E0;</span></div><div class="num" id="agencyCountOpen">0</div></div><div class="card stat-card"><div class="stat-top"><span>In Progress</span><span class="icon">&#x1F4CD;</span></div><div class="num" id="agencyCountInProgress">0</div></div><div class="card stat-card"><div class="stat-top"><span>Resolved</span><span class="icon">&#x2705;</span></div><div class="num" id="agencyCountResolved">0</div></div></div>
+        <div class="panel" style="margin-top:13px"><div class="section-head"><div><div class="panel-title">Agency Reports</div><div class="panel-sub">Reports are visible only to authorized accounts assigned to this same agency.</div></div><button class="btn btn-orange" id="agencyNewReportBtn" onclick="openAgencyReportEditor()" style="display:none">&#x2795; New Report</button></div>
+          <div class="table-wrap"><table><thead><tr><th>Date</th><th>Location</th><th>Category</th><th>Priority</th><th>Report</th><th>Status</th><th>Actions</th></tr></thead><tbody id="agencyReportsBody"><tr><td colspan="7" class="empty">Loading agency dashboard…</td></tr></tbody></table></div>
+        </div>
+      </section>
+
       <section id="view-public">
         <div class="public-topbar">
           <div class="public-brand-mini">
@@ -1178,8 +1189,9 @@ button:disabled{cursor:wait;opacity:.72}
 
       <!-- ADMIN USERS -->
       <section id="view-admin-users" class="hidden">
+        <div class="filters" style="margin:10px 0 14px;gap:8px;flex-wrap:wrap"><button class="btn btn-orange" type="button" onclick="showView('admin-users')">&#x1F465; Users</button><button class="btn btn-light" type="button" onclick="showView('admin-roles')">&#x1F6E1; Account Types &amp; Agency Access</button></div>
         <div class="section-head">
-          <div><div class="section-title">User Management</div><div class="section-sub">Admin-only account management for Administrators and BHW users.</div></div>
+          <div><div class="section-title">User Management</div><div class="section-sub">Create standard accounts or add reusable agency roles (BFP, PNP, MDRRMO, and more) in the Account Type field.</div></div>
           <div class="filters"><button class="btn btn-orange" onclick="openUserModal('bhw')">&#x2795; Add User</button></div>
         </div>
         <div class="notice">&#x1F510; <strong>Admin control:</strong> Add, edit, activate, deactivate, or remove authorized accounts. BHW accounts are locked to one barangay; Admin accounts have area-wide access. Keep contact numbers and personnel account details updated for rapid coordination.</div>
@@ -1190,11 +1202,32 @@ button:disabled{cursor:wait;opacity:.72}
           </div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>User</th><th>Username</th><th>Contact</th><th>Assigned Barangay</th><th>Status</th><th>Last Seen</th><th>Actions</th></tr></thead>
+              <thead><tr><th>User</th><th>Username</th><th>Contact</th><th>Assigned Barangay / Agency</th><th>Status</th><th>Last Seen</th><th>Actions</th></tr></thead>
               <tbody id="userBody"></tbody>
             </table>
           </div>
         </div>
+      </section>
+
+      <!-- ADMIN DYNAMIC ROLE / AGENCY MANAGEMENT -->
+      <section id="view-admin-roles" class="hidden">
+        <div class="filters" style="margin:10px 0 14px;gap:8px;flex-wrap:wrap"><button class="btn btn-orange" type="button" onclick="showView('admin-users')">&#x1F465; Users</button><button class="btn btn-light" type="button" onclick="showView('admin-roles')">&#x1F6E1; Account Types &amp; Agency Access</button></div>
+        <div class="section-head"><div><div class="section-title">Account Types &amp; Agency Access</div><div class="section-sub">Create unlimited custom account types. Each type is attached to one agency and its own restricted dashboard workspace.</div></div><button class="btn btn-light" id="roleTypesRefreshBtn" onclick="loadRoleTypes(true)">&#x21BB; Refresh</button></div>
+        <div class="notice">Only the System Administrator can create account types and grant permissions. Custom agency accounts cannot access Admin, BHW, Hospital, or patient-record APIs. Their dashboard data is isolated by Agency ID on the server.</div>
+        <div class="panel" style="margin-top:12px"><div class="panel-title" id="roleTypeFormTitle">Create Account Type</div><input type="hidden" id="roleTypeId"><div class="form-grid" style="margin-top:10px">
+          <div class="field"><div class="label">Account Type / Role Name *</div><input id="roleTypeName" maxlength="60" placeholder="e.g. BFP Admin"></div>
+          <div class="field"><div class="label">Agency Name *</div><input id="roleAgencyName" maxlength="100" placeholder="e.g. Bureau of Fire Protection"></div>
+          <div class="field full"><div class="label">Dashboard Title *</div><input id="roleDashboardTitle" maxlength="100" placeholder="e.g. BFP Emergency Response Dashboard"></div>
+          <div class="field full"><div class="label">Dashboard Description</div><textarea id="roleDescription" rows="2" maxlength="500" placeholder="Describe this agency's dashboard and permitted activities."></textarea></div>
+          <div class="field full"><div class="label">Dashboard Permissions</div><div class="role-permission-grid">
+            <label><input type="checkbox" id="rolePermViewReports" checked> View agency reports</label>
+            <label><input type="checkbox" id="rolePermCreateReports"> Create agency reports</label>
+            <label><input type="checkbox" id="rolePermEditOwnReports"> Edit reports created by this account</label>
+            <label><input type="checkbox" id="rolePermDeleteOwnReports"> Delete reports created by this account</label>
+          </div><div class="small-note">View Dashboard is always enabled. These permissions apply only inside the assigned Agency ID.</div></div>
+          <div class="field"><div class="label">Status</div><select id="roleTypeActive"><option value="true">Active</option><option value="false">Inactive</option></select></div>
+        </div><div class="form-actions"><button class="btn btn-light" onclick="resetRoleTypeEditor()">Clear</button><button class="btn btn-orange" onclick="saveRoleType()">Save Account Type</button></div></div>
+        <div class="panel" style="margin-top:12px"><div class="panel-title">Configured Account Types</div><div class="table-wrap"><table><thead><tr><th>Role / Account Type</th><th>Agency</th><th>Dashboard</th><th>Permissions</th><th>Status</th><th>Actions</th></tr></thead><tbody id="roleTypesBody"><tr><td colspan="6" class="empty"><span class="inline-spinner"></span> Loading account types…</td></tr></tbody></table></div></div>
       </section>
 
       <!-- ADMIN CONDITION CATALOG -->
@@ -1694,7 +1727,7 @@ button:disabled{cursor:wait;opacity:.72}
     <div class="login-title">Authorized Access</div>
     <div class="login-sub">Choose the dashboard you are authorized to access.</div>
     <div style="display:grid;gap:9px;margin-top:17px;text-align:left">
-      <div class="field"><div class="label">Dashboard</div><select id="authorizedDashboardSelect" style="width:100%"><option value="admin">Admin Dashboard</option><option value="bhw">BHW Dashboard</option><option value="hospital-dalig">Rizal Provincial Hospital System (Dalig)</option><option value="hospital-cabading">Antipolo City Hospital System (Cabading)</option><option value="hospital-mambugan">Antipolo City Hospital System (Mambugan)</option></select></div>
+      <div class="field"><div class="label">Dashboard</div><select id="authorizedDashboardSelect" style="width:100%" onchange="selectedCustomLoginRoleId=this.value.startsWith('custom:')?this.value.slice(7):''"><option value="admin">Admin Dashboard</option><option value="bhw">BHW Dashboard</option><option value="hospital-dalig">Rizal Provincial Hospital System (Dalig)</option><option value="hospital-cabading">Antipolo City Hospital System (Cabading)</option><option value="hospital-mambugan">Antipolo City Hospital System (Mambugan)</option></select></div>
       <button class="btn btn-orange" onclick="continueAuthorizedAccess()">Continue to Login</button>
       <button class="btn btn-light" onclick="closeLoginChooser()">Cancel</button>
     </div>
@@ -1799,10 +1832,10 @@ button:disabled{cursor:wait;opacity:.72}
   <div class="login-card">
     <div class="login-logos" aria-label="Antipolo City Health Office and Super El Ni&#xF1;o logos"><img class="app-logo login-logo" data-logo="cho" src="" alt="Antipolo City Health Office logo"><img class="app-logo login-logo" data-logo="super" src="" alt="Super El Ni&#xF1;o logo"></div>
     <div class="login-title">&#x1F510; Authorized Login</div>
-    <div class="login-sub">Authorized access for Admin, BHW, and designated hospital dashboards.</div>
+    <div class="login-sub">Authorized access for Admin, BHW, Hospital, and assigned agency dashboards.</div>
     <div class="login-form">
       <div class="error" id="loginError">Please enter your authorized account credentials.</div>
-      <div class="field"><div class="label">Role</div><select id="loginRole" onchange="syncLoginBrgy()"><option value="admin">Admin</option><option value="bhw">BHW</option><option value="hospital">Hospital</option></select></div>
+      <div class="field"><div class="label">Role</div><select id="loginRole" onchange="syncLoginBrgy()"><option value="admin">Admin</option><option value="bhw">BHW</option><option value="hospital">Hospital</option><option value="custom">Agency Account</option></select></div>
       <div class="field"><div class="label">Username</div><input id="loginUser" placeholder="Username"></div>
       <div class="field"><div class="label">Password</div><input id="loginPass" type="password" placeholder="Password"></div>
       <div class="field" id="loginBrgyWrap"><div class="label">Assigned Barangay</div><select id="loginBrgy"></select></div>
@@ -1963,6 +1996,18 @@ button:disabled{cursor:wait;opacity:.72}
 <!-- REQUIRED HOSPITAL PASSWORD CHANGE MODAL -->
 <div class="modal" id="hospitalPasswordModal"><div class="modal-box"><div class="panel-title">&#x1F512; Change Temporary Password</div><div class="panel-sub" style="margin-bottom:12px">For security, change the temporary password before using the hospital dashboard.</div><div class="form-grid"><div class="field full"><div class="label">Temporary / Current Password *</div><input id="hospitalCurrentPassword" type="password" autocomplete="current-password"></div><div class="field full"><div class="label">New Password * (minimum 10 characters)</div><input id="hospitalNewPassword" type="password" autocomplete="new-password" minlength="10"></div><div class="field full"><div class="label">Confirm New Password *</div><input id="hospitalConfirmPassword" type="password" autocomplete="new-password" minlength="10"></div></div><div id="hospitalPasswordError" class="error" style="display:none;margin-top:9px"></div><div class="save-status" id="hospitalPasswordStatus" role="status" aria-live="polite"><span class="loading-spinner"></span><span>Updating password…</span></div><div class="form-actions"><button class="btn btn-orange" id="changeHospitalPasswordBtn" onclick="changeHospitalPassword()">Change Password</button></div></div></div>
 
+<!-- AGENCY REPORT MODAL -->
+<div class="modal" id="agencyReportModal"><div class="modal-box"><div class="section-head" style="margin:0 0 10px"><div><div class="panel-title" id="agencyReportModalTitle">New Agency Report</div><div class="panel-sub">This report is saved under your assigned agency only.</div></div><button class="btn btn-light" onclick="closeAgencyReportEditor()">&#x2715;</button></div>
+  <input type="hidden" id="agencyReportId"><div class="form-grid">
+    <div class="field"><div class="label">Event Date *</div><input id="agencyReportDate" type="date"></div>
+    <div class="field"><div class="label">Location / Barangay *</div><input id="agencyReportLocation" maxlength="140" placeholder="Incident location"></div>
+    <div class="field"><div class="label">Category *</div><select id="agencyReportCategory"><option>Incident</option><option>Fire / Rescue</option><option>Public Safety</option><option>Evacuation / Relief</option><option>Logistics</option><option>Coordination</option><option>Other</option></select></div>
+    <div class="field"><div class="label">Priority</div><select id="agencyReportPriority"><option>Normal</option><option>Low</option><option>High</option><option>Urgent</option></select></div>
+    <div class="field full"><div class="label">Report Title *</div><input id="agencyReportTitle" maxlength="140" placeholder="Short incident or activity title"></div>
+    <div class="field full"><div class="label">Details / Remarks *</div><textarea id="agencyReportDetails" rows="4" maxlength="4000" placeholder="Enter operational details. Do not enter patient medical information."></textarea></div>
+  </div><div class="form-actions"><button class="btn btn-light" onclick="closeAgencyReportEditor()">Cancel</button><button class="btn btn-orange" id="saveAgencyReportBtn" onclick="saveAgencyReport()">Save Report</button></div>
+</div></div>
+
 <!-- USER MODAL -->
 <div class="modal" id="userModal">
   <div class="modal-box">
@@ -1971,11 +2016,25 @@ button:disabled{cursor:wait;opacity:.72}
       <button class="btn btn-light" onclick="closeUserModal()">&#x2715;</button>
     </div>
     <div class="form-grid">
-      <div class="field"><div class="label">Account Type *</div><select id="uRole" onchange="toggleUserBarangayField()"><option value="bhw">BHW</option><option value="hospital">Hospital</option><option value="admin">Admin</option></select></div>
+      <div class="field"><div class="label">Account Type *</div><select id="uRole" onchange="toggleUserBarangayField()"><option value="bhw">BHW</option><option value="hospital">Hospital</option><option value="admin">Admin</option><optgroup label="Custom Agency Account Types" id="uAgencyRoleOptions"><option disabled>No custom account types yet</option></optgroup><option value="newCustom">＋ New Account Type…</option></select></div>
       <div class="field"><div class="label">Full Name *</div><input id="uName" required placeholder="Account holder name"></div>
       <div class="field"><div class="label">Contact Number *</div><input id="uContact" type="tel" required placeholder="09XXXXXXXXX"></div>
       <div class="field"><div class="label">Username *</div><input id="uUsername" required placeholder="Login username"></div>
       <div class="field" id="uBarangayField"><div class="label">Assigned Barangay *</div><select id="uBarangay"></select></div>
+      <div class="field" id="uAgencyAssignmentField" style="display:none"><div class="label">Assigned Agency *</div><input id="uAgencyAssignmentDisplay" readonly placeholder="Automatically assigned from account type"><div class="small-note">The agency is locked to the selected account type. The user cannot select another agency.</div></div>
+      <div class="field full" id="uNewRoleFields" style="display:none;border:1px solid #cbd5e1;border-radius:12px;padding:12px;background:#f8fafc">
+        <div class="field"><div class="label">NEW ROLE NAME *</div><input id="uNewRoleName" maxlength="60" placeholder="e.g. BFP Admin" oninput="updateUserAgencyAssignment()"></div>
+        <div class="field"><div class="label">AGENCY NAME *</div><input id="uNewAgencyName" maxlength="100" placeholder="e.g. Bureau of Fire Protection" oninput="updateUserAgencyAssignment()"></div>
+        <div class="field full"><div class="label">ASSIGN DASHBOARD *</div><input id="uNewDashboardTitle" maxlength="100" placeholder="e.g. BFP Emergency Response Dashboard" oninput="updateUserAgencyAssignment()"></div>
+        <div class="field full"><div class="label">DASHBOARD DESCRIPTION</div><textarea id="uNewRoleDescription" rows="2" maxlength="500" placeholder="Describe this agency dashboard and its operational purpose."></textarea></div>
+        <div class="field full"><div class="label">DASHBOARD PERMISSIONS</div><div class="role-permission-grid">
+          <label><input type="checkbox" id="uNewPermViewReports" checked> View agency reports</label>
+          <label><input type="checkbox" id="uNewPermCreateReports"> Create agency reports</label>
+          <label><input type="checkbox" id="uNewPermEditOwnReports"> Edit reports created by this account</label>
+          <label><input type="checkbox" id="uNewPermDeleteOwnReports"> Delete reports created by this account</label>
+        </div><div class="small-note">Access applies only to the assigned Agency ID. The System Administrator controls these permissions.</div></div>
+        <div class="notice" id="uNewAgencyPreview" style="margin:0">The new account type and agency assignment will be saved first, then linked to this user account.</div>
+      </div>
       <div class="field" id="uHospitalField" style="display:none"><div class="label">Assigned Hospital *</div><select id="uHospital"><option value="hospital-dalig">Rizal Provincial Hospital System (Dalig)</option><option value="hospital-cabading">Antipolo City Hospital System (Cabading)</option><option value="hospital-mambugan">Antipolo City Hospital System (Mambugan)</option></select></div>
       <div class="field"><div class="label">Password <span class="small-note">(leave blank for auto-generated hospital temporary password)</span></div><input id="uPassword" type="password" placeholder="Required for Admin/BHW; optional for Hospital"></div>
       <div class="field"><div class="label">Status</div><select id="uStatus"><option>Active</option><option>Inactive</option></select></div>
@@ -2122,6 +2181,9 @@ let session = null;
 const PERSISTED_TAB_SESSION_KEY = "emergency_connect_tab_session_v1";
 const HOSPITAL_SEEN_REFERRALS_KEY = "emergency_connect_seen_referrals_v1";
 let users=[];
+let roleTypes = [];
+let agencyDashboardData = null;
+let agencyReports = [];
 let editingUserId=null;
 
 
@@ -2197,6 +2259,7 @@ let sendReferralEventId="";
 let selectedHospitalReferralId="";
 let hospitalPasswordRequired=false;
 let selectedHospitalLoginId="";
+let selectedCustomLoginRoleId="";
 let healthFacilityReports=[];
 let healthFacilityReportSummary=null;
 let selectedHealthFacilityReportId="";
@@ -2291,11 +2354,11 @@ function renderAdminUsers(){
   if(!document.getElementById("userBody")) return;
   const q=(document.getElementById("userSearch").value||"").toLowerCase().trim();
   const st=document.getElementById("userStatusFilter").value;
-  const list=users.filter(u=>[u.name,u.username,u.barangay||"",u.role||"admin",u.contact||""].join(" ").toLowerCase().includes(q))
+  const list=users.filter(u=>[u.name,u.username,u.barangay||"",u.role||"admin",u.customRoleName||"",u.agencyName||"",u.contact||""].join(" ").toLowerCase().includes(q))
                   .filter(u=>st==="all"||u.status===st);
 
   document.getElementById("userBody").innerHTML=list.map(u=>{
-    const role=(u.role||"admin").toUpperCase();
+    const role=(u.role==="custom"?(u.customRoleName||"AGENCY ROLE"):u.role||"admin").toUpperCase();
     const idArg=JSON.stringify(String(u.id||""));
     const isPrimaryAdmin=String(u.username||"").toLowerCase()==="admin";
     const deleteBtn=isPrimaryAdmin
@@ -2305,7 +2368,7 @@ function renderAdminUsers(){
       <td><div style="display:flex;align-items:center;gap:8px"><div class="personnel-avatar-wrap">${userInitial(u)}</div><div><strong>${esc(u.name)}</strong><div style="font-size:9px;color:#64748b">${role}</div></div></div></td>
       <td>${esc(u.username)}</td>
       <td><a class="personnel-contact" href="tel:${esc(u.contact||"")}">\u260E ${esc(u.contact||"\u2014")}</a></td>
-      <td><strong>${u.role==="bhw"?esc(u.barangay):u.role==="hospital"?esc(hospitalNameById(u.hospitalId)||"Unassigned hospital"):"ALL BARANGAYS"}</strong></td>
+      <td><strong>${u.role==="bhw"?esc(u.barangay):u.role==="hospital"?esc(hospitalNameById(u.hospitalId)||"Unassigned hospital"):u.role==="custom"?esc(u.agencyName||"Assigned agency"):"ALL BARANGAYS"}</strong></td>
       <td><span class="status ${u.status==="Active"?"badge-online":"badge-offline"}">${u.status}</span></td>
       <td>${esc(u.lastSeen||"Never")}</td>
       <td><div class="action-row"><button class="action-btn action-edit" onclick='editUser(${idArg})'>Edit</button>${deleteBtn}</div></td>
@@ -2767,21 +2830,152 @@ async function saveHealthFacilityReportUpdate(){
   finally{facilityReportUpdating=false;if(btn){btn.disabled=false;btn.innerHTML="&#x1F4BE; Save Status / Response";}}
 }
 
-function toggleUserBarangayField(){
-  const role=document.getElementById("uRole").value;
-  const b=document.getElementById("uBarangayField"), h=document.getElementById("uHospitalField");
-  if(b)b.style.display=role==="bhw"?"flex":"none";
-  if(h)h.style.display=role==="hospital"?"flex":"none";
-  document.getElementById("uBarangay").required=role==="bhw";
-  const hs=document.getElementById("uHospital");if(hs)hs.required=role==="hospital";
-  const pass=document.getElementById("uPassword");if(pass)pass.required=role!=="hospital"&&!editingUserId;
+/* ======================================================
+   DYNAMIC ROLE & AGENCY MANAGER (SYSTEM ADMIN ONLY)
+   ====================================================== */
+async function loadRoleTypes(showMessage=false){
+  if(session?.role!=="admin")return;
+  const body=document.getElementById("roleTypesBody"), refresh=document.getElementById("roleTypesRefreshBtn");
+  if(body)body.innerHTML='<tr><td colspan="6" class="empty">⏳ Loading account types from Google Sheets…</td></tr>';
+  if(refresh){refresh.disabled=true;refresh.textContent="Loading…";}
+  try{
+    const result=await apiPost("roleTypes",{user:session.user});
+    roleTypes=Array.isArray(result.roleTypes)?result.roleTypes.map(x=>({...x,Active:x.Active===true||String(x.Active).toLowerCase()==="true",Permissions:x.Permissions||{}})):[];
+    users=users.map(u=>{const rt=roleTypes.find(x=>String(x.Role_ID)===String(u.customRoleId||""));return {...u,customRoleName:rt?.Role_Name||u.customRoleName||"",agencyName:rt?.Agency_Name||u.agencyName||""};});
+    renderRoleTypes();if(document.getElementById("userBody"))renderAdminUsers();populateCustomRoleSelect(document.getElementById("uCustomRole"),document.getElementById("uCustomRole")?.value||"");populateUserAccountTypeOptions(document.getElementById("uRole")?.value||"");
+    if(showMessage)alert("Account types refreshed from Google Sheets.");
+  }catch(err){console.error("Role type load failed",err);if(body)body.innerHTML=`<tr><td colspan="6" class="empty">Could not load account types: ${esc(err.message||err)} <button class="action-btn" onclick="loadRoleTypes(true)">Retry</button></td></tr>`;if(showMessage)alert("Could not load account types.\n\n"+err.message);}
+  finally{if(refresh){refresh.disabled=false;refresh.textContent="↻ Refresh";}}
+}
+function renderRoleTypes(){
+  const body=document.getElementById("roleTypesBody");if(!body)return;
+  body.innerHTML=roleTypes.map(x=>{
+    const p=x.Permissions||{};const flags=[p.viewReports&&"View reports",p.createReports&&"Create reports",p.editOwnReports&&"Edit own",p.deleteOwnReports&&"Delete own"].filter(Boolean).join(" • ")||"Dashboard only";
+    const id=JSON.stringify(String(x.Role_ID||""));
+    return `<tr><td><strong>${esc(x.Role_Name||"")}</strong></td><td>${esc(x.Agency_Name||"")}</td><td>${esc(x.Dashboard_Title||"")}</td><td>${esc(flags)}</td><td><span class="status ${x.Active?"badge-online":"badge-offline"}">${x.Active?"Active":"Inactive"}</span></td><td><button class="action-btn action-edit" onclick='editRoleType(${id})'>Edit</button> <button class="action-btn action-delete" onclick='deleteRoleType(${id})'>Delete</button></td></tr>`;
+  }).join("")||'<tr><td colspan="6" class="empty">No custom account types yet. Create BFP Admin, PNP Admin, or another agency role above.</td></tr>';
+}
+function resetRoleTypeEditor(){
+  ["roleTypeId","roleTypeName","roleAgencyName","roleDashboardTitle","roleDescription"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});
+  ["rolePermViewReports"].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=true;});
+  ["rolePermCreateReports","rolePermEditOwnReports","rolePermDeleteOwnReports"].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=false;});
+  document.getElementById("roleTypeActive").value="true";document.getElementById("roleTypeFormTitle").textContent="Create Account Type";
+}
+function editRoleType(id){
+  const x=roleTypes.find(r=>String(r.Role_ID)===String(id));if(!x)return;const p=x.Permissions||{};
+  document.getElementById("roleTypeId").value=x.Role_ID||"";document.getElementById("roleTypeName").value=x.Role_Name||"";document.getElementById("roleAgencyName").value=x.Agency_Name||"";document.getElementById("roleDashboardTitle").value=x.Dashboard_Title||"";document.getElementById("roleDescription").value=x.Description||"";document.getElementById("roleTypeActive").value=x.Active?"true":"false";
+  document.getElementById("rolePermViewReports").checked=!!p.viewReports;document.getElementById("rolePermCreateReports").checked=!!p.createReports;document.getElementById("rolePermEditOwnReports").checked=!!p.editOwnReports;document.getElementById("rolePermDeleteOwnReports").checked=!!p.deleteOwnReports;document.getElementById("roleTypeFormTitle").textContent="Edit Account Type — "+x.Role_Name;window.scrollTo({top:0,behavior:"smooth"});
 }
 
-function openUserModal(role="bhw"){
+async function deleteRoleType(id){
+  const item=roleTypes.find(x=>String(x.Role_ID)===String(id));if(!item)return;
+  if(!confirm(`Delete account type "${item.Role_Name}"? This is allowed only when no user accounts are assigned to it.`))return;
+  try{const result=await apiPost("deleteRoleType",{user:session.user,roleId:String(id)});if(result?.persisted!==true)throw new Error("Backend did not confirm deletion.");await loadRoleTypes(false);populateUserAccountTypeOptions("bhw");alert("Account type deleted.");}
+  catch(err){alert("Could not delete account type.\n\n"+(err.message||err));}
+}
+
+async function saveRoleType(){
+  if(session?.role!=="admin"){alert("System Administrator access required.");return;}
+  const roleType={Role_ID:document.getElementById("roleTypeId").value,Role_Name:document.getElementById("roleTypeName").value.trim(),Agency_Name:document.getElementById("roleAgencyName").value.trim(),Dashboard_Title:document.getElementById("roleDashboardTitle").value.trim(),Description:document.getElementById("roleDescription").value.trim(),Active:document.getElementById("roleTypeActive").value==="true",Permissions:{viewDashboard:true,viewReports:document.getElementById("rolePermViewReports").checked,createReports:document.getElementById("rolePermCreateReports").checked,editOwnReports:document.getElementById("rolePermEditOwnReports").checked,deleteOwnReports:document.getElementById("rolePermDeleteOwnReports").checked}};
+  if(!roleType.Role_Name||!roleType.Agency_Name||!roleType.Dashboard_Title){alert("Complete Role Name, Agency Name, and Dashboard Title.");return;}
+  try{const result=await apiPost("saveRoleType",{user:session.user,roleType});if(result?.persisted!==true)throw new Error("Backend did not confirm saving the account type.");await loadRoleTypes(false);resetRoleTypeEditor();alert("Account type saved. You can now assign it to user accounts.");}
+  catch(err){alert("Could not save account type.\\n\\n"+err.message);}
+}
+
+/* ======================================================
+   AGENCY-LOCKED DASHBOARD
+   ====================================================== */
+async function refreshAgencyDashboard(showMessage=false){
+  if(session?.role!=="custom")return;
+  try{
+    const data=await apiPost("agencyDashboard",{user:session.user});agencyDashboardData=data;agencyReports=Array.isArray(data.reports)?data.reports:[];
+    const agency=data.agency||{};session.agencyName=agency.agencyName||session.agencyName;session.roleName=agency.roleName||session.roleName;session.dashboardTitle=agency.dashboardTitle||session.dashboardTitle;
+    document.getElementById("agencyDashboardTitle").textContent=agency.dashboardTitle||"Agency Dashboard";document.getElementById("agencyDashboardDescription").textContent=agency.description||"Restricted agency workspace.";document.getElementById("agencyDashboardIdentity").textContent=(agency.agencyName||"Assigned Agency")+" • "+(agency.roleName||"Agency Account");document.getElementById("sideUser").textContent=(agency.roleName||"Agency User").toUpperCase()+" • "+(agency.agencyName||"AGENCY");document.getElementById("sideBrgy").textContent=agency.agencyName||"Assigned agency";
+    document.getElementById("agencyCountTotal").textContent=data.counts?.total??0;document.getElementById("agencyCountOpen").textContent=data.counts?.open??0;document.getElementById("agencyCountInProgress").textContent=data.counts?.inProgress??0;document.getElementById("agencyCountResolved").textContent=data.counts?.resolved??0;
+    const p=data.permissions||{};document.getElementById("agencyNewReportBtn").style.display=p.createReports?"inline-flex":"none";renderAgencyReports(p);
+    if(showMessage)alert("Agency dashboard refreshed. Only your assigned agency records were returned by the backend.");
+  }catch(err){console.error("Agency dashboard refresh failed",err);document.getElementById("agencyReportsBody").innerHTML=`<tr><td colspan="7" class="empty">Could not load agency dashboard: ${esc(err.message||err)}</td></tr>`;if(showMessage)alert("Could not refresh agency dashboard.\\n\\n"+err.message);}
+}
+function renderAgencyReports(permissions){
+  const p=permissions||agencyDashboardData?.permissions||{};const body=document.getElementById("agencyReportsBody");if(!body)return;
+  if(!p.viewReports){body.innerHTML='<tr><td colspan="7" class="empty">Report viewing is not enabled for this account type. Contact the System Administrator.</td></tr>';return;}
+  body.innerHTML=agencyReports.map(r=>{const id=JSON.stringify(String(r.Report_ID||""));const own=String(r.Created_By_User_ID||"")===String(session?.user?.User_ID||"");const canEdit=!!p.editOwnReports&&own,canDelete=!!p.deleteOwnReports&&own;return `<tr><td>${esc(r.Event_Date||"")}</td><td>${esc(r.Location||"")}</td><td>${esc(r.Category||"")}</td><td>${esc(r.Priority||"Normal")}</td><td><strong>${esc(r.Title||"")}</strong><div class="small-note">${esc(r.Details||"")}</div></td><td>${esc(r.Status||"Open")}</td><td>${canEdit?`<button class="action-btn action-edit" onclick='editAgencyReport(${id})'>Edit</button>`:""}${canDelete?` <button class="action-btn action-delete" onclick='removeAgencyReport(${id})'>Delete</button>`:""}</td></tr>`;}).join("")||'<tr><td colspan="7" class="empty">No agency reports have been submitted yet.</td></tr>';
+}
+function openAgencyReportEditor(report){
+  if(!agencyDashboardData?.permissions?.createReports&&!report){alert("Report creation is not enabled for this account type.");return;}
+  if(report&&!agencyDashboardData?.permissions?.editOwnReports){alert("Report editing is not enabled for this account type.");return;}
+  document.getElementById("agencyReportId").value=report?.Report_ID||"";document.getElementById("agencyReportModalTitle").textContent=report?"Edit Agency Report":"New Agency Report";document.getElementById("agencyReportDate").value=report?.Event_Date||new Date().toISOString().slice(0,10);document.getElementById("agencyReportLocation").value=report?.Location||"";document.getElementById("agencyReportCategory").value=report?.Category||"Incident";document.getElementById("agencyReportPriority").value=report?.Priority||"Normal";document.getElementById("agencyReportTitle").value=report?.Title||"";document.getElementById("agencyReportDetails").value=report?.Details||"";document.getElementById("agencyReportModal").style.display="flex";
+}
+function editAgencyReport(id){const r=agencyReports.find(x=>String(x.Report_ID)===String(id));if(!r)return;if(String(r.Created_By_User_ID||"")!==String(session?.user?.User_ID||"")){alert("You may edit only reports created by your own account.");return;}openAgencyReportEditor(r);}
+function closeAgencyReportEditor(){document.getElementById("agencyReportModal").style.display="none";}
+async function saveAgencyReport(){
+  const report={Report_ID:document.getElementById("agencyReportId").value,Event_Date:document.getElementById("agencyReportDate").value,Location:document.getElementById("agencyReportLocation").value.trim(),Category:document.getElementById("agencyReportCategory").value,Priority:document.getElementById("agencyReportPriority").value,Title:document.getElementById("agencyReportTitle").value.trim(),Details:document.getElementById("agencyReportDetails").value.trim()};
+  if(!report.Event_Date||!report.Location||!report.Category||!report.Title||!report.Details){alert("Complete all required report fields.");return;}
+  const btn=document.getElementById("saveAgencyReportBtn");if(btn){btn.disabled=true;btn.textContent="Saving…";}
+  try{const result=await apiPost("saveAgencyReport",{user:session.user,report});if(result?.persisted!==true)throw new Error("Backend did not confirm report save.");closeAgencyReportEditor();await refreshAgencyDashboard(false);alert("Agency report saved securely to the assigned agency workspace.");}
+  catch(err){alert("Could not save agency report.\\n\\n"+err.message);}finally{if(btn){btn.disabled=false;btn.textContent="Save Report";}}
+}
+async function removeAgencyReport(id){if(!agencyDashboardData?.permissions?.deleteOwnReports)return;if(!confirm("Delete this report created by your account?"))return;try{const result=await apiPost("deleteAgencyReport",{user:session.user,reportId:id});if(result?.persisted!==true)throw new Error("Backend did not confirm deletion.");await refreshAgencyDashboard(false);}catch(err){alert("Could not delete agency report.\\n\\n"+err.message);}}
+
+function userRoleValue(){return document.getElementById("uRole")?.value||"bhw";}
+function isAgencyRoleValue(value){return String(value||"").startsWith("agency:");}
+function agencyRoleIdFromValue(value){return isAgencyRoleValue(value)?String(value).slice(7):"";}
+function populateCustomRoleSelect(select, selectedValue=""){
+  if(!select)return;
+  const active=roleTypes.filter(x=>x.Active===true||String(x.Active).toLowerCase()==="true");
+  select.innerHTML='<option value="">Select account type</option>'+active.map(x=>`<option value="${esc(x.Role_ID)}">${esc(x.Role_Name)} — ${esc(x.Agency_Name)}</option>`).join("");
+  if(selectedValue && Array.from(select.options).some(o=>o.value===String(selectedValue)))select.value=String(selectedValue);
+}
+function populateUserAccountTypeOptions(selectedValue=""){
+  const select=document.getElementById("uRole");if(!select)return;
+  const active=roleTypes.filter(x=>x.Active===true||String(x.Active).toLowerCase()==="true");
+  const options=active.map(x=>`<option value="agency:${esc(x.Role_ID)}">${esc(x.Role_Name)} — ${esc(x.Agency_Name)}</option>`).join("");
+  const optgroup=select.querySelector("#uAgencyRoleOptions");
+  if(optgroup)optgroup.innerHTML=options||'<option disabled>No custom account types yet</option>';
+  const target=selectedValue||select.value||"bhw";
+  if(Array.from(select.options).some(o=>o.value===target))select.value=target;else select.value="bhw";
+}
+function updateUserAgencyAssignment(){
+  const value=userRoleValue();
+  const display=document.getElementById("uAgencyAssignmentDisplay");
+  if(isAgencyRoleValue(value)){
+    const rt=roleTypes.find(x=>String(x.Role_ID)===agencyRoleIdFromValue(value));
+    if(display)display.value=rt?`${rt.Agency_Name} — ${rt.Dashboard_Title}`:"Assigned agency";
+  }else if(value==="newCustom"){
+    const agency=document.getElementById("uNewAgencyName")?.value.trim()||"(enter agency name)";
+    const title=document.getElementById("uNewDashboardTitle")?.value.trim()||"(enter dashboard title)";
+    if(display)display.value=`${agency} — ${title}`;
+    const preview=document.getElementById("uNewAgencyPreview");
+    if(preview)preview.textContent=`New role: ${document.getElementById("uNewRoleName")?.value.trim()||"(enter role name)"}. This user will be locked to ${agency}.`;
+  }else if(display)display.value="";
+}
+function toggleUserBarangayField(){
+  const value=userRoleValue();
+  const isNew=value==="newCustom", isAgency=isAgencyRoleValue(value), isBhw=value==="bhw", isHospital=value==="hospital";
+  const b=document.getElementById("uBarangayField"), h=document.getElementById("uHospitalField"), a=document.getElementById("uAgencyAssignmentField"), n=document.getElementById("uNewRoleFields");
+  if(b)b.style.display=isBhw?"flex":"none";
+  if(h)h.style.display=isHospital?"flex":"none";
+  if(a)a.style.display=(isAgency||isNew)?"flex":"none";
+  if(n)n.style.display=isNew?"grid":"none";
+  document.getElementById("uBarangay").required=isBhw;
+  const hs=document.getElementById("uHospital");if(hs)hs.required=isHospital;
+  const pass=document.getElementById("uPassword");if(pass)pass.required=value!=="hospital"&&!editingUserId;
+  updateUserAgencyAssignment();
+}
+
+function resetNewUserRoleFields(){
+  ["uNewRoleName","uNewAgencyName","uNewDashboardTitle","uNewRoleDescription"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});
+  ["uNewPermCreateReports","uNewPermEditOwnReports","uNewPermDeleteOwnReports"].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=false;});
+  const view=document.getElementById("uNewPermViewReports");if(view)view.checked=true;
+  updateUserAgencyAssignment();
+}
+
+async function openUserModal(role="bhw"){
   if(session?.role!=="admin"){openLogin("admin");return}
+  if(roleTypes.length===0)await loadRoleTypes(false);
   editingUserId=null;
   document.getElementById("userModalTitle").textContent="Add Authorized User";
-  document.getElementById("uRole").value=role;
+  populateUserAccountTypeOptions(role);
   document.getElementById("uName").value="";
   document.getElementById("uContact").value="";
   document.getElementById("uUsername").value="";
@@ -2792,6 +2986,7 @@ function openUserModal(role="bhw"){
   document.getElementById("uBarangay").disabled=false;
   document.getElementById("uBarangay").innerHTML=BARANGAYS.map(b=>`<option>${esc(b)}</option>`).join("");
   populateHospitalSelect(document.getElementById("uHospital"));
+  resetNewUserRoleFields();
   toggleUserBarangayField();
   document.getElementById("userModal").style.display="flex";
 }
@@ -2803,7 +2998,8 @@ function editUser(id){
   const u=users.find(x=>String(x.id||"")===key);if(!u)return;
   editingUserId=key;
   document.getElementById("userModalTitle").textContent="Edit Authorized User";
-  document.getElementById("uRole").value=u.role||"admin";
+  const roleValue=u.role==="custom"?`agency:${u.customRoleId}`:(u.role||"admin");
+  populateUserAccountTypeOptions(roleValue);
   document.getElementById("uName").value=u.name||"";
   document.getElementById("uContact").value=u.contact||"";
   document.getElementById("uUsername").value=u.username||"";
@@ -2811,84 +3007,87 @@ function editUser(id){
   document.getElementById("uStatus").value=u.status||"Active";
   document.getElementById("uBarangay").innerHTML=BARANGAYS.map(b=>`<option ${b===u.barangay?"selected":""}>${esc(b)}</option>`).join("");
   populateHospitalSelect(document.getElementById("uHospital"),u.hospitalId);
+  resetNewUserRoleFields();
   toggleUserBarangayField();
-  // Protect the primary admin identity while still allowing profile/password edits.
   const primary=String(u.username||"").toLowerCase()==="admin";
   document.getElementById("uUsername").disabled=primary;
   document.getElementById("uRole").disabled=primary;
   document.getElementById("uBarangay").disabled=primary;
-  if(primary) document.getElementById("uStatus").value="Active";
+  if(primary)document.getElementById("uStatus").value="Active";
   document.getElementById("userModal").style.display="flex";
 }
 
 async function saveUser(){
   if(session?.role!=="admin"){alert("Admin access required.");return}
   if(window.__savingUser)return;
-  const role=document.getElementById("uRole").value;
+  const selectedRole=userRoleValue();
+  const isNewRole=selectedRole==="newCustom";
+  const isExistingAgencyRole=isAgencyRoleValue(selectedRole);
+  let role=isNewRole||isExistingAgencyRole?"custom":selectedRole;
+  let customRoleId=isExistingAgencyRole?agencyRoleIdFromValue(selectedRole):"";
   const name=document.getElementById("uName").value.trim();
   const contact=document.getElementById("uContact").value.trim();
   const username=document.getElementById("uUsername").value.trim();
   const password=document.getElementById("uPassword").value;
   const barangay=role==="bhw"?document.getElementById("uBarangay").value:null;
   const status=document.getElementById("uStatus").value;
-
   const hospitalId=role==="hospital"?document.getElementById("uHospital").value:"";
-  if(!name||!contact||!username||(!editingUserId&&!password&&role!=="hospital")||(role==="bhw"&&!barangay)||(role==="hospital"&&!hospitalId)){
+  const newRoleType=isNewRole?{
+    Role_Name:document.getElementById("uNewRoleName").value.trim(),
+    Agency_Name:document.getElementById("uNewAgencyName").value.trim(),
+    Dashboard_Title:document.getElementById("uNewDashboardTitle").value.trim(),
+    Description:document.getElementById("uNewRoleDescription").value.trim(),
+    Active:true,
+    Permissions:{viewDashboard:true,viewReports:document.getElementById("uNewPermViewReports").checked,createReports:document.getElementById("uNewPermCreateReports").checked,editOwnReports:document.getElementById("uNewPermEditOwnReports").checked,deleteOwnReports:document.getElementById("uNewPermDeleteOwnReports").checked}
+  }:null;
+  if(!name||!contact||!username||(!editingUserId&&!password&&role!=="hospital")||(role==="bhw"&&!barangay)||(role==="hospital"&&!hospitalId)||(role==="custom"&&!customRoleId&&!isNewRole)){
     alert("Complete the required fields.");return;
   }
-  const duplicate=users.find(u=>u.username.toLowerCase()===username.toLowerCase()&&String(u.id)!==String(editingUserId||""));
+  if(isNewRole&&(!newRoleType.Role_Name||!newRoleType.Agency_Name||!newRoleType.Dashboard_Title)){
+    alert("Complete New Role Name, Agency Name, and Assign Dashboard.");return;
+  }
+  const duplicate=users.find(u=>String(u.username||"").toLowerCase()===username.toLowerCase()&&String(u.id)!==String(editingUserId||""));
   if(duplicate){alert("Username already exists.");return}
-
-  const userPayload={
-    User_ID:String(editingUserId||""),
-    Full_Name:name,
-    Role:role,
-    Username:username,
-    Contact_Number:contact,
-    Barangay:role==="bhw"?barangay:"ALL",
-    Hospital_ID:role==="hospital"?hospitalId:"",
-    Status:status
-  };
-  if(password) userPayload.password=password;
 
   const isEdit=!!editingUserId;
   window.__savingUser=true;
   const saveBtn=document.getElementById("saveUserBtn");
-  const cancelBtn=document.getElementById("cancelUserSaveBtn");
   const statusBox=document.getElementById("userSaveStatus");
   const modal=document.getElementById("userModal");
   const formControls=modal?Array.from(modal.querySelectorAll("input,select,textarea,button")):[];
   const previousDisabled=formControls.map(el=>el.disabled);
   formControls.forEach(el=>{el.disabled=true});
   if(saveBtn){saveBtn.disabled=true;saveBtn.innerHTML='<span class="inline-loading"><span class="loading-spinner"></span> Saving…</span>';}
-  if(statusBox){statusBox.classList.add("visible");statusBox.querySelector("span:last-child").textContent="Saving user to Google Sheets and verifying the saved account…";}
+  if(statusBox){statusBox.classList.add("visible");statusBox.querySelector("span:last-child").textContent=isNewRole?"Creating account type, assigning agency, and saving user…":"Saving user to Google Sheets and verifying the saved account…";}
   try{
-    const result=await apiPost("saveUser",{user:session.user,u:userPayload});
-    const saved=normUser(result.user||userPayload);
-    if(result.persisted!==true) throw new Error("Backend did not confirm the user write.");
-    const idx=users.findIndex(x=>String(x.id||"")===String(saved.id||editingUserId||""));
-    if(idx>=0) users[idx]=saved; else users.push(saved);
-    // Immediately re-read the Users sheet through the backend so the table is authoritative.
-    const verifiedUsers=await apiPost("users",{user:session.user});
-    if(!Array.isArray(verifiedUsers.users)) throw new Error("Users sheet could not be re-read after save.");
-    users=verifiedUsers.users.map(normUser);
-    saveUsers();
-    closeUserModal();
-    renderAdminUsers();
-    await refreshBhwRegistrationSummary(false);
-    applyLiveConnectivity(window.__liveConnectivity||[]);
-    renderUnits();
-    renderAdminDashboardConnectivity();
-    if(result.temporaryPassword){
-      alert("Hospital account created. Temporary password (shown once):\n\n"+result.temporaryPassword+"\n\nGive this password securely to the assigned hospital. They must change it at first login. It will not be shown again.");
-    }else{
-      alert(isEdit?"User updated and saved to Google Sheets.":"User created and saved to Google Sheets.");
+    if(isNewRole){
+      const roleResult=await apiPost("saveRoleType",{user:session.user,roleType:newRoleType});
+      if(roleResult?.persisted!==true||!roleResult.roleType?.Role_ID)throw new Error("The new account type could not be verified in Google Sheets.");
+      customRoleId=String(roleResult.roleType.Role_ID);
+      await loadRoleTypes(false);
+      roleTypes=roleTypes.map(x=>({...x,Active:x.Active===true||String(x.Active).toLowerCase()==="true"}));
     }
-    // Users have already been re-read from the authoritative Users sheet above.
-    // Do not issue another dashboard request here; it can fail independently and falsely
-    // report a successful user save as an error.
+    const userPayload={
+      User_ID:String(editingUserId||""),Full_Name:name,Role:role,Custom_Role_ID:customRoleId,
+      Username:username,Contact_Number:contact,Barangay:role==="bhw"?barangay:"ALL",
+      Hospital_ID:role==="hospital"?hospitalId:"",Status:status
+    };
+    if(password)userPayload.password=password;
+    const result=await apiPost("saveUser",{user:session.user,u:userPayload});
+    if(result.persisted!==true)throw new Error("Backend did not confirm the user write.");
+    const saved=normUser(result.user||userPayload);
+    const idx=users.findIndex(x=>String(x.id||"")===String(saved.id||editingUserId||""));
+    if(idx>=0)users[idx]=saved;else users.push(saved);
+    const verifiedUsers=await apiPost("users",{user:session.user});
+    if(!Array.isArray(verifiedUsers.users))throw new Error("Users sheet could not be re-read after save.");
+    users=verifiedUsers.users.map(normUser);saveUsers();closeUserModal();renderAdminUsers();
+    await refreshBhwRegistrationSummary(false);applyLiveConnectivity(window.__liveConnectivity||[]);renderUnits();renderAdminDashboardConnectivity();
+    if(result.temporaryPassword){alert("Hospital account created. Temporary password (shown once):\n\n"+result.temporaryPassword+"\n\nGive this password securely to the assigned hospital. They must change it at first login. It will not be shown again.");}
+    else if(isNewRole){alert("New account type and user account created successfully. The new role is now available in the Account Type dropdown for future accounts.");}
+    else{alert(isEdit?"User updated and saved to Google Sheets.":"User created and saved to Google Sheets.");}
   }catch(err){
-    alert("Could not save user to Google Sheets.\n\n"+err.message);
+    const extra=isNewRole&&customRoleId?"\n\nThe account type was saved successfully and remains available in the dropdown. You can retry creating the user using that role.":"";
+    alert("Could not complete user save.\n\n"+(err.message||err)+extra);
   }finally{
     window.__savingUser=false;
     formControls.forEach((el,i)=>{el.disabled=previousDisabled[i]});
@@ -4030,7 +4229,7 @@ function normAnnouncement(x){
  return {id:String(pick("Announcement_ID","AnnouncementID","ID","Id","Client_ID","id")||""),type:pick("Type","Announcement_Type","type")||"info",priority:pick("Priority","Urgency","priority")||"Normal",title:String(pick("Title","Announcement_Title","Subject","Heading","title")||""),barangay:String(pick("Barangay","Target_Barangay","Target Barangay","Target","Scope","barangay")||"All Barangays"),body:String(pick("Body","Message","Description","Announcement","Details","Content","Text","body")||""),validUntil,publishedAt:pick("Published_At","PublishedAt","Published At","Created_At","CreatedAt","Timestamp","Date","publishedAt"),active:announcementBool(pick("Active","Is_Active","IsActive","Published_Active","active")),createdBy:String(pick("Created_By","CreatedBy","Author","Username","createdBy")||""),createdByRole:creatorRole,pending:x&&x.pending===true||x&&x.syncStatus==="queued",syncStatus:pick("syncStatus")||""};
 }
 function normInventory(x){return {id:x.Inventory_ID||x.id,barangay:x.Barangay||x.barangay,category:x.Category||x.category,name:x.Item_Name||x.name,unit:x.Unit||x.unit,stock:Number(x.Current_Stock||0),reorder:Number(x.Reorder_Level||0),released:Number(x.Released||0)}}
-function normUser(x){return {id:x.User_ID,name:x.Full_Name||x.name,role:(x.Role||x.role||"bhw").toLowerCase(),username:x.Username||x.username,barangay:x.Barangay,hospitalId:x.Hospital_ID||x.hospitalId||"",mustChangePassword:x.Must_Change_Password===true||String(x.Must_Change_Password).toLowerCase()==="true",contact:x.Contact_Number||"",status:x.Status||"Active",lastSeen:x.Last_Seen||"",deviceId:x.Device_ID||""}}
+function normUser(x){const role=(x.Role||x.role||"bhw").toLowerCase(),rt=roleTypes.find(r=>String(r.Role_ID)===String(x.Custom_Role_ID||""));return {id:x.User_ID,name:x.Full_Name||x.name,role:role,customRoleId:x.Custom_Role_ID||"",customRoleName:rt?.Role_Name||"",agencyId:x.Agency_ID||"",agencyName:rt?.Agency_Name||"",username:x.Username||x.username,barangay:x.Barangay,hospitalId:x.Hospital_ID||x.hospitalId||"",mustChangePassword:x.Must_Change_Password===true||String(x.Must_Change_Password).toLowerCase()==="true",contact:x.Contact_Number||"",status:x.Status||"Active",lastSeen:x.Last_Seen||"",deviceId:x.Device_ID||""}}
 function normHeat(x){const v=x.Heat_Index_C;return {barangay:x.Barangay,value:v===""||v===null||v===undefined?NaN:Number(v),risk:x.Risk_Level||"",source:x.Source||"",observedAt:x.Observed_At||""}}
 async function refreshLiveState(){
   if(!LIVE_API_URL||!navigator.onLine||liveRefreshing)return;
@@ -4431,9 +4630,26 @@ function closeAccessGuide(kind){
   if((!a||a.style.display==='none')&&(!b||b.style.display==='none')) document.body.classList.remove('modal-open');
 }
 
-function openLoginChooser(){ document.getElementById("loginChooser").style.display="flex"; }
+async function openLoginChooser(){
+ const sel=document.getElementById("authorizedDashboardSelect");
+ if(sel){
+   const keep=sel.value;
+   try{
+     const result=await apiPost("publicRoleTypes",{});
+     const roles=Array.isArray(result.roleTypes)?result.roleTypes:[];
+     sel.querySelectorAll("option[data-custom-role]").forEach(o=>o.remove());
+     roles.forEach(rt=>{const o=document.createElement("option");o.value="custom:"+rt.Role_ID;o.textContent=(rt.Dashboard_Title||rt.Role_Name)+" ("+rt.Role_Name+")";o.dataset.customRole="1";sel.appendChild(o);});
+     if(keep&&Array.from(sel.options).some(o=>o.value===keep))sel.value=keep;
+   }catch(err){console.warn("Could not load agency dashboards for login chooser",err);}
+ }
+ document.getElementById("loginChooser").style.display="flex";
+}
 function closeLoginChooser(){ document.getElementById("loginChooser").style.display="none"; }
-function continueAuthorizedAccess(){ chooseLogin(document.getElementById("authorizedDashboardSelect").value); }
+function continueAuthorizedAccess(){
+ const value=document.getElementById("authorizedDashboardSelect").value;
+ if(value.startsWith("custom:")){selectedCustomLoginRoleId=value.slice(7);chooseLogin("custom");return;}
+ selectedCustomLoginRoleId="";chooseLogin(value);
+}
 function chooseLogin(access){
   closeLoginChooser();
   selectedHospitalLoginId=String(access||"").startsWith("hospital-")?String(access):"";
@@ -4461,23 +4677,25 @@ function syncLoginBrgy(){
 // authenticated successfully, a network failure/airplane mode can use the local verifier.
 function applyAuthenticatedUser(u,offline=false,sessionToken=""){
  const role=String(u.Role||"").toLowerCase();
- if(role==="hospital"&&offline)throw new Error("Hospital dashboard requires online verification.");
- session={role:role,username:u.Username,barangay:role==="bhw"?u.Barangay:null,hospitalId:role==="hospital"?u.Hospital_ID||"":null,user:u,sessionToken:String(sessionToken||u.sessionToken||""),offline:!!offline};
+ if((role==="hospital"||role==="custom")&&offline)throw new Error("Hospital and agency dashboards require online verification.");
+ const roleType=role==="custom"?roleTypes.find(x=>String(x.Role_ID)===String(u.Custom_Role_ID||"")):null;
+ session={role:role,username:u.Username,barangay:role==="bhw"?u.Barangay:null,hospitalId:role==="hospital"?u.Hospital_ID||"":null,customRoleId:u.Custom_Role_ID||"",agencyId:u.Agency_ID||"",agencyName:roleType?.Agency_Name||u.Agency_Name||"Assigned Agency",roleName:roleType?.Role_Name||"Agency User",dashboardTitle:roleType?.Dashboard_Title||"Agency Dashboard",user:u,sessionToken:String(sessionToken||u.sessionToken||""),offline:!!offline};
  // Keep the verified session only for this browser tab so a page refresh does not log the user out.
  // sessionStorage clears when the tab/window is closed; no password is stored.
  try{if(!offline&&session.sessionToken)sessionStorage.setItem(PERSISTED_TAB_SESSION_KEY,JSON.stringify({user:u,sessionToken:session.sessionToken,savedAt:Date.now()}));}catch(_){ }
  closeLogin();
- const roleLabel=role==="admin"?"ADMIN":role==="bhw"?`BHW • ${session.barangay}`:`HOSPITAL • ${hospitalNameById(session.hospitalId)||session.hospitalId}`;
+ const roleLabel=role==="admin"?"ADMIN":role==="bhw"?`BHW • ${session.barangay}`:role==="hospital"?`HOSPITAL • ${hospitalNameById(session.hospitalId)||session.hospitalId}`:`${session.roleName} • ${session.agencyName}`;
  document.getElementById("sideUser").textContent=roleLabel.toUpperCase();
- document.getElementById("sideBrgy").textContent=role==="admin"?"All barangays":role==="bhw"?session.barangay:(hospitalNameById(session.hospitalId)||"Assigned hospital");
- document.getElementById("sessionChip").textContent=offline?(role==="admin"?"Admin Access • Offline":`BHW • Offline`):(role==="admin"?"Admin Access":role==="bhw"?`BHW • ${session.barangay}`:"Hospital Access");
+ document.getElementById("sideBrgy").textContent=role==="admin"?"All barangays":role==="bhw"?session.barangay:role==="hospital"?(hospitalNameById(session.hospitalId)||"Assigned hospital"):session.agencyName;
+ document.getElementById("sessionChip").textContent=offline?(role==="admin"?"Admin Access • Offline":`BHW • Offline`):(role==="admin"?"Admin Access":role==="bhw"?`BHW • ${session.barangay}`:role==="hospital"?"Hospital Access":`${session.roleName} • ${session.agencyName}`);
  document.getElementById("logoutBtn").classList.remove("hidden");
  applyRoleNavigation();
- const initialView=role==="admin"?"admin":role==="bhw"?"bhw":"hospital-dashboard";
+ const initialView=role==="admin"?"admin":role==="bhw"?"bhw":role==="hospital"?"hospital-dashboard":"agency-dashboard";
  showView(initialView);
  if(role==="bhw"&&!offline)startBhwHeartbeat();
  if(!offline){
    setTimeout(()=>refreshModuleLive(initialView),0);
+   if(role==="admin")setTimeout(()=>loadRoleTypes(false),80);
    if(role==="admin"||role==="bhw")setTimeout(()=>refreshConditionsLive(false),50);
  }
  if(role==="bhw"&&!offline)setTimeout(maybeShowBhwAnnouncementPopup,250);
@@ -4498,7 +4716,7 @@ async function login(){
  try{
    // Airplane mode/offline: authenticate against the verifier created by a previous online login.
    if(!navigator.onLine){
-     if(role==="hospital") throw new Error("Hospital accounts must sign in online.");
+     if(role==="hospital"||role==="custom") throw new Error("Hospital and agency accounts must sign in online.");
      if(!readOfflineAuth()) throw new Error("No offline login is stored on this device yet. Connect to the internet and sign in once first.");
      const cached=await tryOfflineLogin(username,password,role);
      if(!cached) throw new Error("No offline login is stored for this account on this device.");
@@ -4514,7 +4732,7 @@ async function login(){
 
    try{
      const cachedForFastPath=readOfflineAuth();
-     const loginRequest=apiPost("login",{username:username,password:password,deviceId:DEVICE_ID,requestedRole:role,hospitalId:role==="hospital"?selectedHospitalLoginId:""});
+     const loginRequest=apiPost("login",{username:username,password:password,deviceId:DEVICE_ID,requestedRole:role,hospitalId:role==="hospital"?selectedHospitalLoginId:"",customRoleId:role==="custom"?selectedCustomLoginRoleId:""});
      let result;
 
      // Returning users get a fast fallback after 6 seconds. The real online request
@@ -4545,7 +4763,8 @@ async function login(){
      const u=result.user;
      if(String(u.Role||"").toLowerCase()!==role)throw new Error("This account is not authorized for the selected dashboard.");
      if(role==="hospital"&&selectedHospitalLoginId&&String(u.Hospital_ID||"")!==selectedHospitalLoginId)throw new Error("This account is assigned to a different hospital.");
-     if(role!=="hospital")await cacheOfflineAuth(password,u,result.sessionToken);
+     if(role==="custom"&&selectedCustomLoginRoleId&&String(u.Custom_Role_ID||"")!==selectedCustomLoginRoleId)throw new Error("This account is assigned to a different agency dashboard.");
+     if(role!=="hospital"&&role!=="custom")await cacheOfflineAuth(password,u,result.sessionToken);
      applyAuthenticatedUser(u,false,result.sessionToken);
    }catch(err){
      // If Apps Script is temporarily slow/unreachable, a previously verified device can still open
@@ -4571,7 +4790,7 @@ function logout(){
  if(LIVE_API_URL&&session?.sessionToken&&navigator.onLine){apiPost("logout",{user:session.user}).catch(()=>{});}
  stopBhwHeartbeat();
  bhwRegistrationSummary=null;healthFacilityReports=[];healthFacilityReportSummary=null;selectedHealthFacilityReportId="";facilityDraftEventId="";
- session=null;try{sessionStorage.removeItem(PERSISTED_TAB_SESSION_KEY);}catch(_){}selectedHospitalLoginId="";hospitalData=null;hospitalReferrals=[];hospitalPasswordRequired=false;document.getElementById("hospitalPasswordModal").style.display="none";document.body.classList.add("public-mode");document.getElementById("sideUser").textContent="PUBLIC USER";document.getElementById("sideBrgy").textContent="Public access";
+ session=null;agencyDashboardData=null;agencyReports=[];try{sessionStorage.removeItem(PERSISTED_TAB_SESSION_KEY);}catch(_){}selectedHospitalLoginId="";hospitalData=null;hospitalReferrals=[];hospitalPasswordRequired=false;document.getElementById("hospitalPasswordModal").style.display="none";document.body.classList.add("public-mode");document.getElementById("sideUser").textContent="PUBLIC USER";document.getElementById("sideBrgy").textContent="Public access";
  document.getElementById("sessionChip").textContent="Public View";document.getElementById("logoutBtn").classList.add("hidden");applyRoleNavigation();showView("public")
 }
 
@@ -4582,7 +4801,7 @@ document.querySelectorAll(".nav button[data-view]").forEach(btn=>{
       openAppDownloadChooser();
       return;
    }
-   const adminViews=["admin","admin-users","admin-branding","admin-patients","admin-monitoring","admin-health-facilities"];
+   const adminViews=["admin","admin-users","admin-roles","admin-branding","admin-patients","admin-monitoring","admin-health-facilities"];
    const bhwViews=["bhw","bhw-patients","report"];
 
    if(adminViews.includes(v) && session?.role!=="admin"){openLogin("admin");return}
@@ -4595,15 +4814,17 @@ document.querySelectorAll(".nav button[data-view]").forEach(btn=>{
 });
 
 function applyRoleNavigation(){
-  const adminOnly=["admin","admin-users","admin-conditions","admin-branding","admin-hospitals","admin-personnel","admin-patients","admin-monitoring","admin-heat","admin-announcements","admin-health-facilities","admin-inventory","admin-reporting","app-downloads"];
+  const adminOnly=["admin","admin-users","admin-roles","admin-conditions","admin-branding","admin-hospitals","admin-personnel","admin-patients","admin-monitoring","admin-heat","admin-announcements","admin-health-facilities","admin-inventory","admin-reporting","app-downloads"];
   const bhwOnly=["bhw","bhw-patients","bhw-heat","bhw-personnel","bhw-announcements","bhw-inventory","app-downloads","report"];
   const hospitalOnly=["hospital-dashboard"];
+  const customOnly=["agency-dashboard"];
   document.querySelectorAll(".nav button[data-view]").forEach(btn=>{
     const v=btn.dataset.view;
     if(!session){btn.style.display=(v==="public")?"block":"none";}
-    else if(session.role==="admin")btn.style.display=adminOnly.includes(v)?"block":"none";
+    else if(session.role==="admin")btn.style.display=(adminOnly.includes(v)&&(v!=="admin-roles"||String(session.username||"").toLowerCase()==="admin"))?"block":"none";
     else if(session.role==="bhw")btn.style.display=bhwOnly.includes(v)?"block":"none";
     else if(session.role==="hospital")btn.style.display=hospitalOnly.includes(v)?"block":"none";
+    else if(session.role==="custom")btn.style.display=customOnly.includes(v)?"block":"none";
   });
   const sep=document.getElementById("hospitalNavSeparator");if(sep)sep.style.display=session?.role==="hospital"?"block":"none";
 }
@@ -5083,10 +5304,12 @@ function mergeAnnouncementLists(a,b){
 async function refreshCurrentViewData(){return refreshModuleLive(currentView)}
 
 function showView(v){
- const adminViews=["admin","admin-users","admin-conditions","admin-branding","admin-hospitals","admin-personnel","admin-patients","admin-monitoring","admin-heat","admin-announcements","admin-health-facilities","admin-inventory","admin-reporting"];
+ const adminViews=["admin","admin-users","admin-roles","admin-conditions","admin-branding","admin-hospitals","admin-personnel","admin-patients","admin-monitoring","admin-heat","admin-announcements","admin-health-facilities","admin-inventory","admin-reporting"];
  if(adminViews.includes(v)&&session?.role!=="admin"){openLogin("admin");return;}
+ if(v==="admin-roles"&&String(session?.username||"").toLowerCase()!=="admin"){alert("Only the primary System Administrator can manage account types and agency permissions.");showView("admin");return;}
  if(["bhw","bhw-patients","bhw-heat","bhw-personnel","bhw-announcements","bhw-inventory"].includes(v)&&session?.role!=="bhw"){openLogin("bhw");return;}
  if(v==="hospital-dashboard"&&session?.role!=="hospital"){openLogin("hospital");return;}
+ if(v==="agency-dashboard"&&session?.role!=="custom"){openLogin("custom");return;}
  if(v==="report"&&!["admin","bhw"].includes(session?.role)){openLogin("bhw");return;}
  currentView=v;
  startAutoRefresh();
@@ -5101,6 +5324,8 @@ function showView(v){
   public:["Community Monitoring","Public Dashboard"],
   admin:["Authorized Monitoring","Admin Dashboard"],
   "admin-users":["Administration","User Management"],
+  "admin-roles":["Administration","Account Types & Agency Access"],
+  "agency-dashboard":[session?.agencyName||"Agency Workspace",session?.dashboardTitle||"Agency Dashboard"],
   "admin-conditions":["Administration","Patient Condition Management"],
   "admin-branding":["Administration","Public Dashboard Branding"],
   "admin-hospitals":["Antipolo Hospital","Hospital Capacity & Referral Monitoring"],
@@ -5126,7 +5351,9 @@ function showView(v){
  document.getElementById("sidebar").classList.remove("open");
  if(v==="public"){renderPublic();renderPublicAnnouncements();renderPublicHeat();}
  if(v==="admin"){renderAdmin();renderAdminAnnouncements();renderAdminInventory();renderAdminHeat();renderBhwRegistrationSummary();}
- if(v==="admin-users"){renderAdminUsers();}
+ if(v==="admin-users"){renderAdminUsers();loadRoleTypes(false);}
+ if(v==="admin-roles"){loadRoleTypes(false);}
+ if(v==="agency-dashboard"){refreshAgencyDashboard(false);}
  if(v==="admin-conditions"){renderConditionCatalog();}
  if(v==="admin-branding"){loadDashboardBranding(false);}
  if(v==="admin-hospitals"){renderAdminHospitals();renderAdminReferralList();}

@@ -938,7 +938,7 @@ button:disabled{cursor:wait;opacity:.72}
       <div class="separator">Authorized Views</div>
       <button data-view="admin">&#x1F6E1;&#xFE0F; Admin Dashboard <span class="lock-badge">&#x1F512;</span></button>
       <button data-view="admin-users">&#x1F465; User Management <span class="nav-badge">ADMIN</span></button>
-      <button data-view="agency-dashboard" id="agencyDashboardNav" style="display:none">&#x1F3E2; Agency Dashboard</button>
+      <button data-view="agency-dashboard" id="agencyDashboardNav" style="display:none">&#x1F3E2; <span id="agencyDashboardNavLabel">Account Dashboard</span></button>
       <button data-view="admin-hospitals">&#x1F3E5; Antipolo Hospital</button>
       <button data-view="admin-patients">&#x1F4CB; Patient Records <span class="nav-badge">ALL</span></button>
       <button data-view="admin-monitoring">&#x1F4E1; Barangay Online Monitoring</button>
@@ -987,11 +987,11 @@ button:disabled{cursor:wait;opacity:.72}
 
       <!-- PUBLIC -->
       <section id="view-agency-dashboard" class="hidden">
-        <div class="section-head"><div><div class="section-title" id="agencyDashboardTitle">Agency Dashboard</div><div class="section-sub" id="agencyDashboardDescription">Restricted agency workspace.</div></div><button class="btn btn-light" onclick="refreshAgencyDashboard(true)">&#x21BB; Refresh</button></div>
-        <div class="notice"><strong id="agencyDashboardIdentity">Agency access</strong> — this workspace is locked to the agency assigned to your account. Patient records and other agencies' reports are not available here.</div>
+        <div class="section-head"><div><div class="section-title" id="agencyDashboardTitle">Account Dashboard</div><div class="section-sub" id="agencyDashboardDescription">Your assigned workspace.</div></div><button class="btn btn-light" onclick="refreshAgencyDashboard(true)">&#x21BB; Refresh</button></div>
+        <div class="notice"><strong id="agencyDashboardIdentity">Assigned account</strong> — this workspace is limited to records submitted by your account type.</div>
         <div class="stat-grid" style="margin-top:12px"><div class="card stat-card"><div class="stat-top"><span>Total Reports</span><span class="icon">&#x1F4CB;</span></div><div class="num" id="agencyCountTotal">0</div></div><div class="card stat-card"><div class="stat-top"><span>Open</span><span class="icon">&#x1F7E0;</span></div><div class="num" id="agencyCountOpen">0</div></div><div class="card stat-card"><div class="stat-top"><span>In Progress</span><span class="icon">&#x1F4CD;</span></div><div class="num" id="agencyCountInProgress">0</div></div><div class="card stat-card"><div class="stat-top"><span>Resolved</span><span class="icon">&#x2705;</span></div><div class="num" id="agencyCountResolved">0</div></div></div>
-        <div class="panel" style="margin-top:13px"><div class="section-head"><div><div class="panel-title">Agency Reports</div><div class="panel-sub">Patient reports use the same central patient record form as the Admin Dashboard.</div></div><button class="btn btn-orange" id="agencyNewReportBtn" onclick="openReportModal()" style="display:none">&#x2795; New Report</button></div>
-          <div class="table-wrap"><table><thead><tr><th>Date</th><th>Location</th><th>Category</th><th>Priority</th><th>Report</th><th>Status</th><th>Actions</th></tr></thead><tbody id="agencyReportsBody"><tr><td colspan="7" class="empty">Loading agency dashboard…</td></tr></tbody></table></div>
+        <div class="panel" style="margin-top:13px"><div class="section-head"><div><div class="panel-title" id="customPatientReportsTitle">Patient Reports</div><div class="panel-sub" id="customPatientReportsSubtitle">Patient records submitted under this account type.</div></div><button class="btn btn-orange" id="agencyNewReportBtn" onclick="openReportModal()" style="display:none">&#x2795; New Patient Report</button></div>
+          <div class="table-wrap"><table><thead><tr><th>Date</th><th>Patient</th><th>Age / Sex</th><th>Barangay</th><th>Condition</th><th>Disposition</th><th>Status</th></tr></thead><tbody id="agencyReportsBody"><tr><td colspan="7" class="empty">Loading patient reports…</td></tr></tbody></table></div>
         </div>
       </section>
 
@@ -2951,17 +2951,25 @@ async function refreshAgencyDashboard(showMessage=false){
   if(session?.role!=="custom")return;
   try{
     const data=await apiPost("agencyDashboard",{user:session.user});agencyDashboardData=data;agencyReports=Array.isArray(data.reports)?data.reports:[];
-    const agency=data.agency||{};session.agencyName=agency.agencyName||session.agencyName;session.roleName=agency.roleName||session.roleName;session.dashboardTitle=agency.dashboardTitle||session.dashboardTitle;
-    document.getElementById("agencyDashboardTitle").textContent=agency.dashboardTitle||"Agency Dashboard";document.getElementById("agencyDashboardDescription").textContent=agency.description||"Restricted agency workspace.";document.getElementById("agencyDashboardIdentity").textContent=(agency.agencyName||"Assigned Agency")+" • "+(agency.roleName||"Agency Account");document.getElementById("sideUser").textContent=(agency.roleName||"Agency User").toUpperCase()+" • "+(agency.agencyName||"AGENCY");document.getElementById("sideBrgy").textContent=agency.agencyName||"Assigned agency";
+    const account=data.account||data.agency||{};session.agencyName=account.agencyName||session.agencyName;session.roleName=account.roleName||session.roleName;session.dashboardTitle=account.dashboardTitle||session.dashboardTitle;
+    const displayName=customDashboardDisplayName(session);
+    document.getElementById("agencyDashboardTitle").textContent=displayName;
+    document.getElementById("agencyDashboardNavLabel").textContent=displayName;
+    document.getElementById("agencyDashboardDescription").textContent=account.description||"Your assigned workspace and patient report summary.";
+    document.getElementById("agencyDashboardIdentity").textContent=displayName+" • "+(account.agencyName||"Assigned account");
+    document.getElementById("sideUser").textContent=displayName.toUpperCase();document.getElementById("sideBrgy").textContent=account.agencyName||displayName;
+    document.getElementById("sessionChip").textContent=displayName;
+    document.getElementById("customPatientReportsTitle").textContent="Patient Reports";
+    document.getElementById("customPatientReportsSubtitle").textContent="Patient reports submitted by "+displayName+".";
     document.getElementById("agencyCountTotal").textContent=data.counts?.total??0;document.getElementById("agencyCountOpen").textContent=data.counts?.open??0;document.getElementById("agencyCountInProgress").textContent=data.counts?.inProgress??0;document.getElementById("agencyCountResolved").textContent=data.counts?.resolved??0;
     const p=data.permissions||{};document.getElementById("agencyNewReportBtn").style.display=p.createReports?"inline-flex":"none";renderAgencyReports(p);
-    if(showMessage)alert("Agency dashboard refreshed. Only your assigned agency records were returned by the backend.");
-  }catch(err){console.error("Agency dashboard refresh failed",err);document.getElementById("agencyReportsBody").innerHTML=`<tr><td colspan="7" class="empty">Could not load agency dashboard: ${esc(err.message||err)}</td></tr>`;if(showMessage)alert("Could not refresh agency dashboard.\\n\\n"+err.message);}
+    if(showMessage)alert(displayName+" dashboard refreshed. Only patient reports assigned to this account were returned.");
+  }catch(err){console.error("Account dashboard refresh failed",err);document.getElementById("agencyReportsBody").innerHTML=`<tr><td colspan="7" class="empty">Could not load patient reports: ${esc(err.message||err)}</td></tr>`;if(showMessage)alert("Could not refresh dashboard.\n\n"+err.message);}
 }
 function renderAgencyReports(permissions){
   const p=permissions||agencyDashboardData?.permissions||{};const body=document.getElementById("agencyReportsBody");if(!body)return;
-  if(!p.viewReports){body.innerHTML='<tr><td colspan="7" class="empty">Report viewing is not enabled for this account type. Contact the System Administrator.</td></tr>';return;}
-  body.innerHTML=agencyReports.map(r=>{const id=JSON.stringify(String(r.Report_ID||""));const own=String(r.Created_By_User_ID||"")===String(session?.user?.User_ID||"");const canEdit=!!p.editOwnReports&&own,canDelete=!!p.deleteOwnReports&&own;return `<tr><td>${esc(r.Event_Date||"")}</td><td>${esc(r.Location||"")}</td><td>${esc(r.Category||"")}</td><td>${esc(r.Priority||"Normal")}</td><td><strong>${esc(r.Title||"")}</strong><div class="small-note">${esc(r.Details||"")}</div></td><td>${esc(r.Status||"Open")}</td><td>${canEdit?`<button class="action-btn action-edit" onclick='editAgencyReport(${id})'>Edit</button>`:""}${canDelete?` <button class="action-btn action-delete" onclick='removeAgencyReport(${id})'>Delete</button>`:""}</td></tr>`;}).join("")||'<tr><td colspan="7" class="empty">No agency reports have been submitted yet.</td></tr>';
+  if(!p.viewReports){body.innerHTML='<tr><td colspan="7" class="empty">Patient report viewing is not enabled for this account type. Contact the System Administrator.</td></tr>';return;}
+  body.innerHTML=agencyReports.map(r=>`<tr><td>${esc(r.Date_Time||"")}</td><td><strong>${esc(r.Patient_Name||"")}</strong></td><td>${esc(r.Age??"")} / ${esc(r.Sex||"")}</td><td>${esc(r.Barangay||"")}</td><td>${esc(r.Condition||"")}</td><td>${esc(r.Disposition||"")}</td><td>${esc(r.Status||"Review")}</td></tr>`).join("")||'<tr><td colspan="7" class="empty">No patient reports have been submitted by this account yet.</td></tr>';
 }
 function openAgencyReportEditor(report){
   if(!agencyDashboardData?.permissions?.createReports&&!report){alert("Report creation is not enabled for this account type.");return;}
@@ -4771,7 +4779,7 @@ function applyAuthenticatedUser(u,offline=false,sessionToken=""){
  const role=String(u.Role||"").toLowerCase();
  if((role==="hospital"||role==="custom")&&offline)throw new Error("Hospital and agency dashboards require online verification.");
  const roleType=role==="custom"?roleTypes.find(x=>String(x.Role_ID)===String(u.Custom_Role_ID||"")):null;
- session={role:role,username:u.Username,barangay:role==="bhw"?u.Barangay:null,hospitalId:role==="hospital"?u.Hospital_ID||"":null,customRoleId:u.Custom_Role_ID||"",agencyId:u.Agency_ID||"",agencyName:roleType?.Agency_Name||u.Agency_Name||"Assigned Agency",roleName:roleType?.Role_Name||"Agency User",dashboardTitle:roleType?.Dashboard_Title||"Agency Dashboard",user:u,sessionToken:String(sessionToken||u.sessionToken||""),offline:!!offline};
+ session={role:role,username:u.Username,barangay:role==="bhw"?u.Barangay:null,hospitalId:role==="hospital"?u.Hospital_ID||"":null,customRoleId:u.Custom_Role_ID||"",agencyId:u.Agency_ID||"",agencyName:roleType?.Agency_Name||u.Agency_Name||roleType?.Role_Name||"Assigned Account",roleName:roleType?.Role_Name||roleType?.Agency_Name||"Account User",dashboardTitle:roleType?.Dashboard_Title||roleType?.Role_Name||roleType?.Agency_Name||"Account Dashboard",user:u,sessionToken:String(sessionToken||u.sessionToken||""),offline:!!offline};
  // Keep the verified session only for this browser tab so a page refresh does not log the user out.
  // sessionStorage clears when the tab/window is closed; no password is stored.
  try{if(!offline&&session.sessionToken)sessionStorage.setItem(PERSISTED_TAB_SESSION_KEY,JSON.stringify({user:u,sessionToken:session.sessionToken,savedAt:Date.now()}));}catch(_){ }
@@ -5399,6 +5407,15 @@ function mergeAnnouncementLists(a,b){
 }
 async function refreshCurrentViewData(){return refreshModuleLive(currentView)}
 
+function customDashboardDisplayName(source=session){
+ const s=source||{};const roleName=String(s.roleName||"").trim();const agencyName=String(s.agencyName||"").trim();const configured=String(s.dashboardTitle||"").trim();
+ const generic=/^(agency dashboard|account dashboard|dashboard)$/i;
+ if(configured&&!generic.test(configured))return configured;
+ if(roleName&&!/^(agency user|account user)$/i.test(roleName))return roleName;
+ if(agencyName&&!/^(assigned agency|assigned account|agency)$/i.test(agencyName))return agencyName;
+ return "Account Dashboard";
+}
+
 function showView(v){
  const adminViews=["admin","admin-users","admin-roles","admin-conditions","admin-branding","admin-hospitals","admin-personnel","admin-patients","admin-all-patients","admin-monitoring","admin-bhw-registration","admin-heat","admin-announcements","admin-health-facilities","admin-inventory","admin-reporting"];
  if(adminViews.includes(v)&&session?.role!=="admin"){openLogin("admin");return;}
@@ -5425,7 +5442,7 @@ function showView(v){
   admin:["Authorized Monitoring","Admin Dashboard"],
   "admin-users":["Administration","User Management"],
   "admin-roles":["Administration","Account Types & Agency Access"],
-  "agency-dashboard":[session?.agencyName||"Agency Workspace",session?.dashboardTitle||"Agency Dashboard"],
+  "agency-dashboard":[session?.agencyName||"Workspace",customDashboardDisplayName(session)],
   "admin-conditions":["Administration","Patient Condition Management"],
   "admin-branding":["Administration","Public Dashboard Branding"],
   "admin-hospitals":["Antipolo Hospital","Hospital Capacity & Referral Monitoring"],

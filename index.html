@@ -990,7 +990,7 @@ button:disabled{cursor:wait;opacity:.72}
         <div class="section-head"><div><div class="section-title" id="agencyDashboardTitle">Agency Dashboard</div><div class="section-sub" id="agencyDashboardDescription">Restricted agency workspace.</div></div><button class="btn btn-light" onclick="refreshAgencyDashboard(true)">&#x21BB; Refresh</button></div>
         <div class="notice"><strong id="agencyDashboardIdentity">Agency access</strong> — this workspace is locked to the agency assigned to your account. Patient records and other agencies' reports are not available here.</div>
         <div class="stat-grid" style="margin-top:12px"><div class="card stat-card"><div class="stat-top"><span>Total Reports</span><span class="icon">&#x1F4CB;</span></div><div class="num" id="agencyCountTotal">0</div></div><div class="card stat-card"><div class="stat-top"><span>Open</span><span class="icon">&#x1F7E0;</span></div><div class="num" id="agencyCountOpen">0</div></div><div class="card stat-card"><div class="stat-top"><span>In Progress</span><span class="icon">&#x1F4CD;</span></div><div class="num" id="agencyCountInProgress">0</div></div><div class="card stat-card"><div class="stat-top"><span>Resolved</span><span class="icon">&#x2705;</span></div><div class="num" id="agencyCountResolved">0</div></div></div>
-        <div class="panel" style="margin-top:13px"><div class="section-head"><div><div class="panel-title">Agency Reports</div><div class="panel-sub">Reports are visible only to authorized accounts assigned to this same agency.</div></div><button class="btn btn-orange" id="agencyNewReportBtn" onclick="openAgencyReportEditor()" style="display:none">&#x2795; New Report</button></div>
+        <div class="panel" style="margin-top:13px"><div class="section-head"><div><div class="panel-title">Agency Reports</div><div class="panel-sub">Patient reports use the same central patient record form as the Admin Dashboard.</div></div><button class="btn btn-orange" id="agencyNewReportBtn" onclick="openReportModal()" style="display:none">&#x2795; New Report</button></div>
           <div class="table-wrap"><table><thead><tr><th>Date</th><th>Location</th><th>Category</th><th>Priority</th><th>Report</th><th>Status</th><th>Actions</th></tr></thead><tbody id="agencyReportsBody"><tr><td colspan="7" class="empty">Loading agency dashboard…</td></tr></tbody></table></div>
         </div>
       </section>
@@ -5547,19 +5547,33 @@ function conditionInputs(){
  const el=document.getElementById("conditionChoices");if(!el)return;
  el.innerHTML=CONDITIONS.map((c,i)=>`<label class="check"><input type="radio" name="condition" value="${esc(c)}" ${i===0?"checked":""}> ${esc(c)}</label>`).join("")||'<div class="empty">No active conditions configured. Contact the Admin.</div>';
 }
+function canCreateSharedPatientReport(){
+ if(!session)return false;
+ if(["admin","bhw","hospital"].includes(session.role))return true;
+ if(session.role==="custom")return !!(agencyDashboardData?.permissions?.createReports);
+ return false;
+}
 function openReportModal(){
- if(session?.role!=="admin"){openLogin("admin");return}
+ if(!session){openLogin("admin");return}
+ if(!canCreateSharedPatientReport()){alert("Patient report creation is not enabled for this account. Contact the System Administrator.");return}
  const mount=document.getElementById("modalReportMount");
  mount.innerHTML=document.getElementById("view-report").querySelector(".panel").outerHTML;
  const form=mount.querySelector("form");if(form){form.onsubmit=submitModalReport}
- mount.querySelector("#rBarangay").disabled=false;conditionInputsModal(mount);mount.querySelector("#rDate").value=new Date().toISOString().slice(0,16)
+ const barangay=mount.querySelector("#rBarangay");
+ if(session.role==="bhw"){
+   barangay.value=session.barangay||"";barangay.disabled=true;
+ }else barangay.disabled=false;
+ conditionInputsModal(mount);mount.querySelector("#rDate").value=new Date().toISOString().slice(0,16);
+ mount.querySelector(".panel-title").textContent="Patient Encounter";
+ const modalTitle=document.querySelector("#reportModal .panel-title");if(modalTitle)modalTitle.textContent="New Patient Report";
+ const subtitle=document.querySelector("#reportModal .panel-sub");if(subtitle)subtitle.textContent="Same report form and validation across all authorized account types.";
  document.getElementById("reportModal").style.display="flex"
 }
 function conditionInputsModal(mount){const el=mount.querySelector("#conditionChoices");if(el)el.innerHTML=CONDITIONS.map((c,i)=>`<label class="check"><input type="radio" name="modalCondition" value="${esc(c)}" ${i===0?"checked":""}> ${esc(c)}</label>`).join("")||"<div class=\"empty\">No active conditions configured.</div>";}
 function closeReportModal(){document.getElementById("reportModal").style.display="none"}
 async function submitModalReport(e){
  e.preventDefault();
- if(!session||session.role!=='admin'){alert('Admin login is required to create a patient report.');return;}
+ if(!canCreateSharedPatientReport()){alert('Patient report creation is not enabled for this account. Contact the System Administrator.');return;}
  const f=e.currentTarget||e.target,q=s=>f.querySelector(s),selected=f.querySelector('input[name="modalCondition"]:checked');
  if(!selected){alert('Please select a condition.');return;}
  const files=Array.from(q('#rAttachments')?.files||[]);if(files.length>10){alert('Select no more than 10 photos per patient report.');return;}
@@ -5573,13 +5587,13 @@ async function submitModalReport(e){
   if(LIVE_API_URL&&navigator.onLine){
    let result;
    try{result=await apiPost('savePatient',{user:session.user,patient:r,deviceId:DEVICE_ID});if(!result||result.ok!==true||!result.patient)throw new Error('Backend did not confirm the saved patient record.');}
-   catch(apiErr){if(files.length||f.dataset.pendingReportId){f.dataset.pendingReportId=reportId;alert('Patient save was not confirmed. Keep this form open and retry when connected; the same report ID will be reused.\n\n'+apiErr.message);return;}r.syncStatus='queued';r.syncError=apiErr.message;reports.push(r);queueForSync(r);persistReports();persistOutbox();renderAll();closeReportModal();alert('Report queued for retry; Google Sheets save is not confirmed.\n\n'+apiErr.message);showView('admin');return;}
+   catch(apiErr){if(files.length||f.dataset.pendingReportId){f.dataset.pendingReportId=reportId;alert('Patient save was not confirmed. Keep this form open and retry when connected; the same report ID will be reused.\n\n'+apiErr.message);return;}r.syncStatus='queued';r.syncError=apiErr.message;reports.push(r);queueForSync(r);persistReports();persistOutbox();renderAll();closeReportModal();alert('Report queued for retry; Google Sheets save is not confirmed.\n\n'+apiErr.message);showView(session.role==='admin'?'admin':session.role==='bhw'?'bhw':session.role==='hospital'?'hospital':session.role==='custom'?'agency':'public');return;}
    const saved=normPatient(result.patient||r);reports=[...reports.filter(x=>String(x.reportId)!==String(r.reportId)),...(saved?[saved]:[])];persistReports();renderAll();f.dataset.pendingReportId=reportId;
    let uploaded=[];try{uploaded=await uploadSelectedPatientAttachments(f,reportId,btn);}catch(uploadErr){alert('Patient report saved, but one or more photos were not confirmed. Keep this window open and submit again to retry the same report ID.\n\n'+uploadErr.message);return;}
-   delete f.dataset.pendingReportId;delete f.dataset.attachmentEventIds;f.reset();updatePatientAttachmentList(q('#rAttachments'));closeReportModal();await refreshAdminHospitalData(false);alert('Patient record saved and verified in Google Sheets.'+(uploaded.length?' '+uploaded.length+' private photo attachment(s) uploaded.':''));showView('admin');return;
+   delete f.dataset.pendingReportId;delete f.dataset.attachmentEventIds;f.reset();updatePatientAttachmentList(q('#rAttachments'));closeReportModal();await refreshAdminHospitalData(false);alert('Patient record saved and verified in Google Sheets.'+(uploaded.length?' '+uploaded.length+' private photo attachment(s) uploaded.':''));showView(session.role==='admin'?'admin':session.role==='bhw'?'bhw':session.role==='hospital'?'hospital':session.role==='custom'?'agency':'public');return;
   }
   if(files.length){alert('Photos can only be uploaded online. Reconnect or remove the selected photos before submitting.');return;}
-  reports.push(r);queueForSync(r);persistReports();persistOutbox();renderAll();closeReportModal();alert('Offline: report queued locally and is not yet confirmed in Google Sheets.');showView('admin');
+  reports.push(r);queueForSync(r);persistReports();persistOutbox();renderAll();closeReportModal();alert('Offline: report queued locally and is not yet confirmed in Google Sheets.');showView(session.role==='admin'?'admin':session.role==='bhw'?'bhw':session.role==='hospital'?'hospital':session.role==='custom'?'agency':'public');
  }finally{if(btn){btn.disabled=false;btn.textContent=oldText||'Save Patient Report';}}
 }
 

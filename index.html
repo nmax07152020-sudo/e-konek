@@ -856,6 +856,9 @@ body{background:var(--bg)}
 .admin-subtabs .admin-subtab.active{background:linear-gradient(135deg,#2D5FAE,#4779B9)!important;color:#fff!important;border-color:#2D5FAE!important;box-shadow:0 3px 9px rgba(45,95,174,.2)}
 @media(max-width:680px){.admin-subtabs{display:grid;grid-template-columns:1fr 1fr}.admin-subtabs .admin-subtab{font-size:10px;padding:9px 7px}}
 #loginRole:disabled{opacity:1;color:#334155;background:#f1f5f9;cursor:not-allowed;border-color:#cbd5e1;}
+
+.opss-kpi-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:12px 0}.opss-kpi{background:#fff;border:1px solid var(--line);border-radius:13px;padding:13px}.opss-kpi .k{font-size:9px;font-weight:900;color:var(--muted);text-transform:uppercase}.opss-kpi .v{font-size:25px;font-weight:950;margin-top:5px}.opss-priority{display:inline-flex;border-radius:99px;padding:3px 7px;font-size:9px;font-weight:900}.opss-priority.urgent{background:#fee2e2;color:#991b1b}.opss-priority.high{background:#ffedd5;color:#9a3412}.opss-priority.normal{background:#dbeafe;color:#1d4ed8}.opss-photo-thumb{max-width:74px;max-height:54px;object-fit:cover;border-radius:6px}.opss-public-btn{background:#0f766e!important;border-color:#0f766e!important;color:#fff!important}
+@media(max-width:850px){.opss-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 <style>body.modal-open{overflow:hidden}</style>
 
@@ -939,6 +942,7 @@ button:disabled{cursor:wait;opacity:.72}
       <button data-view="admin">&#x1F6E1;&#xFE0F; Admin Dashboard <span class="lock-badge">&#x1F512;</span></button>
       <button data-view="admin-users">&#x1F465; User Management <span class="nav-badge">ADMIN</span></button>
       <button data-view="agency-dashboard" id="agencyDashboardNav" style="display:none">&#x1F3E2; <span id="agencyDashboardNavLabel">Account Dashboard</span></button>
+      <button data-view="opss-dashboard" id="opssDashboardNav" style="display:none">&#x1F6A8; OPSS Dashboard</button>
       <button data-view="admin-hospitals">&#x1F3E5; Antipolo Hospital</button>
       <button data-view="admin-patients">&#x1F4CB; Patient Records <span class="nav-badge">ALL</span></button>
       <button data-view="admin-monitoring">&#x1F4E1; Barangay Online Monitoring</button>
@@ -946,6 +950,7 @@ button:disabled{cursor:wait;opacity:.72}
       <button data-view="admin-announcements">&#x1F4E2; Announcements</button>
       <button data-view="admin-inventory">&#x1F4E6; Medical Inventory</button>
       <button data-view="admin-reporting">&#x1F4CA; Reporting &amp; Analytics</button>
+      <button data-view="admin-opss" id="adminOPSSNav">&#x1F6A8; OPSS Incident Monitoring</button>
       <button data-view="bhw">&#x1FA7A; BHW Dashboard <span class="lock-badge">&#x1F512;</span></button>
       <button data-view="bhw-patients">&#x1F4CB; Patient Records</button>
       <button data-view="bhw-heat">&#x1F321;&#xFE0F; Heat Index Monitoring</button>
@@ -1006,7 +1011,8 @@ button:disabled{cursor:wait;opacity:.72}
           </div>
           <div class="public-login-stack">
             <div class="public-access-actions">
-              <button class="public-access-btn login-access" onclick="openLoginChooser()">&#x1F510; Admin / BHW Login</button>
+              
+              <button class="public-access-btn login-access" onclick="openLoginChooser()">&#x1F510; Authorized Login</button>
               <button class="public-access-btn ios-access" onclick="openAccessGuide('ios')">&#x1F34E; iOS Guide</button>
               <a class="public-access-btn android-access" href="e-konek.apk" download="e-konek.apk" title="Android only — download the e-Konek APK" aria-label="Download e-Konek APK for Android only">&#x1F916; Android APK</a>
             </div>
@@ -1016,7 +1022,7 @@ button:disabled{cursor:wait;opacity:.72}
         <div class="hero">
           <img id="publicHeroLogo" class="app-logo hero-logo" data-logo="super" src="" alt="Super El Ni&#xF1;o logo">
           <div id="publicHeroKicker" class="hero-kicker">Heat Alert Monitoring &#x2022; Community Health Surveillance</div>
-          <h1 id="publicHeroTitle">SUPER EL NI&#xD1;O</h1>
+          <h1 id="publicHeroTitle">Emergency Connect</h1>
           <p id="publicHeroDescription">Public situation dashboard for heat-related illness reports.</p>
           <div class="hero-tags" id="publicHeroActions" aria-label="Public dashboard quick links">
             <a class="hero-tag hero-tag-anchor" href="#publicHeatMonitoring">&#x2600; Heat Response</a><a class="hero-tag hero-tag-anchor" href="#publicBarangayTally">&#x1F4CD; Barangay Tally</a><a class="hero-tag hero-tag-anchor" href="#publicSituationDashboard">&#x1F3E5; Community Reports</a>
@@ -1121,6 +1127,12 @@ button:disabled{cursor:wait;opacity:.72}
 
         
 
+        <div class="panel" style="margin-top:13px" id="adminOPSSPanel">
+          <div class="section-head" style="margin:0 0 10px"><div><div class="panel-title">&#x1F6A8; O.P.S.S. — Public Safety &amp; Security</div><div class="panel-sub">Accident and incident reports submitted by the public and OPSS personnel.</div></div><div class="filters"><button class="btn btn-light" onclick="refreshOPSSAdmin(true)">&#x21BB; Refresh</button><button class="btn btn-orange" onclick="showView('admin-opss')">Open OPSS Monitoring</button></div></div>
+          <div class="opss-kpi-grid"><div class="opss-kpi"><div class="k">Total Reports</div><div class="v" id="adminOPSSCountTotal">0</div></div><div class="opss-kpi"><div class="k">Accidents</div><div class="v" id="adminOPSSCountAccidents">0</div></div><div class="opss-kpi"><div class="k">Other Incidents</div><div class="v" id="adminOPSSCountIncidents">0</div></div><div class="opss-kpi"><div class="k">Pending</div><div class="v" id="adminOPSSCountPending">0</div></div><div class="opss-kpi"><div class="k">Resolved</div><div class="v" id="adminOPSSCountResolved">0</div></div></div>
+          <div class="table-wrap"><table><thead><tr><th>Date / Time</th><th>Type</th><th>Location</th><th>Reporter</th><th>Priority</th><th>Status</th></tr></thead><tbody id="adminOPSSRecent"><tr><td colspan="6" class="empty">OPSS reports load from the backend.</td></tr></tbody></table></div>
+        </div>
+
         <div class="panel" style="margin-top:13px" id="adminHospitalReferralPanel">
           <div class="section-head" style="margin:0 0 10px"><div><div class="panel-title">&#x1F3E5; Hospital Referral Summary</div><div class="panel-sub">Referrals sent to the three designated hospitals and their response status.</div></div><div class="filters"><button class="btn btn-light" onclick="refreshAdminHospitalData(true)">&#x21BB; Refresh</button><button class="btn btn-light" onclick="showView('admin-hospitals')">Manage Hospitals</button></div></div>
           <div class="hospital-summary-total"><span>Total Referrals Sent</span><strong id="adminReferralsSentTotal">&#x2014;</strong><span class="small-note" id="adminReferralTotalsSub">Waiting for referral summary.</span></div>
@@ -1159,6 +1171,20 @@ button:disabled{cursor:wait;opacity:.72}
       </section>
 
 
+
+      <!-- OPSS ADMIN MONITORING -->
+      <section id="view-admin-opss" class="hidden">
+        <div class="section-head"><div><div class="section-title">&#x1F6A8; O.P.S.S. Incident Monitoring</div><div class="section-sub">Central monitoring of public and OPSS staff accident / incident submissions.</div></div><button class="btn btn-light" onclick="refreshOPSSAdmin(true)">&#x21BB; Refresh</button></div>
+        <div class="opss-kpi-grid"><div class="opss-kpi"><div class="k">Total Reports</div><div class="v" id="opssAdminTotal">0</div></div><div class="opss-kpi"><div class="k">Accidents</div><div class="v" id="opssAdminAccidents">0</div></div><div class="opss-kpi"><div class="k">Other Incidents</div><div class="v" id="opssAdminIncidents">0</div></div><div class="opss-kpi"><div class="k">Pending / Ongoing</div><div class="v" id="opssAdminPending">0</div></div><div class="opss-kpi"><div class="k">Resolved</div><div class="v" id="opssAdminResolved">0</div></div></div>
+        <div class="panel"><div class="section-head"><div><div class="panel-title">All OPSS Reports</div><div class="panel-sub">Public and staff submissions. Photos remain private and are shown only to authorized Admin / OPSS accounts.</div></div><input id="opssAdminSearch" placeholder="Search report / barangay / reporter..." oninput="renderOPSSAdminReports()"></div><div class="table-wrap"><table><thead><tr><th>Date / Time</th><th>Type</th><th>Location</th><th>Barangay</th><th>Person Reporting</th><th>OPSS Personnel on Duty</th><th>Account Submitted By</th><th>Photos</th><th>Priority</th><th>Status</th><th>Action</th></tr></thead><tbody id="opssAdminReportsBody"><tr><td colspan="10" class="empty">Loading OPSS reports…</td></tr></tbody></table></div></div>
+      </section>
+
+      <!-- OPSS PERSONNEL DASHBOARD -->
+      <section id="view-opss-dashboard" class="hidden">
+        <div class="section-head"><div><div class="section-title" id="opssDashboardTitle">O.P.S.S. Dashboard</div><div class="section-sub">Office of Public Safety &amp; Security • Antipolo City</div></div><div class="filters"><button class="btn btn-light" onclick="refreshOPSSDashboard(true)">&#x21BB; Refresh</button><button class="btn btn-orange" onclick="openOPSSStaffReport()">&#x2795; New Incident Report</button></div></div>
+        <div class="opss-kpi-grid"><div class="opss-kpi"><div class="k">Total Reports</div><div class="v" id="opssStaffTotal">0</div></div><div class="opss-kpi"><div class="k">Accidents</div><div class="v" id="opssStaffAccidents">0</div></div><div class="opss-kpi"><div class="k">Other Incidents</div><div class="v" id="opssStaffIncidents">0</div></div><div class="opss-kpi"><div class="k">Pending / Ongoing</div><div class="v" id="opssStaffPending">0</div></div><div class="opss-kpi"><div class="k">Resolved</div><div class="v" id="opssStaffResolved">0</div></div></div>
+        <div class="panel"><div class="panel-title">OPSS Incident Register</div><div class="panel-sub">All public and staff submissions.</div><div class="table-wrap"><table><thead><tr><th>Date / Time</th><th>Type</th><th>Location</th><th>Barangay</th><th>Person Reporting</th><th>OPSS Personnel on Duty</th><th>Account Submitted By</th><th>Photos</th><th>Priority</th><th>Status</th><th>Progress</th></tr></thead><tbody id="opssStaffReportsBody"><tr><td colspan="10" class="empty">Loading reports…</td></tr></tbody></table></div></div>
+      </section>
 
       <!-- ADMIN REPORTING & ANALYTICS -->
       <section id="view-admin-reporting" class="hidden">
@@ -1284,7 +1310,7 @@ button:disabled{cursor:wait;opacity:.72}
         <div class="grid-2" style="margin-top:12px;align-items:start">
           <div class="panel">
             <div class="panel-title">Edit Public Header</div>
-            <div class="field" style="margin-top:12px"><div class="label">Public Dashboard Title *</div><input id="brandTitleInput" maxlength="80" value="SUPER EL NIÑO" placeholder="e.g. ANTIPOLO TYPHOON RESPONSE" oninput="renderBrandingPreview()"><div class="panel-sub">Up to 80 characters. Displayed as the main banner title.</div></div>
+            <div class="field" style="margin-top:12px"><div class="label">Public Dashboard Title *</div><input id="brandTitleInput" maxlength="80" value="Emergency Connect" placeholder="e.g. ANTIPOLO TYPHOON RESPONSE" oninput="renderBrandingPreview()"><div class="panel-sub">Up to 80 characters. Displayed as the main banner title.</div></div>
             <div class="field" style="margin-top:12px"><div class="label">Header Subtitle / Kicker</div><input id="brandKickerInput" maxlength="120" value="Heat Alert Monitoring • Community Health Surveillance" placeholder="e.g. CITY HEALTH EMERGENCY OPERATIONS" oninput="renderBrandingPreview()"><div class="panel-sub">Short uppercase-style line shown above the main title. Up to 120 characters.</div></div>
             <div class="field" style="margin-top:12px"><div class="label">Description</div><textarea id="brandDescriptionInput" maxlength="180" rows="2" placeholder="Short public-facing dashboard description" oninput="renderBrandingPreview()">Public situation dashboard for heat-related illness reports.</textarea><div class="panel-sub">Short explanatory text beneath the title. Up to 180 characters.</div></div>
             <div class="field" style="margin-top:12px"><div class="label">Logo / Header Image</div><input id="brandImageInput" type="file" accept="image/png,image/jpeg,image/webp" onchange="previewBrandingImage(event)"><div class="panel-sub">JPG, PNG, or WebP. The image is optimized to fit within 1 MB before saving.</div></div>
@@ -1304,7 +1330,7 @@ button:disabled{cursor:wait;opacity:.72}
             <div id="brandingPreview" style="margin-top:12px;min-height:185px;border-radius:18px;padding:22px 18px;background:linear-gradient(115deg,#285eaa 0%,#4a78b7 60%,#bd1e2d 100%);color:#fff;overflow:hidden;position:relative">
               <img id="brandLogoPreview" src="" alt="Dashboard logo preview" style="display:block;width:76px;height:76px;object-fit:contain;border:3px solid rgba(255,255,255,.72);border-radius:16px;background:rgba(255,255,255,.1);margin-bottom:12px">
               <div id="brandKickerPreview" class="hero-kicker">Heat Alert Monitoring · Community Health Surveillance</div>
-              <div id="brandTitlePreview" style="font-size:clamp(22px,3vw,32px);font-weight:950;line-height:1.1;margin-top:6px;overflow-wrap:anywhere">SUPER EL NIÑO</div>
+              <div id="brandTitlePreview" style="font-size:clamp(22px,3vw,32px);font-weight:950;line-height:1.1;margin-top:6px;overflow-wrap:anywhere">Emergency Connect</div>
               <div id="brandDescriptionPreview" style="font-size:12px;margin-top:7px">Public situation dashboard for heat-related illness reports.</div>
               <div class="hero-tags" id="brandActionPreview" aria-label="Quick action preview" style="margin-top:12px"></div>
             </div>
@@ -1779,7 +1805,7 @@ button:disabled{cursor:wait;opacity:.72}
 <!-- PUBLIC LOGIN CHOOSER -->
 <div class="login-overlay" id="loginChooser">
   <div class="login-card" style="text-align:center">
-    <div class="login-logos" aria-label="Antipolo City Health Office and Super El Ni&#xF1;o logos"><img class="app-logo login-logo" data-logo="cho" src="" alt="Antipolo City Health Office logo"><img class="app-logo login-logo" data-logo="super" src="" alt="Super El Ni&#xF1;o logo"></div>
+    <div class="login-logos" aria-label="Antipolo City Health Office logo"><img class="app-logo login-logo" data-logo="cho" src="" alt="Antipolo City Health Office logo"></div>
     <div class="login-title">Authorized Access</div>
     <div class="login-sub">Choose the dashboard you are authorized to access.</div>
     <div style="display:grid;gap:9px;margin-top:17px;text-align:left">
@@ -1886,7 +1912,7 @@ button:disabled{cursor:wait;opacity:.72}
 <!-- LOGIN -->
 <div class="login-overlay" id="loginOverlay">
   <div class="login-card">
-    <div class="login-logos" aria-label="Antipolo City Health Office and Super El Ni&#xF1;o logos"><img class="app-logo login-logo" data-logo="cho" src="" alt="Antipolo City Health Office logo"><img class="app-logo login-logo" data-logo="super" src="" alt="Super El Ni&#xF1;o logo"></div>
+    <div class="login-logos" aria-label="Antipolo City Health Office logo"><img class="app-logo login-logo" data-logo="cho" src="" alt="Antipolo City Health Office logo"></div>
     <div class="login-title">&#x1F510; Authorized Login</div>
     <div class="login-sub">Authorized access for Admin, BHW, Hospital, and assigned agency dashboards.</div>
     <div class="login-form">
@@ -2051,6 +2077,29 @@ button:disabled{cursor:wait;opacity:.72}
 
 <!-- REQUIRED HOSPITAL PASSWORD CHANGE MODAL -->
 <div class="modal" id="hospitalPasswordModal"><div class="modal-box"><div class="panel-title">&#x1F512; Change Temporary Password</div><div class="panel-sub" style="margin-bottom:12px">For security, change the temporary password before using the hospital dashboard.</div><div class="form-grid"><div class="field full"><div class="label">Temporary / Current Password *</div><input id="hospitalCurrentPassword" type="password" autocomplete="current-password"></div><div class="field full"><div class="label">New Password * (minimum 10 characters)</div><input id="hospitalNewPassword" type="password" autocomplete="new-password" minlength="10"></div><div class="field full"><div class="label">Confirm New Password *</div><input id="hospitalConfirmPassword" type="password" autocomplete="new-password" minlength="10"></div></div><div id="hospitalPasswordError" class="error" style="display:none;margin-top:9px"></div><div class="save-status" id="hospitalPasswordStatus" role="status" aria-live="polite"><span class="loading-spinner"></span><span>Updating password…</span></div><div class="form-actions"><button class="btn btn-orange" id="changeHospitalPasswordBtn" onclick="changeHospitalPassword()">Change Password</button></div></div></div>
+
+<!-- PRIVATE OPSS PHOTO VIEWER -->
+<div class="modal" id="opssPhotoViewer"><div class="modal-box" style="max-width:820px"><div class="section-head"><div><div class="panel-title">Incident Photos</div><div class="panel-sub">Private attachments shown only to authorized OPSS personnel and Admin.</div></div><button class="btn btn-light" onclick="document.getElementById('opssPhotoViewer').style.display='none'">&#x2715;</button></div><div id="opssPhotoViewerBody" class="grid-2"><div class="empty">Loading photos…</div></div></div></div>
+
+
+<div class="modal" id="opssStatusModal"><div class="modal-box" style="max-width:680px"><div class="section-head"><div><div class="panel-title">Update OPSS Incident Action</div><div class="panel-sub" id="opssStatusReportLabel">Admin status and rescue coordination</div></div><button class="btn btn-light" onclick="closeOPSSStatusModal()">✕</button></div><input type="hidden" id="opssStatusReportId"><div class="form-grid"><div class="field"><div class="label">Incident Status *</div><select id="opssStatusValue"><option>Pending</option><option>Admin Reviewed</option><option>Rescue Dispatched</option><option>On the Way</option><option>On Scene</option><option>Resolved</option><option>Closed</option></select></div><div class="field"><div class="label">Rescue Team / Personnel Assigned</div><input id="opssRescueTeam" maxlength="180" placeholder="Team or personnel name"></div><div class="field full"><div class="label">Admin Remarks / Instructions</div><textarea id="opssAdminRemarks" rows="4" maxlength="2000" placeholder="Enter action taken, instructions, or update for OPSS"></textarea></div></div><div class="filters" style="justify-content:flex-end;margin-top:14px"><button class="btn btn-light" onclick="closeOPSSStatusModal()">Cancel</button><button class="btn btn-primary" id="opssStatusSaveBtn" onclick="saveOPSSStatusUpdate()">Save Update</button></div><div id="opssStatusMessage" class="small-note"></div></div></div>
+<div class="modal" id="opssHistoryModal"><div class="modal-box" style="max-width:720px"><div class="section-head"><div><div class="panel-title">Incident Status History</div><div class="panel-sub" id="opssHistoryTitle"></div></div><button class="btn btn-light" onclick="document.getElementById('opssHistoryModal').style.display='none'">✕</button></div><div id="opssHistoryBody"></div></div></div>
+
+<!-- OPSS INCIDENT REPORT MODAL: public and authenticated staff -->
+<div class="modal" id="opssReportModal"><div class="modal-box" style="max-width:720px"><div class="section-head"><div><div class="panel-title" id="opssReportModalTitle">New Accident / Incident Report</div><div class="panel-sub">Please provide accurate incident details. For immediate danger, contact emergency services directly.</div></div><button class="btn btn-light" onclick="closeOPSSReportModal()">&#x2715;</button></div>
+  <div class="form-grid">
+    <div class="field"><div class="label">Report Type *</div><select id="opssReportType"><option>Road Accident</option><option>Vehicular Collision</option><option>Fire Incident</option><option>Flooding</option><option>Road Obstruction</option><option>Public Disturbance</option><option>Missing Person</option><option>Disaster / Emergency</option><option>Other Incident</option></select></div>
+    <div class="field"><div class="label">Incident Date &amp; Time *</div><input id="opssIncidentDateTime" type="datetime-local"></div>
+    <div class="field"><div class="label">Location / Street *</div><input id="opssLocation" maxlength="220" placeholder="Street, landmark or exact location"></div>
+    <div class="field"><div class="label">Barangay *</div><select id="opssBarangay"></select></div>
+    <div class="field"><div class="label">Person Reporting *</div><input id="opssReporterName" maxlength="140" placeholder="Full name"></div>
+    <div class="field"><div class="label">OPSS Personnel on Duty / Reporting Personnel *</div><input id="opssPersonnelName" maxlength="140" required placeholder="Enter full name of OPSS personnel on duty"><div class="small-note">Ilagay ang pangalan ng OPSS personnel na aktuwal na naka-duty at nagsumite ng report.</div></div>
+    <div class="field"><div class="label">Contact Number</div><input id="opssReporterContact" maxlength="40" placeholder="Mobile number"></div>
+    <div class="field"><div class="label">Priority</div><select id="opssPriority"><option>Normal</option><option>Low</option><option>High</option><option>Urgent</option></select></div>
+    <div class="field full"><div class="label">Incident Description *</div><textarea id="opssDescription" rows="4" maxlength="4000" placeholder="What happened? Include relevant details, but avoid unnecessary sensitive personal information."></textarea></div>
+    <div class="field full"><div class="label">Upload Incident Photos (optional, up to 4)</div><input id="opssPhotos" type="file" accept="image/jpeg,image/png,image/webp" multiple><div class="small-note">JPG, PNG or WebP. Maximum 4 photos, up to 2 MB each after compression. Photos are stored privately.</div><div id="opssPhotoStatus" class="small-note"></div></div>
+  </div><div class="form-actions"><button class="btn btn-light" onclick="closeOPSSReportModal()">Cancel</button><button class="btn btn-orange" id="opssSaveReportBtn" onclick="submitOPSSReport()">Submit Incident Report</button></div><div id="opssReportMessage" class="small-note" role="status"></div>
+</div></div>
 
 <!-- AGENCY REPORT MODAL -->
 <div class="modal" id="agencyReportModal"><div class="modal-box"><div class="section-head" style="margin:0 0 10px"><div><div class="panel-title" id="agencyReportModalTitle">New Agency Report</div><div class="panel-sub">This report is saved under your assigned agency only.</div></div><button class="btn btn-light" onclick="closeAgencyReportEditor()">&#x2715;</button></div>
@@ -2240,6 +2289,8 @@ let users=[];
 let roleTypes = [];
 let agencyDashboardData = null;
 let agencyReports = [];
+let opssReports = [];
+let opssIsAdminView = false;
 let editingUserId=null;
 
 
@@ -2986,6 +3037,27 @@ async function saveAgencyReport(){
   catch(err){alert("Could not save agency report.\\n\\n"+err.message);}finally{if(btn){btn.disabled=false;btn.textContent="Save Report";}}
 }
 async function removeAgencyReport(id){if(!agencyDashboardData?.permissions?.deleteOwnReports)return;if(!confirm("Delete this report created by your account?"))return;try{const result=await apiPost("deleteAgencyReport",{user:session.user,reportId:id});if(result?.persisted!==true)throw new Error("Backend did not confirm deletion.");await refreshAgencyDashboard(false);}catch(err){alert("Could not delete agency report.\\n\\n"+err.message);}}
+
+function isOPSSCustomSession(){const t=[session?.roleName,session?.agencyName,session?.dashboardTitle].join(' ').toLowerCase();const compact=t.replace(/[^a-z0-9]/g,'');return session?.role==='custom'&&(compact.includes('opss')||/office of public safety|public safety.{0,20}security/.test(t));}
+function opssFillBarangays(){const el=document.getElementById('opssBarangay');if(el&&!el.options.length)el.innerHTML=BARANGAYS.map(b=>`<option value="${esc(b)}">${esc(b)}</option>`).join('');}
+function openOPSSPublicReport(){alert('Public incident reporting is disabled. Please contact OPSS or an authorized staff member.');}
+function openOPSSStaffReport(){if(!session||!(session.role==='admin'||isOPSSCustomSession())){openLoginChooser();return;}openOPSSReportModal('staff');}
+function openOPSSReportModal(mode){opssFillBarangays();document.getElementById('opssReportModalTitle').textContent=mode==='public'?'Public Accident / Incident Report':'New OPSS Incident Report';document.getElementById('opssReportModal').dataset.mode=mode;document.getElementById('opssIncidentDateTime').value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,16);document.getElementById('opssReporterName').value=mode==='staff'?(session?.user?.Full_Name||session?.username||''):'';document.getElementById('opssPersonnelName').value='';document.getElementById('opssReporterContact').value=mode==='staff'?(session?.user?.Contact_Number||''):'';document.getElementById('opssDescription').value='';document.getElementById('opssLocation').value='';document.getElementById('opssPhotos').value='';document.getElementById('opssPhotoStatus').textContent='';document.getElementById('opssReportMessage').textContent='';document.getElementById('opssReportModal').style.display='flex';}
+function closeOPSSReportModal(){document.getElementById('opssReportModal').style.display='none';}
+async function compressOPSSPhoto(file){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onerror=()=>reject(new Error('Could not read selected photo.'));reader.onload=()=>{const im=new Image();im.onerror=()=>reject(new Error('Invalid image file.'));im.onload=()=>{const max=1800,scale=Math.min(1,max/Math.max(im.width,im.height)),canvas=document.createElement('canvas');canvas.width=Math.round(im.width*scale);canvas.height=Math.round(im.height*scale);canvas.getContext('2d').drawImage(im,0,0,canvas.width,canvas.height);let data=canvas.toDataURL('image/jpeg',.78);if(data.length>2800000)data=canvas.toDataURL('image/jpeg',.62);if(data.length>2800000)reject(new Error('Photo is too large after compression.'));else resolve({name:file.name,dataUrl:data});};im.src=reader.result;};reader.readAsDataURL(file);});}
+async function submitOPSSReport(){const mode=document.getElementById('opssReportModal').dataset.mode||'public';const files=Array.from(document.getElementById('opssPhotos').files||[]);if(files.length>4){alert('Maximum 4 photos per incident report.');return;}const personnelName=document.getElementById('opssPersonnelName').value.trim();if(!personnelName){alert('Please enter the name of the OPSS personnel on duty.');document.getElementById('opssPersonnelName').focus();return;}const btn=document.getElementById('opssSaveReportBtn');btn.disabled=true;btn.textContent='Submitting…';document.getElementById('opssReportMessage').textContent='Preparing report and secure photo uploads…';try{const photos=[];for(const f of files)photos.push(await compressOPSSPhoto(f));const report={Report_Type:document.getElementById('opssReportType').value,Incident_Date_Time:document.getElementById('opssIncidentDateTime').value,Location:document.getElementById('opssLocation').value.trim(),Barangay:document.getElementById('opssBarangay').value,Reporter_Name:document.getElementById('opssReporterName').value.trim(),OPSS_Personnel_Name:personnelName,Reporter_Contact:document.getElementById('opssReporterContact').value.trim(),Priority:document.getElementById('opssPriority').value,Description:document.getElementById('opssDescription').value.trim(),photos:photos};if(mode==='public'){throw new Error('Public incident reporting is disabled. Please sign in as authorized OPSS personnel.');}else{if(!session)throw new Error('Please sign in to submit an OPSS report.');await apiPost('saveOPSSReport',{user:session.user,report});}closeOPSSReportModal();alert('Incident report submitted successfully.');if(mode==='staff')await refreshOPSSDashboard(false);if(session?.role==='admin')await refreshOPSSAdmin(false);}catch(e){document.getElementById('opssReportMessage').textContent='Submission failed: '+(e.message||e);alert('Could not submit incident report.\n\n'+(e.message||e));}finally{btn.disabled=false;btn.textContent='Submit Incident Report';}}
+function formatOPSSDateTime(value){if(!value)return'—';const d=value instanceof Date?value:new Date(value);if(Number.isNaN(d.getTime()))return esc(String(value));return new Intl.DateTimeFormat('en-PH',{timeZone:'Asia/Manila',year:'numeric',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:true}).format(d)+' (PHT)';}
+function renderOPSSTable(targetId,rows){const body=document.getElementById(targetId);if(!body)return;const isAdmin=targetId==='opssAdminReportsBody';body.innerHTML=(rows||[]).map(x=>`<tr><td>${formatOPSSDateTime(x.Incident_Date_Time)}</td><td><strong>${esc(x.Report_Type||'')}</strong></td><td>${esc(x.Location||'')}</td><td>${esc(x.Barangay||'')}</td><td>${esc(x.Reporter_Name||'')}</td><td><strong>${esc(x.OPSS_Personnel_Name||'—')}</strong></td><td>${esc(x.Created_By_Name||'—')}</td><td>${Number(x.Photo_Count||0)>0?`<button class=\"action-btn\" onclick=\"viewOPSSPhotos('${esc(x.Report_ID)}')\">View ${Number(x.Photo_Count||0)}</button>`:'—'}</td><td><span class=\"opss-priority ${String(x.Priority||'normal').toLowerCase()}\">${esc(x.Priority||'Normal')}</span></td><td>${esc(x.Status||'Pending')}</td><td>${isAdmin?`<button class=\"action-btn\" onclick=\"openOPSSStatusModal('${esc(x.Report_ID)}')\">Edit Action</button>`:`<button class=\"action-btn\" onclick=\"viewOPSSStatusHistory('${esc(x.Report_ID)}')\">View Progress</button>`}</td></tr>`).join('')||'<tr><td colspan=\"11\" class=\"empty\">No incident reports have been submitted yet.</td></tr>';}
+
+function renderOPSSAdminReports(){const q=(document.getElementById('opssAdminSearch')?.value||'').toLowerCase();renderOPSSTable('opssAdminReportsBody',opssReports.filter(x=>[x.Report_Type,x.Location,x.Barangay,x.Reporter_Name,x.OPSS_Personnel_Name,x.Created_By_Name,x.Status].join(' ').toLowerCase().includes(q)));}
+function setOPSSCounts(prefix,c){const pairs={Total:c?.total??0,Accidents:c?.accidents??0,Incidents:c?.incidents??0,Pending:c?.pending??0,Resolved:c?.resolved??0};Object.entries(pairs).forEach(([k,v])=>{const el=document.getElementById(prefix+k);if(el)el.textContent=v;});}
+function openOPSSStatusModal(id){if(session?.role!=='admin'){alert('Admin access required.');return;}const x=opssReports.find(v=>String(v.Report_ID)===String(id));if(!x)return;document.getElementById('opssStatusReportId').value=id;document.getElementById('opssStatusReportLabel').textContent=(x.Report_Type||'Incident')+' • '+(x.Location||'')+' • '+(x.Barangay||'');document.getElementById('opssStatusValue').value=x.Status||'Pending';document.getElementById('opssRescueTeam').value=x.Rescue_Team||'';document.getElementById('opssAdminRemarks').value=x.Admin_Remarks||'';document.getElementById('opssStatusMessage').textContent='';document.getElementById('opssStatusModal').style.display='flex';}
+function closeOPSSStatusModal(){document.getElementById('opssStatusModal').style.display='none';}
+async function saveOPSSStatusUpdate(){const btn=document.getElementById('opssStatusSaveBtn');btn.disabled=true;btn.textContent='Saving…';try{await apiPost('updateOPSSIncidentStatus',{user:session.user,reportId:document.getElementById('opssStatusReportId').value,status:document.getElementById('opssStatusValue').value,rescueTeam:document.getElementById('opssRescueTeam').value.trim(),remarks:document.getElementById('opssAdminRemarks').value.trim()});closeOPSSStatusModal();await refreshOPSSAdmin(false);alert('Incident action and status updated. OPSS dashboard will show the update on refresh.');}catch(e){document.getElementById('opssStatusMessage').textContent='Could not save update: '+(e.message||e);alert('Could not save OPSS update: '+(e.message||e));}finally{btn.disabled=false;btn.textContent='Save Update';}}
+function viewOPSSStatusHistory(id){const x=opssReports.find(v=>String(v.Report_ID)===String(id));if(!x)return;document.getElementById('opssHistoryTitle').textContent=(x.Report_Type||'Incident')+' • '+(x.Location||'');const h=Array.isArray(x.Status_History)?x.Status_History:[];const rows=h.slice().reverse().map(v=>`<div class=\"panel\" style=\"margin:8px 0\"><strong>${esc(v.From||'—')} → ${esc(v.To||'')}</strong><div>${esc(v.Remarks||'No remarks provided')}</div><div class=\"small-note\">${esc(v.Updated_By||'Admin')} • ${formatOPSSDateTime(v.Updated_At)}${v.Rescue_Team?' • Team: '+esc(v.Rescue_Team):''}</div></div>`).join('');document.getElementById('opssHistoryBody').innerHTML=(x.Admin_Remarks?`<div class=\"notice\"><strong>Latest Admin Remarks:</strong> ${esc(x.Admin_Remarks)}${x.Rescue_Team?' • '+esc(x.Rescue_Team):''}</div>`:'')+(rows||'<div class=\"empty\">No status updates recorded yet.</div>');document.getElementById('opssHistoryModal').style.display='flex';}
+async function viewOPSSPhotos(reportId){if(!session||!(session.role==='admin'||isOPSSCustomSession())){alert('Authorized OPSS or Admin access required.');return;}const item=opssReports.find(x=>String(x.Report_ID)===String(reportId));const count=Number(item?.Photo_Count||0);if(!count)return;const modal=document.getElementById('opssPhotoViewer'),body=document.getElementById('opssPhotoViewerBody');modal.style.display='flex';body.innerHTML='<div class="empty">Loading private photos…</div>';try{const parts=[];for(let i=0;i<count;i++){const d=await apiPost('opssPhotoData',{user:session.user,reportId:reportId,photoIndex:i});parts.push(`<div class="panel"><img class="attachment-preview-image" src="data:${esc(d.mimeType)};base64,${d.base64}" alt="Incident photo ${i+1}"></div>`);}body.innerHTML=parts.join('');}catch(e){body.innerHTML=`<div class="notice">Could not load private photos: ${esc(e.message||e)}</div>`;}}
+async function refreshOPSSAdmin(showMessage=false){if(session?.role!=='admin')return;try{const d=await apiPost('opssDashboard',{user:session.user});opssReports=d.reports||[];const c=d.counts||{};setOPSSCounts('adminOPSSCount',c);setOPSSCounts('opssAdmin',c);renderOPSSAdminReports();const recent=document.getElementById('adminOPSSRecent');if(recent)recent.innerHTML=opssReports.slice(0,6).map(x=>`<tr><td>${formatOPSSDateTime(x.Incident_Date_Time)}</td><td>${esc(x.Report_Type)}</td><td>${esc(x.Location)}</td><td>${esc(x.Reporter_Name)}</td><td>${esc(x.Priority)}</td><td>${esc(x.Status)}</td></tr>`).join('')||'<tr><td colspan="6" class="empty">No OPSS reports yet.</td></tr>';if(showMessage)alert('OPSS incident reports refreshed.');}catch(e){console.error(e);if(showMessage)alert('Could not refresh OPSS reports: '+e.message);}}
+async function refreshOPSSDashboard(showMessage=false){if(!session||!isOPSSCustomSession())return;try{const d=await apiPost('opssDashboard',{user:session.user});opssReports=d.reports||[];setOPSSCounts('opssStaff',d.counts||{});renderOPSSTable('opssStaffReportsBody',opssReports);if(showMessage)alert('OPSS dashboard refreshed.');}catch(e){alert('Could not load OPSS dashboard: '+e.message);}}
 
 function userRoleValue(){return document.getElementById("uRole")?.value||"bhw";}
 function isAgencyRoleValue(value){return String(value||"").startsWith("agency:");}
@@ -4711,6 +4783,7 @@ function openLoginChooser(){
  if(!loading){loading=document.createElement("option");loading.dataset.roleLoading="1";loading.value="";loading.textContent="Loading agency dashboards…";loading.disabled=true;sel.appendChild(loading);}
  apiPost("publicRoleTypes",{}).then(result=>{
    const roles=Array.isArray(result.roleTypes)?result.roleTypes:[];
+   roleTypes=roles;
    sel.querySelectorAll("option[data-custom-role],option[data-role-loading]").forEach(o=>o.remove());
    roles.forEach(rt=>{const o=document.createElement("option");o.value="custom:"+rt.Role_ID;o.textContent=(rt.Dashboard_Title||rt.Role_Name)+" ("+rt.Role_Name+")";o.dataset.customRole="1";sel.appendChild(o);});
    if(keep&&Array.from(sel.options).some(o=>o.value===keep))sel.value=keep;
@@ -4790,7 +4863,7 @@ function applyAuthenticatedUser(u,offline=false,sessionToken=""){
  document.getElementById("sessionChip").textContent=offline?(role==="admin"?"Admin Access • Offline":`BHW • Offline`):(role==="admin"?"Admin Access":role==="bhw"?`BHW • ${session.barangay}`:role==="hospital"?"Hospital Access":`${session.roleName} • ${session.agencyName}`);
  document.getElementById("logoutBtn").classList.remove("hidden");
  applyRoleNavigation();
- const initialView=role==="admin"?"admin":role==="bhw"?"bhw":role==="hospital"?"hospital-dashboard":"agency-dashboard";
+ const initialView=role==="admin"?"admin":role==="bhw"?"bhw":role==="hospital"?"hospital-dashboard":isOPSSCustomSession()?"opss-dashboard":"agency-dashboard";
  showView(initialView);
  if(role==="bhw"&&!offline)startBhwHeartbeat();
  if(!offline){
@@ -4890,7 +4963,7 @@ function logout(){
  if(LIVE_API_URL&&session?.sessionToken&&navigator.onLine){apiPost("logout",{user:session.user}).catch(()=>{});}
  stopBhwHeartbeat();
  bhwRegistrationSummary=null;healthFacilityReports=[];healthFacilityReportSummary=null;selectedHealthFacilityReportId="";facilityDraftEventId="";
- session=null;agencyDashboardData=null;agencyReports=[];try{sessionStorage.removeItem(PERSISTED_TAB_SESSION_KEY);}catch(_){}selectedHospitalLoginId="";hospitalData=null;hospitalReferrals=[];hospitalPasswordRequired=false;document.getElementById("hospitalPasswordModal").style.display="none";document.body.classList.add("public-mode");document.getElementById("sideUser").textContent="PUBLIC USER";document.getElementById("sideBrgy").textContent="Public access";
+ session=null;agencyDashboardData=null;agencyReports=[];opssReports=[];try{sessionStorage.removeItem(PERSISTED_TAB_SESSION_KEY);}catch(_){}selectedHospitalLoginId="";hospitalData=null;hospitalReferrals=[];hospitalPasswordRequired=false;document.getElementById("hospitalPasswordModal").style.display="none";document.body.classList.add("public-mode");document.getElementById("sideUser").textContent="PUBLIC USER";document.getElementById("sideBrgy").textContent="Public access";
  document.getElementById("sessionChip").textContent="Public View";document.getElementById("logoutBtn").classList.add("hidden");applyRoleNavigation();showView("public")
 }
 
@@ -4901,7 +4974,7 @@ document.querySelectorAll(".nav button[data-view]").forEach(btn=>{
       openAppDownloadChooser();
       return;
    }
-   const adminViews=["admin","admin-users","admin-roles","admin-branding","admin-personnel","admin-patients","admin-all-patients","admin-monitoring","admin-bhw-registration","admin-health-facilities"];
+   const adminViews=["admin","admin-users","admin-roles","admin-branding","admin-personnel","admin-patients","admin-all-patients","admin-monitoring","admin-bhw-registration","admin-health-facilities","admin-opss"];
    const bhwViews=["bhw","bhw-patients","report"];
 
    if(adminViews.includes(v) && session?.role!=="admin"){openLogin("admin");return}
@@ -4914,10 +4987,10 @@ document.querySelectorAll(".nav button[data-view]").forEach(btn=>{
 });
 
 function applyRoleNavigation(){
-  const adminOnly=["admin","admin-users","admin-roles","admin-conditions","admin-branding","admin-hospitals","admin-personnel","admin-patients","admin-all-patients","admin-monitoring","admin-bhw-registration","admin-heat","admin-announcements","admin-health-facilities","admin-inventory","admin-reporting","app-downloads"];
+  const adminOnly=["admin","admin-opss","admin-users","admin-roles","admin-conditions","admin-branding","admin-hospitals","admin-personnel","admin-patients","admin-all-patients","admin-monitoring","admin-bhw-registration","admin-heat","admin-announcements","admin-health-facilities","admin-inventory","admin-reporting","app-downloads"];
   const bhwOnly=["bhw","bhw-patients","bhw-heat","bhw-personnel","bhw-announcements","bhw-inventory","app-downloads","report"];
   const hospitalOnly=["hospital-dashboard"];
-  const customOnly=["agency-dashboard"];
+  const customOnly=["agency-dashboard","opss-dashboard"];
   document.querySelectorAll(".nav button[data-view]").forEach(btn=>{
     const v=btn.dataset.view;
     if(!session){btn.style.display=(v==="public")?"block":"none";}
@@ -4926,6 +4999,8 @@ function applyRoleNavigation(){
     else if(session.role==="hospital")btn.style.display=hospitalOnly.includes(v)?"block":"none";
     else if(session.role==="custom")btn.style.display=customOnly.includes(v)?"block":"none";
   });
+  const opssNav=document.getElementById("opssDashboardNav");if(opssNav)opssNav.style.display=session?.role==="custom"&&isOPSSCustomSession()?"block":"none";
+  const agencyNav=document.querySelector('.nav button[data-view="agency-dashboard"]');if(agencyNav&&session?.role==="custom"&&isOPSSCustomSession())agencyNav.style.display="none";
   const sep=document.getElementById("hospitalNavSeparator");if(sep)sep.style.display=session?.role==="hospital"?"block":"none";
 }
 
@@ -4933,7 +5008,7 @@ function applyRoleNavigation(){
    ADMIN-EDITABLE PUBLIC DASHBOARD BRANDING
    ====================================================== */
 const DEFAULT_PUBLIC_BRANDING = {
- title:'SUPER EL NIÑO',
+ title:'Emergency Connect',
  kicker:'Heat Alert Monitoring • Community Health Surveillance',
  description:'Public situation dashboard for heat-related illness reports.',
  actions:[
@@ -4992,14 +5067,15 @@ function addBrandingActionElements(container, actions, previewOnly){
  });
 }
 function applyBrandingText(data){
- const title=String(data.title||DEFAULT_PUBLIC_BRANDING.title).trim()||DEFAULT_PUBLIC_BRANDING.title;
+ const rawTitle=String(data.title||DEFAULT_PUBLIC_BRANDING.title).trim()||DEFAULT_PUBLIC_BRANDING.title;
+ const title=/^super\s*el\s*ni(?:ñ|n)o$/i.test(rawTitle)?'Emergency Connect':rawTitle;
  const kicker=String(data.kicker||DEFAULT_PUBLIC_BRANDING.kicker).trim()||DEFAULT_PUBLIC_BRANDING.kicker;
  const description=String(data.description||DEFAULT_PUBLIC_BRANDING.description).trim()||DEFAULT_PUBLIC_BRANDING.description;
  const titleEl=document.getElementById('publicHeroTitle');if(titleEl)titleEl.textContent=title;
  const kickerEl=document.getElementById('publicHeroKicker');if(kickerEl)kickerEl.textContent=kicker;
  const descEl=document.getElementById('publicHeroDescription');if(descEl)descEl.textContent=description;
  addBrandingActionElements(document.getElementById('publicHeroActions'),data.actions, false);
- document.title=title+' — Emergency - Connect';
+ document.title='Emergency Connect | Antipolo City Health Office';
 }
 function applyPublicBranding(data){
  if(!data||typeof data!=='object')return;
@@ -5255,9 +5331,11 @@ async function refreshModuleLive(view=currentView){
       renderPublic();renderPublicAnnouncements();renderPublicHeat();renderPublicHospitals();return;
     }
     if(view==='admin'){
-      await Promise.all([refreshLiveState(),refreshBhwRegistrationSummary(false),refreshHealthFacilityReportSummary(false),refreshAdminHospitalData(false),refreshConditionsLive(false)]);
+      await Promise.all([refreshLiveState(),refreshBhwRegistrationSummary(false),refreshHealthFacilityReportSummary(false),refreshAdminHospitalData(false),refreshConditionsLive(false),refreshOPSSAdmin(false)]);
       return;
     }
+    if(view==='admin-opss'){await refreshOPSSAdmin(false);return;}
+    if(view==='opss-dashboard'){await refreshOPSSDashboard(false);return;}
     if(view==='admin-conditions'){
       await refreshConditionsLive(false);return;
     }
@@ -5417,12 +5495,13 @@ function customDashboardDisplayName(source=session){
 }
 
 function showView(v){
- const adminViews=["admin","admin-users","admin-roles","admin-conditions","admin-branding","admin-hospitals","admin-personnel","admin-patients","admin-all-patients","admin-monitoring","admin-bhw-registration","admin-heat","admin-announcements","admin-health-facilities","admin-inventory","admin-reporting"];
+ const adminViews=["admin","admin-users","admin-roles","admin-conditions","admin-branding","admin-hospitals","admin-personnel","admin-patients","admin-all-patients","admin-monitoring","admin-bhw-registration","admin-heat","admin-announcements","admin-health-facilities","admin-inventory","admin-reporting","admin-opss"];
  if(adminViews.includes(v)&&session?.role!=="admin"){openLogin("admin");return;}
  if(v==="admin-roles"&&String(session?.username||"").toLowerCase()!=="admin"){alert("Only the primary System Administrator can manage account types and agency permissions.");showView("admin");return;}
  if(["bhw","bhw-patients","bhw-heat","bhw-personnel","bhw-announcements","bhw-inventory"].includes(v)&&session?.role!=="bhw"){openLogin("bhw");return;}
  if(v==="hospital-dashboard"&&session?.role!=="hospital"){openLogin("hospital");return;}
  if(v==="agency-dashboard"&&session?.role!=="custom"){openLogin("custom");return;}
+ if(v==="opss-dashboard"&&!isOPSSCustomSession()){openLoginChooser();return;}
  if(v==="report"&&!["admin","bhw"].includes(session?.role)){openLogin("bhw");return;}
  currentView=v;
  startAutoRefresh();
@@ -5457,6 +5536,8 @@ function showView(v){
   "admin-health-facilities":["Facility Monitoring","Health Facilities Monitoring & Alert"],
   "admin-inventory":["Supply Management","Medical Inventory"],
   "admin-reporting":["Reporting & Analytics","Surveillance Reports"],
+  "admin-opss":["Public Safety & Security","O.P.S.S. Incident Monitoring"],
+  "opss-dashboard":["Office of Public Safety & Security","O.P.S.S. Dashboard"],
   bhw:["Barangay Monitoring",`BHW Dashboard \u2022 ${session?.barangay||"\u2014"}`],
   "bhw-patients":["Barangay Patient Surveillance",`Patient Records \u2022 ${session?.barangay||"\u2014"}`],
   "bhw-heat":["Heat Surveillance",`Heat Index Monitoring \u2022 ${session?.barangay||"\u2014"}`],
